@@ -7,7 +7,7 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
-
+  
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=150)
 
@@ -134,12 +134,15 @@ class TablePatient(models.Model):
     class Meta:
         managed = False
         db_table = 'table_patient'
+        
+    def __str__(self) -> str:
+        return self.full_name
 
 
 class TableStudy(models.Model):
     code = models.CharField(primary_key=True, max_length=10)
     type = models.CharField()
-    hc_patient = models.ForeignKey(TablePatient, models.DO_NOTHING, db_column='hc_patient')
+    hc_patient = models.ForeignKey(TablePatient, models.DO_NOTHING, db_column='hc_patient', related_name='studiesList')
     imp_diag = models.TextField(blank=True, null=True)
     cid_specialist = models.CharField(max_length=11, blank=True, null=True)
     piece = models.CharField(blank=True, null=True)
@@ -149,3 +152,6 @@ class TableStudy(models.Model):
     class Meta:
         managed = False
         db_table = 'table_study'
+
+    def __str__(self) -> str:
+        return self.code
