@@ -7,151 +7,112 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
-  
-class AuthGroup(models.Model):
-    name = models.CharField(unique=True, max_length=150)
+class Diagnostico(models.Model):
+    id_proceso = models.ForeignKey('Proceso', models.DO_NOTHING, db_column='id_proceso')
+    diagnostico = models.CharField(blank=True, null=True)
+    observaciones = models.TextField(blank=True, null=True)
+    fecha = models.DateField(blank=True, null=True)
 
     class Meta:
         managed = False
-        db_table = 'auth_group'
+        db_table = 'diagnostico'
 
 
-class AuthGroupPermissions(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
-    permission = models.ForeignKey('AuthPermission', models.DO_NOTHING)
-
-    class Meta:
-        managed = False
-        db_table = 'auth_group_permissions'
-        unique_together = (('group', 'permission'),)
-
-
-class AuthPermission(models.Model):
-    name = models.CharField(max_length=255)
-    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING)
-    codename = models.CharField(max_length=100)
+class Estudio(models.Model):
+    code = models.CharField(primary_key=True, max_length=15)
+    tipo = models.CharField(max_length=1)
+    hc_paciente = models.ForeignKey('Paciente', models.DO_NOTHING, db_column='hc_paciente',related_name='studies')
+    medico = models.CharField(max_length=11, blank=True, null=True)
+    imp_diag = models.CharField(blank=True, null=True)
+    especialista = models.CharField(max_length=11, blank=True, null=True)
+    pieza = models.CharField()
+    fecha = models.DateField(blank=True, null=True)
+    entidad = models.CharField(max_length=2, blank=True, null=True)
 
     class Meta:
         managed = False
-        db_table = 'auth_permission'
-        unique_together = (('content_type', 'codename'),)
-
-
-class AuthUser(models.Model):
-    password = models.CharField(max_length=128)
-    last_login = models.DateTimeField(blank=True, null=True)
-    is_superuser = models.BooleanField()
-    username = models.CharField(unique=True, max_length=150)
-    first_name = models.CharField(max_length=150)
-    last_name = models.CharField(max_length=150)
-    email = models.CharField(max_length=254)
-    is_staff = models.BooleanField()
-    is_active = models.BooleanField()
-    date_joined = models.DateTimeField()
-
-    class Meta:
-        managed = False
-        db_table = 'auth_user'
-
-
-class AuthUserGroups(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
-    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
-
-    class Meta:
-        managed = False
-        db_table = 'auth_user_groups'
-        unique_together = (('user', 'group'),)
-
-
-class AuthUserUserPermissions(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
-    permission = models.ForeignKey(AuthPermission, models.DO_NOTHING)
-
-    class Meta:
-        managed = False
-        db_table = 'auth_user_user_permissions'
-        unique_together = (('user', 'permission'),)
-
-
-class DjangoAdminLog(models.Model):
-    action_time = models.DateTimeField()
-    object_id = models.TextField(blank=True, null=True)
-    object_repr = models.CharField(max_length=200)
-    action_flag = models.SmallIntegerField()
-    change_message = models.TextField()
-    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING, blank=True, null=True)
-    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
-
-    class Meta:
-        managed = False
-        db_table = 'django_admin_log'
-
-
-class DjangoContentType(models.Model):
-    app_label = models.CharField(max_length=100)
-    model = models.CharField(max_length=100)
-
-    class Meta:
-        managed = False
-        db_table = 'django_content_type'
-        unique_together = (('app_label', 'model'),)
-
-
-class DjangoMigrations(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    app = models.CharField(max_length=255)
-    name = models.CharField(max_length=255)
-    applied = models.DateTimeField()
-
-    class Meta:
-        managed = False
-        db_table = 'django_migrations'
-
-
-class DjangoSession(models.Model):
-    session_key = models.CharField(primary_key=True, max_length=40)
-    session_data = models.TextField()
-    expire_date = models.DateTimeField()
-
-    class Meta:
-        managed = False
-        db_table = 'django_session'
-
-
-class TablePatient(models.Model):
-    hc = models.CharField(primary_key=True, max_length=10)
-    cid = models.CharField(max_length=11, blank=True, null=True)
-    full_name = models.CharField()
-    age_month = models.IntegerField(blank=True, null=True)
-    age_year = models.IntegerField(blank=True, null=True)
-    sex = models.CharField(max_length=1, blank=True, null=True)
-    race = models.TextField(blank=True, null=True)  # This field type is a guess.
-
-    class Meta:
-        managed = False
-        db_table = 'table_patient'
+        db_table = 'estudio'
         
-    def __str__(self) -> str:
-        return self.full_name
+        
+    def __str__(self):
+        return self.code
 
 
-class TableStudy(models.Model):
-    code = models.CharField(primary_key=True, max_length=10)
-    type = models.CharField()
-    hc_patient = models.ForeignKey(TablePatient, models.DO_NOTHING, db_column='hc_patient', related_name='studiesList')
-    imp_diag = models.TextField(blank=True, null=True)
-    cid_specialist = models.CharField(max_length=11, blank=True, null=True)
-    piece = models.CharField(blank=True, null=True)
-    order_date = models.DateField(blank=True, null=True)
-    entity = models.CharField(blank=True, null=True)
+class Fallecido(models.Model):
+    hc = models.OneToOneField('Paciente', models.DO_NOTHING, db_column='hc', primary_key=True)
+    provincia = models.CharField(blank=True, null=True)
+    municipio = models.CharField(blank=True, null=True)
+    direccion = models.CharField(blank=True, null=True)
+    app = models.CharField(blank=True, null=True)
+    apf = models.CharField(blank=True, null=True)
+    hea = models.CharField(blank=True, null=True)
+    apgar = models.IntegerField(blank=True, null=True)
+    edad_gest = models.IntegerField(blank=True, null=True)
+    fecha_muerte = models.DateField(blank=True, null=True)
 
     class Meta:
         managed = False
-        db_table = 'table_study'
+        db_table = 'fallecido'
 
-    def __str__(self) -> str:
+        
+    def __str__(self):
+        return str(self.hc)
+
+class Necropsia(models.Model):
+    code = models.CharField(primary_key=True, max_length=10)
+    hc_fallecido = models.ForeignKey(Fallecido, models.DO_NOTHING, db_column='hc_fallecido')
+    certif_defuncion = models.CharField(blank=True, null=True)
+    especialista = models.CharField(max_length=11, blank=True, null=True)
+    fecha = models.DateField(blank=True, null=True)
+    procedencia = models.CharField(blank=True, null=True)
+    habito_externo = models.CharField(blank=True, null=True)
+    analisis_por_cavidades = models.CharField(blank=True, null=True)
+    analisis_por_aparatos = models.CharField(blank=True, null=True)
+    hallazgos = models.CharField(blank=True, null=True)
+    epicrisis = models.CharField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'necropsia'
+        
+    def __str__(self):
         return self.code
+
+class Paciente(models.Model):
+    hc = models.CharField(primary_key=True, max_length=6)
+    cid = models.CharField(unique=True, max_length=11, blank=True, null=True)
+    nombre = models.CharField()
+    edad = models.IntegerField(blank=True, null=True)
+    sexo = models.CharField(max_length=1, blank=True, null=True)
+    raza = models.CharField(max_length=1, blank=True, null=True)
+    es_fallecido = models.BooleanField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'paciente'
+        
+    def __str__(self):
+        return self.nombre
+    
+
+
+class Proceso(models.Model):
+    cod_est = models.ForeignKey(Estudio, models.DO_NOTHING, db_column='cod_est', blank=True, null=True)
+    cod_necro = models.ForeignKey(Necropsia, models.DO_NOTHING, db_column='cod_necro', blank=True, null=True)
+    descripcion_macro = models.CharField(blank=True, null=True)
+    no_fragmentos = models.IntegerField(blank=True, null=True)
+    no_bloques = models.IntegerField(blank=True, null=True)
+    exist_resto = models.BooleanField(blank=True, null=True)
+    descripcion_micro = models.CharField(blank=True, null=True)
+    malignidad = models.BooleanField(blank=True, null=True)
+    no_laminas = models.IntegerField(blank=True, null=True)
+    no_cr = models.IntegerField(blank=True, null=True)
+    no_ce = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'proceso'
+
+        
+    def __str__(self):
+        return str(self.cod_necro) if str(self.cod_necro)!='None' else str(self.cod_est) 

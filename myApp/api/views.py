@@ -1,18 +1,70 @@
 
-from myApp.api.serializer import PatientSerializer, StudySerializer
-from myApp.models import TablePatient, TableStudy
+from myApp.api.serializer import *
+from myApp.models import *
 from rest_framework.response import Response
 from rest_framework.views import APIView
 # from rest_framework.decorators import api_view
 from  rest_framework import viewsets, status,generics,mixins
 from django.shortcuts import get_object_or_404
+from rest_framework.decorators import action
 
-class StudyVS(viewsets.ModelViewSet):
-    # def list(self,request):
-    queryset = TableStudy.objects.all()
-    serializer_class = StudySerializer 
-        # return Response(serializer.data)
+#Vista
+class PatientViewSet(viewsets.ModelViewSet):
+    queryset = Paciente.objects.all()
+    serializer_class = PatientSerializer
     
+    # def retrieve(self, request, pk=None):
+    #     # Retrieve the patient
+    #     paciente = self.get_object()
+
+    #     # Retrieve the associated studies
+    #     studies = paciente.estudio_set.all()
+
+    #     # Serialize the studies
+    #     serializer = StudySerializer(studies, many=True, context={'request': request})
+
+    #     # Return the patient data with the studies list
+    #     patient_serializer = PatientSerializer(paciente, context={'request': request})
+    #     return Response({'paciente': patient_serializer.data, 'studies': serializer.data})
+    
+    # @action(detail=True, methods=['get'])
+    # def studies(self, request, pk=None):
+    #     """
+    #     Obtiene la lista de estudios asociados al paciente
+    #     """
+    #     paciente = self.get_object()
+    #     estudios = paciente.estudio_set.all()  # Relacion inversa
+    #     serializer = StudySerializer(estudios, many=True)
+    #     return Response(serializer.data)
+  
+class DefunctViewSet(viewsets.ModelViewSet):
+    queryset = Fallecido.objects.all()
+    serializer_class = DefunctSerializer
+
+class StudyViewSet(viewsets.ModelViewSet):
+    queryset = Estudio.objects.all()
+    serializer_class = StudySerializer
+    lookup_field = 'code'
+    
+class NecropsyViewSet(viewsets.ModelViewSet):
+    queryset = Necropsia.objects.all()
+    serializer_class = NecropsySerializer
+
+class ProcessViewSet(viewsets.ModelViewSet):
+    queryset = Proceso.objects.all()
+    serializer_class = ProcessSerializer
+
+class DiagnosisViewSet(viewsets.ModelViewSet):
+    queryset = Diagnostico.objects.all()
+    serializer_class = DiagnosisSerializer
+
+
+
+# class StudyVS(viewsets.ModelViewSet):
+#     queryset = Estudio.objects.all()
+#     serializer_class = StudySerializer 
+    
+    #no
     # def retrieve(self,request,code=None):
     #     queryset=TableStudy.object.all()
     #     st=get_object_or_404(queryset,code=code)
@@ -20,49 +72,49 @@ class StudyVS(viewsets.ModelViewSet):
     #     return Response(serializer.data)
             
 
-class StudyListAV(APIView):
-    def get(self,request):
-        myStudies=TableStudy.objects.all()
-        serializer=StudySerializer(myStudies,many=True)
-        return Response(serializer.data)
+# class StudyListAV(APIView):
+#     def get(self,request):
+#         myStudies=Estudio.objects.all()
+#         serializer=StudySerializer(myStudies,many=True)
+#         return Response(serializer.data)
     
-    def post(self,request):
-        de_serializer=StudySerializer(data=request.data)
-        if de_serializer.is_valid():
-            de_serializer.save()
-            return Response(de_serializer.data) 
-        else: return Response(de_serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+#     def post(self,request):
+#         de_serializer=StudySerializer(data=request.data)
+#         if de_serializer.is_valid():
+#             de_serializer.save()
+#             return Response(de_serializer.data) 
+#         else: return Response(de_serializer.errors,status=status.HTTP_400_BAD_REQUEST)
               
-class StudyDetaillAV(APIView):
-    def get(self,request, code):
-        try:
-           study=TableStudy.objects.get(code=code)
-        except TableStudy.DoesNotExist:
-            return Response({'Error: el estudio no ha sido encontrado'},status=status.HTTP_404_NOT_FOUND) #NO ENCUENTRA LOS DATOS ENVIADOS EN LA TABLA PACIENTES
+# class StudyDetaillAV(APIView):
+#     def get(self,request, code):
+#         try:
+#            study=Estudio.objects.get(code=code)
+#         except Estudio.DoesNotExist:
+#             return Response({'Error: el estudio no ha sido encontrado'},status=status.HTTP_404_NOT_FOUND) #NO ENCUENTRA LOS DATOS ENVIADOS EN LA TABLA PACIENTES
         
-        serializer=StudySerializer(study)
-        return Response(serializer.data)
+#         serializer=StudySerializer(study)
+#         return Response(serializer.data)
     
-    def put(self,request,code):
-        try:
-           study=TableStudy.objects.get(code=code)
-        except TableStudy.DoesNotExist:
-            return Response({'Error: el estudio no ha sido encontrado'},status=status.HTTP_404_NOT_FOUND) #NO ENCUENTRA LOS DATOS ENVIADOS EN LA TABLA PACIENTES
+#     def put(self,request,code):
+#         try:
+#            study=Estudio.objects.get(code=code)
+#         except Estudio.DoesNotExist:
+#             return Response({'Error: el estudio no ha sido encontrado'},status=status.HTTP_404_NOT_FOUND) #NO ENCUENTRA LOS DATOS ENVIADOS EN LA TABLA PACIENTES
         
-        de_serializer=StudySerializer(study,data=request.data)
-        if de_serializer.is_valid():
-            de_serializer.save()
-            return Response(de_serializer.data)
-        else : return Response(de_serializer.errors,status=status.HTTP_400_BAD_REQUEST  )
+#         de_serializer=StudySerializer(study,data=request.data)
+#         if de_serializer.is_valid():
+#             de_serializer.save()
+#             return Response(de_serializer.data)
+#         else : return Response(de_serializer.errors,status=status.HTTP_400_BAD_REQUEST  )
         
-    def delete(self,request,code):
-        try:
-            study=TableStudy.objects.get(code=code)
-        except TableStudy.DoesNotExist:
-            return Response({'Error: el estudio no ha sido encontrado'},status=status.HTTP_404_NOT_FOUND) #NO ENCUENTRA LOS DATOS ENVIADOS EN LA TABLA PACIENTES
+#     def delete(self,request,code):
+#         try:
+#             study=Estudio.objects.get(code=code)
+#         except Estudio.DoesNotExist:
+#             return Response({'Error: el estudio no ha sido encontrado'},status=status.HTTP_404_NOT_FOUND) #NO ENCUENTRA LOS DATOS ENVIADOS EN LA TABLA PACIENTES
         
-        study.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+#         study.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
     
 # class PatientListAV(APIView):
 #     def get(self,request):
@@ -109,15 +161,15 @@ class StudyDetaillAV(APIView):
 #         return Response(status=status.HTTP_204_NO_CONTENT)
       
 #modelo generico
-# class PatientList (mixins.ListModelMixin,mixins.CreateModelMixin,generics.GenericAPIView):      
-    queryset=TablePatient.objects.all()
-    serializer_class=PatientSerializer
+# # class PatientList (mixins.ListModelMixin,mixins.CreateModelMixin,generics.GenericAPIView):      
+#     queryset=TablePatient.objects.all()
+#     serializer_class=PatientSerializer
     
-    def get(self, request,*args, **kwargs ):
-        return self.list(request,*args, **kwargs)
+#     def get(self, request,*args, **kwargs ):
+#         return self.list(request,*args, **kwargs)
     
-    def post(self, request,*args, **kwargs ):
-        return self.create(request,*args, **kwargs)
+#     def post(self, request,*args, **kwargs ):
+#         return self.create(request,*args, **kwargs)
     
 # class PatientDetail (mixins.RetrieveModelMixin,generics.GenericAPIView):      
 #     queryset=TablePatient.objects.all()
@@ -131,11 +183,11 @@ class StudyDetaillAV(APIView):
 
 
 #metodo generico cCONCRETOS
-class PatientList (generics.ListCreateAPIView):      
-    queryset=TablePatient.objects.all()
-    serializer_class=PatientSerializer
+# class PatientList (generics.ListCreateAPIView):      
+#     queryset=Paciente.objects.all()
+#     serializer_class=PatientSerializer
     
     
-class PatientDetail (generics.RetrieveUpdateDestroyAPIView):      
-    queryset=TablePatient.objects.all()
-    serializer_class=PatientSerializer  
+# class PatientDetail (generics.RetrieveUpdateDestroyAPIView):      
+#     queryset=Paciente.objects.all()
+#     serializer_class=PatientSerializer  
