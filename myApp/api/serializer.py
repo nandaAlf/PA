@@ -88,6 +88,13 @@ class PatientSerializer(serializers.ModelSerializer,):
         
     
 class DefunctSerializer(serializers.ModelSerializer):
+    
+    necropsy= serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='necropsia-detail',
+        lookup_field='code'
+    )
     class Meta:
         model = Fallecido
         fields = '__all__'
@@ -101,11 +108,13 @@ class ProcessSerializer(serializers.ModelSerializer):
     class Meta:
         model = Proceso
         fields = '__all__'
+        # exclude = ['id']
 
 class DiagnosisSerializer(serializers.ModelSerializer):
     class Meta:
         model = Diagnostico
-        fields = '__all__'
+        # fields = '__all__'
+        exclude = ['id']
 
 # class PatientSerializer(serializers.Serializer):
     

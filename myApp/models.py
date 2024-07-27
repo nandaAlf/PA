@@ -60,7 +60,7 @@ class Fallecido(models.Model):
 
 class Necropsia(models.Model):
     code = models.CharField(primary_key=True, max_length=10)
-    hc_fallecido = models.ForeignKey(Fallecido, models.DO_NOTHING, db_column='hc_fallecido')
+    hc_fallecido = models.ForeignKey(Fallecido, models.DO_NOTHING, db_column='hc_fallecido',related_name='necropsy')
     certif_defuncion = models.CharField(blank=True, null=True)
     especialista = models.CharField(max_length=11, blank=True, null=True)
     fecha = models.DateField(blank=True, null=True)

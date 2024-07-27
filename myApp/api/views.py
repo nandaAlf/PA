@@ -49,14 +49,40 @@ class StudyViewSet(viewsets.ModelViewSet):
 class NecropsyViewSet(viewsets.ModelViewSet):
     queryset = Necropsia.objects.all()
     serializer_class = NecropsySerializer
+    lookup_field = 'code'
 
 class ProcessViewSet(viewsets.ModelViewSet):
     queryset = Proceso.objects.all()
     serializer_class = ProcessSerializer
+    
+    # lookup_field = 'cod_est'
+    
+    def get_object(self):
+        """
+        Sobrecarga el método get_object para determinar el identificador en funcion de si es un estudio o una necropsia
+        """
+        # Obtén el valor del campo de la URL
+        code= self.kwargs.get('pk')
+        # Determina el campo a utilizar para la búsqueda
+        if code[0]=='N':
+            try:
+                return Proceso.objects.get(cod_necro=code)
+            except Proceso.DoesNotExist:
+                pass
+        elif code[0]=='B' or code[0]=='C':
+            try:
+                return Proceso.objects.get(cod_est=code)
+            except Proceso.DoesNotExist:
+                pass
+            
+    # def get_queryset(self):
+    #     pk=self.kwargs['pk']
+    #     return Proceso.objects.filter(cod_est=pk)
 
 class DiagnosisViewSet(viewsets.ModelViewSet):
     queryset = Diagnostico.objects.all()
     serializer_class = DiagnosisSerializer
+    lookup_field = 'id_proceso'
 
 
 
