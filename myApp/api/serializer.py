@@ -1,8 +1,6 @@
 import datetime
 from rest_framework import serializers
-
 from myApp.models import *
-
 
 def hc_validator(value):
     if len(value)!=6 or not value.isdigit():
@@ -21,7 +19,8 @@ def positive_number_validator(value,field):
     else: return value
     
 def list_validator(value,list):
-    if value is None or value=="":return value
+    print("VALUE ES:",value)
+    if value is None or value==" " or value=="null" :return value
     if value not in list:raise serializers.ValidationError(f"Este valor no es aceptable , pruebe con {list}")
     else: return value
 
@@ -47,6 +46,12 @@ def list_validator(value,list):
 #         raise serializers.ValidationError("mal los dias")
     
 class StudySerializer(serializers.ModelSerializer):
+    
+    hc_paciente = serializers.HyperlinkedRelatedField(
+        many=False,
+        read_only=True,
+        view_name='paciente-detail',
+    )
     class Meta:
         model=Estudio
         fields="__all__"
@@ -63,7 +68,7 @@ class StudySerializer(serializers.ModelSerializer):
         return list_validator(value,["H","HC","CE"])
         
 
-class PatientSerializer(serializers.ModelSerializer,):
+class PatientSerializer(serializers.ModelSerializer):
     # studiesList=StudySerializer(many=True, read_only=True) #Toda la data de los estudios de un paciente
     # studiesList=serializers.StringRelatedField(many=True,read_only=True)
     
@@ -100,6 +105,12 @@ class DefunctSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 class NecropsySerializer(serializers.ModelSerializer):
+    
+    hc_fallecido= serializers.HyperlinkedRelatedField(
+        many=False,
+        read_only=True,
+        view_name='fallecido-detail',
+    )
     class Meta:
         model = Necropsia
         fields = '__all__'
@@ -108,36 +119,11 @@ class ProcessSerializer(serializers.ModelSerializer):
     class Meta:
         model = Proceso
         fields = '__all__'
-        # exclude = ['id']
 
 class DiagnosisSerializer(serializers.ModelSerializer):
     class Meta:
         model = Diagnostico
-        # fields = '__all__'
         exclude = ['id']
 
-# class PatientSerializer(serializers.Serializer):
-    
-    # hc=serializers.CharField()
-    # cid=serializers.CharField(validators=[cid_validator])
-    # full_name=serializers.CharField()
-    # age_month=serializers.IntegerField() 
-    # age_year=serializers.IntegerField()
-    # sex=serializers.CharField()
-    # race=serializers.CharField()
-    
-    # def create(self, validated_data):
-    #     return TablePatient.objects.create(**validated_data)
-    
-    # def update(self,instance,validate_data):
-    #      instance.hc=validate_data.get('hc',instance.hc)
-    #      instance.cid=validate_data.get('cid',instance.cid)
-    #      instance.full_name=validate_data.get('full_name',instance.full_name)
-    #      instance.age_month=validate_data.get('age_month',instance.age_month)
-    #      instance.age_year=validate_data.get('age_year',instance.age_year)
-    #      instance.sex=validate_data.get('sex',instance.sex)
-    #      instance.race=validate_data.get('race',instance.race)
-    #      instance.save()
-    #      return instance
-        
+
     

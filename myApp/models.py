@@ -12,6 +12,7 @@ class Diagnostico(models.Model):
     diagnostico = models.CharField(blank=True, null=True)
     observaciones = models.TextField(blank=True, null=True)
     fecha = models.DateField(blank=True, null=True)
+    finalizado = models.BooleanField(blank=True, null=True)
 
     class Meta:
         managed = False
