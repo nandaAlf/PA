@@ -10,7 +10,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django_filters import rest_framework 
 from rest_framework import filters
 from django.db.models import Q, OuterRef, Subquery
-
+from django.views.generic import ListView
 #Filtros para las vistas
 class BaseStudyFilter(rest_framework.FilterSet):
     
@@ -46,6 +46,17 @@ class NecropsyFilter(BaseStudyFilter):
         ).values('id_proceso__cod_necro')
 
         return queryset.filter(code__in=Subquery(subquery))
+    
+class DiagnosisFilter(rest_framework.FilterSet):
+    
+    doctor = rest_framework.CharFilter(method='filter_by_doctor')
+    class Meta:
+        model = Diagnostico
+        fields = ['doctor']
+
+    def filter_by_doctor(self, queryset, name, value):
+        subquery = Diagnostico.objects.filter(id_proceso__cod_est__medico=value)
+        return subquery
     
 class PacienteFilter(rest_framework.FilterSet):
     
@@ -103,5 +114,9 @@ class DiagnosisViewSet(viewsets.ModelViewSet):
     queryset = Diagnostico.objects.all()
     serializer_class = DiagnosisSerializer
     lookup_field = 'id_proceso'
+    
+    filter_backends = [filters.OrderingFilter, DjangoFilterBackend]
+    filterset_class = DiagnosisFilter
 
 
+    
