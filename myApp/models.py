@@ -8,6 +8,10 @@
 from django.db import models
 from django.urls import reverse
 
+#arreglar el modelo asi
+# edad = models.IntegerField(blank=True, null=True, validators=[MinValueValidator(0), MaxValueValidator(120)])
+#     sexo = models.CharField(max_length=1, blank=True, null=True, choices=[('M', 'Masculino'), ('F', 'Femenino')])
+#     raza = models.CharField(max_length=1, blank=True, null=True, choices=[('B', 'Blanca'), ('N', 'Negra'), ('O', 'Otra')])
 class Diagnostico(models.Model):
     id_proceso = models.ForeignKey('Proceso', models.DO_NOTHING, db_column='id_proceso')
     diagnostico = models.CharField(blank=True, null=True)

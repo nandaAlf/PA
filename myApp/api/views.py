@@ -1,4 +1,5 @@
 from abc import abstractmethod
+from myApp.api.permissions import  DiagnosisPermission, IsStaffGroupPermission
 from myApp.api.serializer import *
 from myApp.models import *
 from rest_framework.response import Response
@@ -11,6 +12,7 @@ from django_filters import rest_framework
 from rest_framework import filters
 from django.db.models import Q, OuterRef, Subquery
 from django.views.generic import ListView
+from rest_framework.permissions import IsAuthenticated
 #Filtros para las vistas
 class BaseStudyFilter(rest_framework.FilterSet):
     
@@ -27,13 +29,16 @@ class StudyFilter(BaseStudyFilter):
     class Meta(BaseStudyFilter.Meta):
         model = Estudio
         
-    def filter_by_finalizado(self, queryset, name, value):
-        subquery = Diagnostico.objects.filter(
-            id_proceso__cod_est=OuterRef('code'), 
-            finalizado=value
-        ).values('id_proceso__cod_est')
+    # def filter_by_finalizado(self, queryset, name, value):
+    #     subquery = Diagnostico.objects.filter(
+    #         id_proceso__cod_est=OuterRef('code'), 
+    #         finalizado=value
+    #     ).values('id_proceso__cod_est')
         
-        return queryset.filter(code__in=Subquery(subquery))
+    #     return queryset.filter(code__in=Subquery(subquery))
+    
+    def filter_by_doctor(self, queryset, name, value):
+        return queryset.filter(id_proceso__cod_est__medico=value)
 class NecropsyFilter(BaseStudyFilter):
     class Meta(BaseStudyFilter.Meta):
         model = Necropsia
@@ -47,16 +52,19 @@ class NecropsyFilter(BaseStudyFilter):
 
         return queryset.filter(code__in=Subquery(subquery))
     
-class DiagnosisFilter(rest_framework.FilterSet):
+# class DiagnosisFilter(rest_framework.FilterSet):
     
-    doctor = rest_framework.CharFilter(method='filter_by_doctor')
-    class Meta:
-        model = Diagnostico
-        fields = ['doctor']
+#     doctor = rest_framework.CharFilter(method='filter_by_doctor')
+#     class Meta:
+#         model = Diagnostico
+#         fields = ['doctor']
 
-    def filter_by_doctor(self, queryset, name, value):
-        subquery = Diagnostico.objects.filter(id_proceso__cod_est__medico=value)
-        return subquery
+#     # def filter_by_doctor(self, queryset, name, value):
+#     #     subquery = Diagnostico.objects.filter(id_proceso__cod_est__medico=value)
+#     #     return subquery
+    
+#     def filter_by_doctor(self, queryset, name, value):
+#         return queryset.filter(id_proceso__cod_est__medico=value)
     
 class PacienteFilter(rest_framework.FilterSet):
     
@@ -74,26 +82,49 @@ class PatientViewSet(viewsets.ModelViewSet):
     
     filter_backends = [filters.OrderingFilter, DjangoFilterBackend]
     filterset_class = PacienteFilter
+    
+    permission_classes=[IsAuthenticated,DiagnosisPermission]
+    
+    def get_queryset(self):
+        user = self.request.user
+        if user.groups.filter(name='DoctorsGroup').exists():
+            # Filtrar pacientes que están asociados a diagnósticos donde el doctor es responsable del estudio
+            return Paciente.objects.filter(
+                hc__in=Diagnostico.objects.filter(
+                    id_proceso__cod_est__medico=user.username
+                ).values_list('id_proceso__cod_est__hc_paciente', flat=True)
+            ).distinct()
+        else: return Paciente.objects.all()
+    
 class DefunctViewSet(viewsets.ModelViewSet):
     queryset = Fallecido.objects.all()
     serializer_class = DefunctSerializer
+    
+    permission_classes=[IsAuthenticated,IsStaffGroupPermission]
+    
 class StudyViewSet(viewsets.ModelViewSet):
     queryset = Estudio.objects.all()
     serializer_class = StudySerializer
     lookup_field = 'code'
     
+    permission_classes=[IsAuthenticated,IsStaffGroupPermission]
+    
     filter_backends = [rest_framework.DjangoFilterBackend,filters.OrderingFilter]
-    filterset_class = StudyFilter 
+    filterset_class = StudyFilter  
 class NecropsyViewSet(viewsets.ModelViewSet):
     queryset = Necropsia.objects.all()
     serializer_class = NecropsySerializer
     lookup_field = 'code'
+    
+    permission_classes=[IsAuthenticated,IsStaffGroupPermission]
     
     filter_backends = [rest_framework.DjangoFilterBackend,filters.OrderingFilter]
     filterset_class = NecropsyFilter
 class ProcessViewSet(viewsets.ModelViewSet):
     queryset = Proceso.objects.all()
     serializer_class = ProcessSerializer
+    
+    permission_classes=[IsAuthenticated,IsStaffGroupPermission]
     
     # Sobrecarga el método get_object para determinar el identificador en funcion de si es un estudio o una necropsia
     def get_object(self):
@@ -109,14 +140,23 @@ class ProcessViewSet(viewsets.ModelViewSet):
             try:
                 return Proceso.objects.get(cod_est=code)
             except Proceso.DoesNotExist:
-                pass      
+                pass    
+              
 class DiagnosisViewSet(viewsets.ModelViewSet):
     queryset = Diagnostico.objects.all()
     serializer_class = DiagnosisSerializer
     lookup_field = 'id_proceso'
+  
+    filter_backends = [filters.OrderingFilter]
     
-    filter_backends = [filters.OrderingFilter, DjangoFilterBackend]
-    filterset_class = DiagnosisFilter
-
+    permission_classes = [IsAuthenticated, DiagnosisPermission]
+    
+    def get_queryset(self):
+        user = self.request.user
+        if user.groups.filter(name='DoctorsGroup').exists():
+            return Diagnostico.objects.filter(id_proceso__cod_est__medico=user.username)
+        else:
+            return Diagnostico.objects.all()
+        return Diagnostico.objects.none()
 
     
