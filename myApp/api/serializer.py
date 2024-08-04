@@ -122,7 +122,7 @@ class ProcessSerializer(serializers.ModelSerializer):
 
 class DiagnosisSerializer(serializers.ModelSerializer):
     
-    paciente_url = serializers.HyperlinkedRelatedField(
+    patient = serializers.HyperlinkedRelatedField(
         source='id_proceso.cod_est.hc_paciente',
         view_name='paciente-detail',
         read_only=True
