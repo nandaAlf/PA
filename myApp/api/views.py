@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from myApp.api.permissions import  DiagnosisPermission, IsStaffGroupPermission
+from myApp.api.permissions import  DiagnosisPermission, IsDoctorGroupPermission, IsStaffGroupPermission
 from myApp.api.serializer import *
 from myApp.models import *
 from rest_framework.response import Response
@@ -150,6 +150,7 @@ class DiagnosisViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.OrderingFilter]
     
     permission_classes = [IsAuthenticated, DiagnosisPermission]
+    print("hola ,",IsStaffGroupPermission or IsDoctorGroupPermission)
     
     def get_queryset(self):
         user = self.request.user
@@ -157,6 +158,5 @@ class DiagnosisViewSet(viewsets.ModelViewSet):
             return Diagnostico.objects.filter(id_proceso__cod_est__medico=user.username)
         else:
             return Diagnostico.objects.all()
-        return Diagnostico.objects.none()
 
     

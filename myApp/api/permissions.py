@@ -18,7 +18,8 @@ class DiagnosisPermission(p.BasePermission):
         if request.user:
             if request.user.is_superuser: return True
             
-            if request.method in p.SAFE_METHODS: return True
+            if request.method in p.SAFE_METHODS: 
+                return request.user.groups.filter(name='StaffGroup').exists() or request.user.groups.filter(name='DoctorsGroup').exists()
             else: return request.user.groups.filter(name='StaffGroup').exists()
             
         # return request.user and (request.user.groups.filter(name='DoctorsGroup').exists() or request.user.is_superuser)

@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -40,6 +41,8 @@ INSTALLED_APPS = [
     'myApp',
     'rest_framework',
     'django_filters',
+    'rest_framework.authtoken',
+    'user_app',
 ]
 
 MIDDLEWARE = [
@@ -132,12 +135,33 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Se requiere estar logeado para acceder a la aplicacion
+
 REST_FRAMEWORK={
-    'DEFAULT_PERMISSION_CLASSES':[
-        'rest_framework.permissions.IsAuthenticated',
+    # 'DEFAULT_PERMISSION_CLASSES':[# Se requiere estar logeado para acceder a la aplicacion
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ],
+    'DEFAULT_AUTHENTICATION_CLASSES':[
+        # 'rest_framework.authentication.TokenAuthentication',#Inicio de sesion a traves de tokens
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
-    # 'DEFAULT_AUTHENTICATION_CLASSES':[
-    #     'rest_framework.authentication.BasicAuthentication',
-    # ]
+    'DEFAULT_THROTTLE_CLASSES':[
+        # 'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES':{ #how many request the app can recived
+        'user':'30/day' #review
+    }
+       
+        
+    
+    
+}
+
+
+
+SIMPLE_JWT = {
+    'ROTATE_REFRESH_TOKENS': True, #new token for each token expired
+    #Developer mode
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=365),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=365),
 }
