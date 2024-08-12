@@ -7,7 +7,7 @@ class RegistrationSerializaer(serializers.ModelSerializer):
     group = serializers.ChoiceField(choices=['StaffGroup', 'DoctorsGroup'], write_only=True)
     class Meta:
         model=User
-        fields=['username','email','password','password2','group']
+        fields=['username','email','password','password2','group','first_name','last_name']
         extra_kwarg={
             'password':{'write_only':True}
          }
@@ -23,7 +23,9 @@ class RegistrationSerializaer(serializers.ModelSerializer):
             raise serializers.ValidationError({'error':'El email del usuario ya esta registrado'})
         
         
-        account=User(email=self.validated_data['email'],username=self.validated_data['username'])
+        # account=User(email=self.validated_data['email'],username=self.validated_data['username'])
+        account=User(email=self.validated_data['email'],username=self.validated_data['username'],first_name=self.validated_data['first_name'],last_name=self.validated_data['last_name'])
+       
         account.set_password(password)
         account.save()
         

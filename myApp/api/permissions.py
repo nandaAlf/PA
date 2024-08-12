@@ -16,7 +16,9 @@ from rest_framework import permissions as p
 class DiagnosisPermission(p.BasePermission):
     def has_permission(self, request, view):
         if request.user:
-            if request.user.is_superuser: return True
+            
+            if request.user.is_superuser: 
+                return True
             
             if request.method in p.SAFE_METHODS: 
                 return request.user.groups.filter(name='StaffGroup').exists() or request.user.groups.filter(name='DoctorsGroup').exists()

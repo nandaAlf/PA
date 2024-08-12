@@ -91,7 +91,7 @@ class PatientViewSet(viewsets.ModelViewSet):
             # Filtrar pacientes que están asociados a diagnósticos donde el doctor es responsable del estudio
             return Paciente.objects.filter(
                 hc__in=Diagnostico.objects.filter(
-                    id_proceso__cod_est__medico=user.username
+                    id_proceso__cod_est__medico=user.id
                 ).values_list('id_proceso__cod_est__hc_paciente', flat=True)
             ).distinct()
         else: return Paciente.objects.all()
@@ -150,12 +150,11 @@ class DiagnosisViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.OrderingFilter]
     
     permission_classes = [IsAuthenticated, DiagnosisPermission]
-    print("hola ,",IsStaffGroupPermission or IsDoctorGroupPermission)
     
     def get_queryset(self):
         user = self.request.user
         if user.groups.filter(name='DoctorsGroup').exists():
-            return Diagnostico.objects.filter(id_proceso__cod_est__medico=user.username)
+            return Diagnostico.objects.filter(id_proceso__cod_est__medico=user.id)
         else:
             return Diagnostico.objects.all()
 

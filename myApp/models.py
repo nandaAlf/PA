@@ -7,17 +7,19 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User,Group
+from django.core.validators import MinValueValidator,MaxValueValidator
 
 #arreglar el modelo asi
 # edad = models.IntegerField(blank=True, null=True, validators=[MinValueValidator(0), MaxValueValidator(120)])
 #     sexo = models.CharField(max_length=1, blank=True, null=True, choices=[('M', 'Masculino'), ('F', 'Femenino')])
 #     raza = models.CharField(max_length=1, blank=True, null=True, choices=[('B', 'Blanca'), ('N', 'Negra'), ('O', 'Otra')])
 class Diagnostico(models.Model):
-    id_proceso = models.ForeignKey('Proceso', models.DO_NOTHING, db_column='id_proceso')
+    id_proceso = models.ForeignKey('Proceso', db_column='id_proceso',on_delete=models.CASCADE)
     diagnostico = models.CharField(blank=True, null=True)
     observaciones = models.TextField(blank=True, null=True)
     fecha = models.DateField(blank=True, null=True)
-    finalizado = models.BooleanField(blank=True, null=True)
+    finalizado = models.BooleanField(blank=True, null=True,default=False)
 
     class Meta:
         managed = False
@@ -28,15 +30,29 @@ class Estudio(models.Model):
     code = models.CharField(primary_key=True, max_length=15)
     tipo = models.CharField(max_length=1)
     hc_paciente = models.ForeignKey('Paciente', models.DO_NOTHING, db_column='hc_paciente',related_name='studies')
-    medico = models.CharField(max_length=11, blank=True, null=True)
+    # medico = models.CharField(max_length=11, blank=True, null=True)
+    medico = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        limit_choices_to={'groups__name': 'DoctorsGroup'} ,
+        db_column='medico',
+        related_name='doctor'
+    )
     imp_diag = models.CharField(blank=True, null=True)
-    especialista = models.CharField(max_length=11, blank=True, null=True)
+    # especialista = models.CharField(max_length=11, blank=True, null=True)
+    especialista = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        limit_choices_to={'groups__name': 'StaffGroup'} ,
+        db_column='especialista',
+        related_name= 'specialist'
+    )
     pieza = models.CharField()
     fecha = models.DateField(blank=True, null=True)
     entidad = models.CharField(max_length=2, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'estudio'
         
         
@@ -68,7 +84,13 @@ class Necropsia(models.Model):
     code = models.CharField(primary_key=True, max_length=10)
     hc_fallecido = models.ForeignKey(Fallecido, models.DO_NOTHING, db_column='hc_fallecido',related_name='necropsy')
     certif_defuncion = models.CharField(blank=True, null=True)
-    especialista = models.CharField(max_length=11, blank=True, null=True)
+    # especialista = models.CharField(max_length=11, blank=True, null=True)
+    especialista = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        limit_choices_to={'groups__name': 'StaffGroup'} ,
+        db_column='especialista'
+    )
     fecha = models.DateField(blank=True, null=True)
     procedencia = models.CharField(blank=True, null=True)
     habito_externo = models.CharField(blank=True, null=True)
@@ -87,11 +109,14 @@ class Necropsia(models.Model):
 class Paciente(models.Model):
     hc = models.CharField(primary_key=True, max_length=6)
     cid = models.CharField(unique=True, max_length=11, blank=True, null=True)
-    nombre = models.CharField()
-    edad = models.IntegerField(blank=True, null=True)
-    sexo = models.CharField(max_length=1, blank=True, null=True)
-    raza = models.CharField(max_length=1, blank=True, null=True)
-    es_fallecido = models.BooleanField(blank=True, null=True)
+    nombre = models.CharField(max_length=150)
+    # edad = models.IntegerField(blank=True, null=True)
+    edad = models.IntegerField(blank=True, null=True, validators=[MinValueValidator(0), MaxValueValidator(120)])
+    # sexo = models.CharField(max_length=1, blank=True, null=True)
+    sexo = models.CharField(max_length=1, blank=True, null=True, choices=[('M', 'Masculino'), ('F', 'Femenino')])
+    # raza = models.CharField(max_length=1, blank=True, null=True)
+    raza = models.CharField(max_length=1, blank=True, null=True, choices=[('B', 'Blanca'), ('N', 'Negra')])
+    es_fallecido = models.BooleanField(blank=True, null=True, default=False)
 
     class Meta:
         managed = False

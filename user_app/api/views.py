@@ -5,6 +5,8 @@ from rest_framework.authtoken.models import Token
 from user_app.api.serializer import RegistrationSerializaer
 from user_app import models
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib import auth
+
 
 
 @api_view(['POST'])
@@ -30,6 +32,8 @@ def registration_view(request):
            data['response']='Registro de usuario exitoso'
            data['username']=account.username
            data['email']=account.email
+           data['first_name']=account.first_name
+           data['last_name']=account.last_name
         #    token=Token.objects.get(user=account).key #return data in Base64 enncoding
         #    data['token']=token
          
@@ -42,4 +46,28 @@ def registration_view(request):
 
         else:
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['POST'])
+def login_view(request):
+    data = {}
+    if request.method=='POST':
+        username = request.data.get('username')
+        password = request.data.get('password')
+        account = auth.authenticate(username=username, password=password)
         
+        print("account",account)
+        if account is not None:
+            data['response']='El Login fue exitoso'
+            data['username']=account.username
+            data['email']=account.email
+            data['first_name']=account.first_name
+            data['last_name']=account.last_name
+            refresh = RefreshToken.for_user(account)
+            data['token'] = {
+                'refresh': str(refresh),
+                'access': str(refresh.access_token)
+            }
+            return Response(data)
+        else:
+            data['error'] = "Credenciales incorrectas"
+            return Response(data, status.HTTP_500_INTERNAL_SERVER_ERROR)

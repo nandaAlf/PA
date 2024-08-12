@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-3_h)^@s3hz%#vmpc1_3#s!80l7_gx-2$l@tf_2nk$vc=v373e('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -79,19 +79,12 @@ WSGI_APPLICATION = 'django_api.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        # 'ENGINE': 'django.db.backends.sqlite3',
-        # 'NAME': BASE_DIR / 'db.sqlite3',
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'AP1',
-        'USER':'postgres',
-        'PASSWORD':'mfap.0330',
-        'HOST':'localhost',
-        'PORT':'5432',
-        
-    }
-}
+# DATABASES = {
+#     'default': {
+#         # 'ENGINE': 'django.db.backends.sqlite3',
+#         # 'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 # Password validation
@@ -149,9 +142,11 @@ REST_FRAMEWORK={
         'rest_framework.throttling.UserRateThrottle',
     ],
     'DEFAULT_THROTTLE_RATES':{ #how many request the app can recived
-        'user':'30/day' #review
-    }
-       
+        'user':'100000/day' #review
+    },
+    'DEFAULT_RENDERER_CLASSES':(
+        'rest_framework.renderers.JSONRenderer',
+    ),  
         
     
     
@@ -165,3 +160,8 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=365),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=365),
 }
+
+try:
+    from .local_settings import DATABASES,DEBUG
+except ImportError as error:
+    print("Error: ",error.msg)
