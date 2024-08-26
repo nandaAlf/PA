@@ -1,0 +1,96 @@
+.app {
+  padding: 20px;
+}
+
+.patient-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.patient-card {
+  background: #f0f0f0;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.3s;
+  color: #000;
+  
+}
+
+.patient-card:hover {
+  transform: scale(1.05);
+}
+
+.patient-details-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.patient-details {
+  background: black;
+  padding: 30px;
+  border-radius: 10px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.studies a {
+  display: block;
+  margin-bottom: 5px;
+}
+
+
+input[type='text'] {
+  padding: 10px;
+  width: 100%;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  border: 1px solid, #ccc;
+}
+
+/* .patient-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    margin: 16px;
+    width: 250px;
+    transition: transform 0.2s;
+    cursor: pointer;
+  }
+  
+  .patient-card:hover {
+    transform: scale(1.05);
+  }
+  
+  .patient-card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .patient-name {
+    font-size: 1.2em;
+    margin: 0;
+  }
+  
+  .patient-details p {
+    margin: 8px 0;
+    font-size: 0.9em;
+    color: #555;
+  }
+
+  .patient-card.selected {
+    background-color: black; 
+    color: white; 
+    transform: scale(1.05);
+*/

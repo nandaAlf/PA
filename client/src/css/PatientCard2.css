@@ -1,0 +1,97 @@
+/* .app {
+    padding: 20px;
+    position: relative;
+} */
+  
+.patient-list{
+    /* background-color: rgba(13, 40, 246, 0.506); */
+    color: black;
+    display: flex;
+    flex-wrap: wrap;
+    gap:10px;
+    position: relative;
+    /* z-index: 0; */
+}
+
+.patient-details{
+  display: flex;
+  justify-content: space-between;
+} 
+
+.patient-details.selected{
+  display: block;
+  /* background-color: #000; */
+  /* justify-content: space-between; */
+} 
+
+.patient-card{
+    background: #f0f0f0;
+    padding: 5px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.3s;
+    color: #000;
+    /* min-width: 350px; */
+    width: 100%;
+    z-index: 10; /* Asegura que las tarjetas estén sobre el difuminado */
+}
+.patient-card:hover {
+    transform: scale(1.05);
+  }
+/* 
+.patient-card {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  } */
+
+
+.patient-card.isSelected{
+  background-color: #f0f0f0bc;
+}  
+.patient-card.selected{
+    /* display: block; */
+    position: fixed;
+    /* top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;  */
+    /* background: rgba(0, 0, 0, 0.7); */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f0f0f0;;
+    z-index: 1;
+    border-radius: 8px;  
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 101; /* Más alto que el difuminado */
+    width: 700px;
+}
+/* body {
+    transition: background 0.3s;
+  }
+  
+  body.show-details  {
+    background: rgb(99, 13, 13);
+    z-index: 2;
+} */
+
+body.show-details .patient-list::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Difuminado oscuro */
+    z-index: 100; /* Justo debajo de la tarjeta seleccionada */
+  }

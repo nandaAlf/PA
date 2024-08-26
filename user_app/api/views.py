@@ -70,4 +70,4 @@ def login_view(request):
             return Response(data)
         else:
             data['error'] = "Credenciales incorrectas"
-            return Response(data, status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(data, status.HTTP_401_UNAUTHORIZED)

@@ -43,11 +43,13 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework.authtoken',
     'user_app',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -128,6 +130,8 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+#cors authorization
+CORS_ALLOW_ALL_ORIGINS = True #["http://localhost:5173/"]  #React server
 
 REST_FRAMEWORK={
     # 'DEFAULT_PERMISSION_CLASSES':[# Se requiere estar logeado para acceder a la aplicacion
@@ -147,16 +151,11 @@ REST_FRAMEWORK={
     'DEFAULT_RENDERER_CLASSES':(
         'rest_framework.renderers.JSONRenderer',
     ),  
-        
-    
-    
 }
-
-
 
 SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True, #new token for each token expired
-    #Developer mode
+    # #Developer mode
     'ACCESS_TOKEN_LIFETIME': timedelta(days=365),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=365),
 }

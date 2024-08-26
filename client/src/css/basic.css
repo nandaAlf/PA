@@ -1,0 +1,13 @@
+input[type='button']{
+    background-color: blue;
+    border-radius: 2px;
+    margin: 10px;
+}
+
+.close{
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding-right: 10px;
+    margin-bottom: 10px;
+}

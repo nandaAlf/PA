@@ -1,4 +1,5 @@
 from abc import abstractmethod
+from myApp.api.pagination import PatientPagination
 from myApp.api.permissions import  DiagnosisPermission, IsDoctorGroupPermission, IsStaffGroupPermission
 from myApp.api.serializer import *
 from myApp.models import *
@@ -84,6 +85,7 @@ class PatientViewSet(viewsets.ModelViewSet):
     filterset_class = PacienteFilter
     
     permission_classes=[IsAuthenticated,DiagnosisPermission]
+    # pagination_class=PatientPagination
     
     def get_queryset(self):
         user = self.request.user
