@@ -1,0 +1,11 @@
+
+.custom-dropdown-toggle {
+    background-color: #d41e67;  /* Color personalizado (Tomate) */
+    border: none;
+    color: white;
+  }
+  
+  .custom-dropdown-toggle:hover {
+    background-color: #c4a9a9;  /* Color al pasar el cursor */
+  }
+  

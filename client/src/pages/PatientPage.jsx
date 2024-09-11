@@ -1,56 +1,60 @@
 import React, { useEffect } from "react";
-import { apiGetPatients } from "../services/api";
 import PatientCard from "../components/PatientCard";
-import SearchFilter from "../components/SearchFilter";
 import { useState } from "react";
 import "../css/PatientCard2.css";
 import { useNavigate } from "react-router-dom";
-import { BsPersonAdd } from "react-icons/bs";
-import { BsMenuButton } from "react-icons/bs";
-import { BsMenuButtonFill } from "react-icons/bs";
-import AccionBar from "../components/AccionBar";
-import "../css/prueba.css";
-import { apiDeletePatient } from "../services/api";
+// import "../css/prueba.css";
+import "../css/page.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+
+import ApiService from "../services/apiService";
+import { handleApiError } from "../util/Notification";
+import HeadCard from "../components/HeadCard";
+import Button from "../components/Button";
+import { Dropdown } from "react-bootstrap";
+import SearchFilter from "../components/SearchFilter";
 
 function PatientPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [patients, setPatients] = useState([]);
   const [searchBy, setSearchBy] = useState("nombre");
-  const [menuOpen, setMenuOpen] = useState(false);
   const [selectedPatients, setSelectedPatients] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function getPatientsList() {
-      const response = await apiGetPatients();
-      if (response.status === 200) {
-        setPatients(response.data);
-      } else {
-        alert("Por favor, inicie sesion nuevamente ");
-        navigate("/login");
-      }
-    }
-    getPatientsList();
+    fetchPatients();
   }, []);
 
+  async function fetchPatients(es_fallecido = "") {
+    const result = await ApiService.get(
+      `/pacientes/?es_fallecido=${es_fallecido}`
+    );
+    if (result.success) {
+      setPatients(result.data);
+      handleURLParams();
+    } else {
+      alert("ver")
+      handleApiError(result);
+    }
+  }
 
-  const handleDeletePatient = async (hc) => {
-    try {
-      const response = await apiDeletePatient(hc);
-      if (response.status === 204) {
-        alert("Paciente `${hc} eliminado con éxito");
-        // onPatientDeleted(patient.hc); // Actualiza la lista de pacientes en el componente padre
-        setPatients(patients.filter((patient) => patient.hc !== hc));
-        // removeBody();
-        // handlePatientDeleted(hc)
-      } else {
-        alert("Error al eliminar el paciente");
-      }
-    } catch (error) {
-      alert("Hubo un error al intentar eliminar el paciente");
-      console.error(error);
+  const handleURLParams = () => {
+    const params = new URLSearchParams(location.search);
+    const id = params.get("hc");
+    if (id) {
+      setSearchBy("hc");
+      setSearchTerm(id);
     }
   };
+
+  const filteredPatients = patients.filter((patients) =>
+    patients[searchBy].toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleCreatePatient = () => {
+    navigate(`/patient/create/`);
+  };
+
   const handlePatientSelected = (hc) => {
     setSelectedPatients((prevSelected) =>
       prevSelected.includes(hc)
@@ -58,6 +62,24 @@ function PatientPage() {
         : [...prevSelected, hc]
     );
   };
+
+  const handleEditPatinet = () => {
+    if (selectedPatients.length != 1) {
+      toastInfo("Solo es posible editar un estudio a la vez");
+      return;
+    }
+    navigate(`/patient/${selectedPatients[0]}`);
+  };
+  const handleDeletePatient = async (id) => {
+    // const response = await apiDeletePatient(id);
+    const result = await ApiService.delete(`/pacientes/${id}`);
+    if (result.success) {
+      toastSuccess(`Paciente${id} eliminado`);
+    } else {
+      handleApiError(result);
+    }
+  };
+
   const handleDeleteClick = async (event) => {
     if (selectedPatients.length <= 0) return;
 
@@ -70,69 +92,75 @@ function PatientPage() {
       for (let i = 0; i < selectedPatients.length; i++) {
         handleDeletePatient(selectedPatients[i]);
       }
-      location.reload();
+      // location.reload();
     }
 
     // event.stopPropagation(); // Evita que el clic cierre o abra la tarjeta
   };
-  const handleCreatePatient = () => {
-    // setShowForm(!showForm);
-    // document.body.classList.toggle("show-details", !showForm);
-    navigate(`/patient/create/`);
-  };
-  const handleEditSelected = () => {
-    if (selectedPatients.length != 1) return;
-    navigate(`/patient/${selectedPatients[0]}`);
-  };
-  const filteredPatients = patients.filter((patients) =>
-    patients[searchBy].toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
-
-  // const closeForm = () => {
-  //   setShowForm(false);
-  //   setEditingPatient(null);
-  //   document.body.classList.remove("show-details");
-  // };
 
   const removeBody = () => {
     document.body.classList.remove("show-details");
   };
 
+  const handleTypeSelect = (eventKey) => {
+    // alert(eventKey)
+    // setType(eventKey); // Actualiza el estado del tipo seleccionado
+    fetchPatients(eventKey); // Trae los estudios filtrados por el tipo
+  };
+
   return (
-    <div className="app">
-      <div className="container">
-        <div className="header">
-          <div
-            className={`menu-icon ${menuOpen ? "open" : ""}`}
-            onClick={toggleMenu}
-          >
-            {/* className={`patient-card ${showDetails ? "selected" : ""}`} */}
-            {/* <BsMenuButton /> */}
-            {menuOpen ? <BsMenuButtonFill />:<BsMenuButton/>}
-            {menuOpen && (
-              <AccionBar
-                onInsert={handleCreatePatient}
-                onEdit={handleEditSelected}
-                onDelete={handleDeleteClick}
-              />
-            )}
-          </div>
-          <div className="search-bar">
-            <SearchFilter
+    <div className="component patient">
+      {/* <div className="container"> */}
+      {/* <div className="header"> */}
+      <div className="section-search">
+        <div className="dropdow-menu">
+          <Dropdown onSelect={handleTypeSelect}>
+            <Dropdown.Toggle
+              style={{
+                backgroundColor: "#6ab8a7ff",
+                color: "white",
+                border: "none",
+              }}
+              id="dropdown-basic"
+            >
+              Filter By
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item eventKey={true}>Fallecidos</Dropdown.Item>{" "}
+              <Dropdown.Item eventKey={false}>No fallecidos</Dropdown.Item>{" "}
+              <Dropdown.Item eventKey="F">Hombres</Dropdown.Item>{" "}
+              <Dropdown.Item eventKey="M">Mujeres</Dropdown.Item>{" "}
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
+
+        <SearchFilter
+          searchTerm={searchTerm}
+          onChange={setSearchTerm}
+          searchBy={searchBy}
+          onSearchByChange={setSearchBy}
+          options={["hc", "cid", "nombre"]}
+        />
+        {/* <AccionBar
+            onInsert={handleCreatePatient}
+            onEdit={handleEditPatinet}
+            onDelete={handleDeleteClick}
+          /> */}
+        {/* <div className="search-bar">
+            <SearchBar
               searchTerm={searchTerm}
               onChange={setSearchTerm}
               searchBy={searchBy}
               onSearchByChange={setSearchBy}
+              options={["cid", "hc", "nombre"]}
             />
-          </div>
-        </div>
+          </div> */}
       </div>
+      {/* </div> */}
 
-      <div className={`patient-list`}>
-        {filteredPatients.map((patients) => (
+      <div className={`card-list patient`}>
+        <HeadCard titles={["HC", "Nombre", "Id", "Fallecido"]} />
+        {filteredPatients.map((patients, index) => (
           <PatientCard
             key={patients.hc}
             patient={patients}
@@ -140,9 +168,31 @@ function PatientPage() {
             removeBody={removeBody}
             onPatientSelected={handlePatientSelected}
             isSelected={selectedPatients.includes(patients.hc)}
+            index={index}
           />
         ))}
       </div>
+
+      {selectedPatients.length == 0 ? (
+        <Button
+          iconNumber={1}
+          details={"circular add"}
+          action={handleCreatePatient}
+        />
+      ) : (
+        <>
+          <Button
+            iconNumber={2}
+            details={"circular edit"}
+            action={handleEditPatinet}
+          />{" "}
+          <Button
+            iconNumber={3}
+            details={"circular delete"}
+            action={handleDeleteClick}
+          />{" "}
+        </>
+      )}
     </div>
   );
 }

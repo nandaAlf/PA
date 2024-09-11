@@ -14,16 +14,6 @@ from django.core.validators import MinValueValidator,MaxValueValidator
 # edad = models.IntegerField(blank=True, null=True, validators=[MinValueValidator(0), MaxValueValidator(120)])
 #     sexo = models.CharField(max_length=1, blank=True, null=True, choices=[('M', 'Masculino'), ('F', 'Femenino')])
 #     raza = models.CharField(max_length=1, blank=True, null=True, choices=[('B', 'Blanca'), ('N', 'Negra'), ('O', 'Otra')])
-class Diagnostico(models.Model):
-    id_proceso = models.ForeignKey('Proceso', db_column='id_proceso',on_delete=models.CASCADE)
-    diagnostico = models.CharField(blank=True, null=True)
-    observaciones = models.TextField(blank=True, null=True)
-    fecha = models.DateField(blank=True, null=True)
-    finalizado = models.BooleanField(blank=True, null=True,default=False)
-
-    class Meta:
-        managed = False
-        db_table = 'diagnostico'
 
 
 class Estudio(models.Model):
@@ -61,7 +51,7 @@ class Estudio(models.Model):
 
 
 class Fallecido(models.Model):
-    hc = models.OneToOneField('Paciente', models.DO_NOTHING, db_column='hc', primary_key=True)
+    hc = models.OneToOneField('Paciente', models.DO_NOTHING, db_column='hc', primary_key=True,max_length=6)
     provincia = models.CharField(blank=True, null=True)
     municipio = models.CharField(blank=True, null=True)
     direccion = models.CharField(blank=True, null=True)
@@ -131,8 +121,10 @@ class Paciente(models.Model):
 
 
 class Proceso(models.Model):
-    cod_est = models.ForeignKey(Estudio, models.DO_NOTHING, db_column='cod_est', blank=True, null=True)
-    cod_necro = models.ForeignKey(Necropsia, models.DO_NOTHING, db_column='cod_necro', blank=True, null=True)
+    # id_proceso=models.IntegerField(primary_key=True,db_column='id_proceso')
+    # cod_est = models.ForeignKey('Estudio', models.DO_NOTHING, db_column='cod_est', blank=True, null=True,related_name='proceso_est')
+    cod_est=models.OneToOneField('Estudio', models.DO_NOTHING, db_column='cod_est', blank=True, null=True,related_name='proceso_est')
+    cod_necro = models.ForeignKey('Necropsia', models.DO_NOTHING, db_column='cod_necro', blank=True, null=True,related_name='proceso_necro')
     descripcion_macro = models.CharField(blank=True, null=True)
     no_fragmentos = models.IntegerField(blank=True, null=True)
     no_bloques = models.IntegerField(blank=True, null=True)
@@ -144,9 +136,25 @@ class Proceso(models.Model):
     no_ce = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'proceso'
 
         
     def __str__(self):
         return str(self.cod_necro) if str(self.cod_necro)!='None' else str(self.cod_est) 
+    
+class Diagnostico(models.Model):
+    # id=models.IntegerField(primary_key=True)
+    # id_proceso = models.ForeignKey('Proceso', db_column='id_proceso',on_delete=models.CASCADE,related_name='diagnostico')
+    id_proceso=models.OneToOneField('Proceso', db_column='id_proceso',on_delete=models.CASCADE,related_name='diagnostico')
+    diagnostico = models.CharField(blank=True, null=True)
+    observaciones = models.TextField(blank=True, null=True)
+    fecha = models.DateField(blank=True, null=True)
+    finalizado = models.BooleanField(blank=True, null=True,default=False)
+
+    class Meta:
+        managed = False
+        db_table = 'diagnostico'
+        
+    def __str__(self):
+        return f"Diagnóstico para proceso {self.id_proceso}"

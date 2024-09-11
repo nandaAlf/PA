@@ -148,16 +148,18 @@ REST_FRAMEWORK={
     'DEFAULT_THROTTLE_RATES':{ #how many request the app can recived
         'user':'100000/day' #review
     },
-    'DEFAULT_RENDERER_CLASSES':(
-        'rest_framework.renderers.JSONRenderer',
-    ),  
+    # 'DEFAULT_RENDERER_CLASSES':(
+    #     'rest_framework.renderers.JSONRenderer',
+    # ),  
 }
 
 SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True, #new token for each token expired
     # #Developer mode
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=365),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=365),
+    # 'ACCESS_TOKEN_LIFETIME': timedelta(days=365),
+    # 'REFRESH_TOKEN_LIFETIME': timedelta(hours=1),
+    # 'ACCESS_TOKEN_LIFETIME': timedelta(seconds=190),
+    # 'REFRESH_TOKEN_LIFETIME': timedelta(seconds=30),
 }
 
 try:

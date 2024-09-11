@@ -1,0 +1,27 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.app-container {
+  display: flex;
+  height: 100vh; /* Hace que ocupe toda la altura de la pantalla */
+}
+
+.container-sidebar {
+  width: 220px; /*Fija el tamaño del Sidebar*/
+  background-color: #fffffff4/* Ajusta el color según tu preferencia*/
+}
+
+.main-content { 
+  flex: 1; /* Hace que el contenido principal ocupe el resto del espacio */
+  /* padding: 20px; */
+ /* background-color: #fff; /* Fondo del contenido */
+ /* overflow-y: auto; /* Añade scroll si el contenido es demasiado largo */
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: var(--ligthGray);
+}
+

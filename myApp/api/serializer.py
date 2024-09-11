@@ -45,39 +45,69 @@ def list_validator(value,list):
 #     if month in [4, 6, 9, 11] and day == 31:  # monthes con 30 días
 #         raise serializers.ValidationError("mal los dias")
     
-class StudySerializer(serializers.ModelSerializer):
+
+class DefunctSerializer(serializers.ModelSerializer):
     
-    hc_paciente = serializers.HyperlinkedRelatedField(
-        many=False,
+    necropsy= serializers.HyperlinkedRelatedField(
+        many=True,
         read_only=True,
-        view_name='paciente-detail',
+        view_name='necropsia-detail',
+        lookup_field='code'
     )
     class Meta:
-        model=Estudio
-        fields="__all__"
-        
-    # arreglar    
-    # def validate_code(self, value):
-    #     if value[0]=='B' and self.tipo!='B': raise serializers.ValidationError("El codigo del estudio no se corresponde con el tipo")
-    
-    def validate_hc(self,value):
-        return hc_validator(value)
-    def validate_fecha(self, value):
-        return date_validator(value)
-    def validate_entidad(self,value):
-        return list_validator(value,["H","HC","CE"])
-        
+        model = Fallecido
+        # fields = '__all__'
+        # except='hc'
+        # except='hc'
+        fields=['necropsy','provincia', 'municipio', 'direccion', 'app', 'apf', 'hea', 'apgar', 'edad_gest', 'fecha_muerte']
 
 class PatientSerializer(serializers.ModelSerializer):
     # studiesList=StudySerializer(many=True, read_only=True) #Toda la data de los estudios de un paciente
     # studiesList=serializers.StringRelatedField(many=True,read_only=True)
     
+    fallecido = DefunctSerializer(required=False, allow_null=True)
     studies = serializers.HyperlinkedRelatedField(
         many=True,
         read_only=True,
         view_name='estudio-detail',
         lookup_field='code'
     )
+    def create(self, validated_data):
+        # Extraer los datos de fallecido si existen
+        fallecido_data = validated_data.pop('fallecido', None)
+        
+        # Crear el paciente primero
+        paciente = Paciente.objects.create(**validated_data)
+
+        # Si el paciente es fallecido, insertar también el registro en Fallecido
+        if paciente.es_fallecido and fallecido_data:
+            Fallecido.objects.create(
+                hc=paciente,  # asociamos el paciente recién creado
+                **fallecido_data
+            )
+
+        return paciente
+    
+    def update(self, instance, validated_data):
+        # Update Paciente instance
+        fallecido_data = validated_data.pop('fallecido', None)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+      
+        # Update or create Fallecido instance
+        if instance.es_fallecido:
+            if fallecido_data:
+                paciente_instance = Paciente.objects.get(hc=instance.hc)
+                Fallecido.objects.update_or_create(
+                    hc=paciente_instance,
+                    defaults=fallecido_data
+                )
+        else:
+            # If paciente is not deceased, ensure there's no Fallecido record for this patient
+            Fallecido.objects.filter(hc=instance.hc).delete()
+            
+        return instance
     class Meta:
         model=Paciente
         fields="__all__"
@@ -92,17 +122,7 @@ class PatientSerializer(serializers.ModelSerializer):
         return list_validator(value,["B","N","M"])
         
     
-class DefunctSerializer(serializers.ModelSerializer):
-    
-    necropsy= serializers.HyperlinkedRelatedField(
-        many=True,
-        read_only=True,
-        view_name='necropsia-detail',
-        lookup_field='code'
-    )
-    class Meta:
-        model = Fallecido
-        fields = '__all__'
+
         
 class NecropsySerializer(serializers.ModelSerializer):
     
@@ -115,23 +135,53 @@ class NecropsySerializer(serializers.ModelSerializer):
         model = Necropsia
         fields = '__all__'
 
-class ProcessSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Proceso
-        fields = '__all__'
+
 
 class DiagnosisSerializer(serializers.ModelSerializer):
-    
-    patient = serializers.HyperlinkedRelatedField(
-        source='id_proceso.cod_est.hc_paciente',
-        view_name='paciente-detail',
-        read_only=True
-    )
+   
     
     class Meta:
         model = Diagnostico
-        exclude = ['id']
+        # fields = '__all__'
+        fields = ['diagnostico', 'observaciones', 'fecha', 'finalizado']
 
 
+       
+class ProcessSerializer(serializers.ModelSerializer):
+    diagnostico = DiagnosisSerializer( read_only=True)  # Usa related_name en la ForeignKey del diagnóstico
 
+    # diagnostico = DiagnosisSerializer(read_only=True)
+    # En el serializador de procesos
+    # def to_representation(self, instance):
+    #     representation = super().to_representation(instance)
+    #     print('Proceso Representation:', representation)
+    #     return representation
+
+    class Meta:
+        model = Proceso
+        fields = '__all__'
+        # fields = ['diagnostico', 'observaciones', 'fecha', 'finalizado']
+        # fields = ['cod_est', 'descripcion_macro', 'no_fragmentos', 'no_bloques', 'exist_resto', 'descripcion_micro', 'malignidad', 'no_laminas', 'no_cr', 'no_ce', 'cod_necro', 'diagnostico']
+        
+class StudySerializer(serializers.ModelSerializer):
     
+
+    # proceso_est = ProcessSerializer(read_only=True)  # Si quieres incluir los datos del proceso
+    # diagnostico = DiagnosisSerializer(read_only=True)  # Si hay varios diagnósticos relacionados
+
+    class Meta:
+        model=Estudio
+        fields="__all__"
+        # fields = ['code', 'tipo', 'imp_diag', 'pieza', 'fecha', 'entidad', 'hc_paciente', 'medico', 'especialista', 'proceso_est']
+        
+    # arreglar    
+    # def validate_code(self, value):
+    #     if value[0]=='B' and self.tipo!='B': raise serializers.ValidationError("El codigo del estudio no se corresponde con el tipo")
+    
+    def validate_hc(self,value):
+        return hc_validator(value)
+    def validate_fecha(self, value):
+        return date_validator(value)
+    def validate_entidad(self,value):
+        return list_validator(value,["H","HC","CE"])
+ 

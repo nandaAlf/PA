@@ -1,29 +1,29 @@
-.app {
+.component {
     /* display: flex; */
     /* justify-content: center; */
     /* align-items: center; */
     /* min-height: 100vh; */
-    box-sizing: border-box;
-    padding: 10px;
+    /* box-sizing: border-box;
+    padding: 10px; */
 
   }
   
   .container {
-    width: 100%;
+    /* width: 100%; */
     /* max-width: 800px; */
     /* background-color: rgba(128, 128, 128, 0.172); */
-    padding-bottom: 15px;
+    /* padding-bottom: 15px; */
   }
   
   .header {
-    display: flex;
+    /* display: flex; */
     /* flex-direction: column; */
     /* justify-content: space-between; */
     /* align-items: ; */
-    background-color: rgba(128, 128, 128, 0.172);
-    height: 60px;
-    border-radius: 8px;
-    padding: 5px;
+    /* background-color: rgba(128, 128, 128, 0.172); */
+    /* height: 60px; */
+    /* border-radius: 8px; */
+    /* padding: 5px; */
   }
   
   .menu-icon {
@@ -68,27 +68,27 @@
   }
 
 
-  .search-bar{
+  /*.search-bar{
     width: 95%;
   }
-  
-  .search-filter {
+  */
+  /*.search-filter {
     margin-top: 10px;
     display: flex;
     flex-direction: row ;
     /* align-items:end; */
-    width: 100%;
-  }
+    /* width: 100%; */
+  /* }*/ 
   
-  .search-filter select {
+  /* .search-filter select {
     /* margin-right: 10px; */
-    padding: 10px;
+    /* padding: 10px; */
     /* border: 1px solid #ccc; */
     /* border-top-left-radius: 5px; */
     
-  }
+  /* } */ 
   
-  .search-filter input  {
+  /* .search-filter input  {
     background-color: rgba(22, 22, 23, 0.744);
     flex-grow: 1;
     padding: 10px;
@@ -96,4 +96,4 @@
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
   }
-  
+   */

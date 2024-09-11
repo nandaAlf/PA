@@ -1,0 +1,60 @@
+.basic-button {
+  background-color: var(--darkGreen);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  /* font-weight: bolder; */
+  font-size: 20px;
+  padding: 10px;
+  box-shadow: 1px 4px 8px var(--ligthGreen); /* Sombra sutil */
+}
+.basic-button:hover {
+  background-color: var(--ligthGreen);
+  /* transform: scale(1.6); */
+}
+
+.basic-button.circular {
+  position: fixed;
+  bottom: 0px;
+  right: 40px;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  /* text-align; */
+  /* justify-items: center; */
+  text-align: center;
+  /* z-index: 1; */
+  animation: bounce 1s infinite; /* Aplicar la animación de rebote */
+  transition: transform 0.2s ease-in-out; /* Transición suave */
+}
+.basic-button.circular:hover {
+  animation: bounce 0.2s infinite;
+}
+
+.basic-button.circular.delete {
+  bottom: 0px;
+  right: 8%;
+  animation: reverseBounce 1s infinite;
+}
+.basic-button.circular.delete:hover {
+    animation: reverseBounce 0.2s infinite;
+  }
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0px); /* Posición original */
+  }
+  50% {
+    transform: translateY(-20px); /* Movimiento hacia arriba */
+  }
+}
+@keyframes reverseBounce {
+  0%,
+  100% {
+    transform: translateY(-20px);
+  }
+  50% {
+    transform: translateY(0px);
+  }
+}

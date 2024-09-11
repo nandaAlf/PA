@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import  {apiGetDefunct } from "../services/api";
+import { apiGetDefunct, apiGetPatientStudy } from "../services/api";
 import { useNavigate } from "react-router-dom";
 
 const PatientCard = ({
@@ -9,17 +9,27 @@ const PatientCard = ({
   removeBody,
   onPatientSelected,
   isSelected,
+  index,
 }) => {
   const [showDetails, setShowDetails] = useState(false);
   const [defunctData, setDefunctData] = useState(null);
   const navigate = useNavigate();
 
+  // const handleViewStudiesClick = (study) => {
+  //   const studyData = prueba(study);
+  //   console.log(studyData);
+  //   const patientId = patient.hc; // Suponiendo que hc es el ID del paciente
+  //   // navigate(`/studies?patientId=${patientId}`);
+  //   navigate(`/studies?code=C-24-01`);
+  // };
+
   useEffect(() => {
+    //Modificar llamar solo si es necesariop
     async function getDefunctPatient() {
-      if (patient.es_fallecido) {
-        const response = await getDefunctData(patient.hc);
-        console.log(response);
-        setDefunctData(response);
+      if (patient.es_fallecido ) {
+        // const response = await getDefunctData(patient.hc);
+        // console.log(response);
+        // setDefunctData(response);
         // Agrega más campos si es necesario
       }
     }
@@ -49,44 +59,50 @@ const PatientCard = ({
     onPatientSelected(patient.hc);
   };
   const getDefunctData = async (id) => {
-    try {
-      const response = await apiGetDefunct(id);
-      return response;
-      alert("ok");
-    } catch (error) {
-      alert(error);
-      return error;
-    }
+    // try {
+    //   const response = await apiGetDefunct(id);
+    //   return response;
+    //   alert("ok");
+    // } catch (error) {
+    //   alert(error);
+    //   return error;
+    // }
+  };
+  const prueba = async (url) => {
+    console.log("url", url);
+    await apiGetPatientStudy(url);
   };
 
   return (
     <div
-      className={`patient-card ${showDetails ? "selected" : ""} ${
+      className={`container-card ${showDetails ? "selected" : "noSelected"} ${
         isSelected ? "isSelected" : ""
       } `}
       onDoubleClick={handleDoubleClick}
       onClick={handleClick}
     >
-      <div className="buttons">
+      {/* <div className="buttons">
         <button className="edit-button" onClick={handleEditClick}>
           ✏️
         </button>
         <button onClick={handleDeleteClick}>🗑️</button>
-      </div>
+        <div><a href={(`/study/create/${patient.hc}`)}>Add study</a></div>
+      </div> */}
 
-      <div className={`patient-details ${showDetails ? "selected" : ""}`}>
-        <div className="patient-info">
+      <div className={`card-details ${showDetails ? "selected" : ""}`}>
+        {/* <div className="patient-info">
           
-        </div>
-        <h3 className="patient-name">{patient.hc}</h3>
+        </div> */}
+        {index}
+        <p className="patient-name">{patient.hc}</p>
         <p>
-          <strong>Name:</strong> {patient.nombre}
+          <strong>{patient.nombre}</strong>
         </p>
         <p>
-          <strong>Cid:</strong> {patient.cid}
+          <strong></strong> {patient.cid}
         </p>
         <p>
-          <strong>Es fallecido:</strong> {patient.es_fallecido ? "Si" : "No"}
+          <strong></strong> {patient.es_fallecido ? "Si" : "No"}
         </p>
 
         {showDetails && (
@@ -100,26 +116,40 @@ const PatientCard = ({
             <p>
               <strong>Raza:</strong> {patient.raza}
             </p>
-            <p>
-              <strong>Estudios:</strong> {patient.studies}
-            </p>
+            {/* <p>
+              <strong>Estudios:</strong>
+            </p> */}
 
-            <ul>
+            <a
+              href={`/studies?hc_paciente=${patient.hc}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Todos los estudios
+            </a>
+
+            {/* <ul>
               {patient.studies.map((study, index) => (
                 <li key={index}>
+                 
+                  <button onClick={() => handleViewStudiesClick(study)}>Ver Estudios</button>
                   <a
-                    href={study}
-                    target="_blank"
+                    // href={handleViewStudiesClick(study)}
+                    // href={navigate(`/studies?code=C-24-01`)}
+                     href={`/studies?code=C-24-01`}
+                    target="_blank" //abre el enlace en una nueva pestana
                     rel="noopener noreferrer"
-                  >{`Estudio ${index + 1}`}</a>
+                  >
+                    {`Estudio ${index + 1}`}
+                  </a>
                 </li>
               ))}
-            </ul>
+            </ul> */}
 
             <div>
               {patient.es_fallecido && (
                 <div>
-                  <p>
+                  {/* <p>
                     <strong>App:</strong> {defunctData.data.app}
                   </p>
                   <p>
@@ -136,9 +166,9 @@ const PatientCard = ({
                   </p>
                   <p>
                     <strong>muerte:</strong> {defunctData.data.fecha_muerte}
-                  </p>
+                  </p> */}
 
-                  <a href={defunctData.data.necropsia}>Necropsia</a>
+                  {/* <a href={defunctData.data.necropsia}>Necropsia</a> */}
                 </div>
               )}
             </div>

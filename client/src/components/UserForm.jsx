@@ -11,6 +11,7 @@ export default function UserForm() {
 
   const onSubmit = handleSubmit(async (data) => {
     const response = await login(data);
+    console.log("res login",response)
   });
 
   const login = async (data) => {

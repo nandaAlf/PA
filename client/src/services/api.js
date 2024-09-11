@@ -16,7 +16,7 @@ const account = axios.create({
 // export const updateItem = (id, data) => api.put(`/items/${id}/`, data);
 // export const deleteItem = (id) => api.delete(`/items/${id}/`);
 
-export const loginUser = (data) => account.post(`/login/`, data);
+export const loginUser = (data) => account.post(`login/`, data);
 
 
 export const apiGetPatients = async() => {
@@ -96,9 +96,149 @@ export const apiUpdatePatient = (id, data) =>{
     return(error)
   }
 } 
-
-
-
+export const apiGetPatientStudy=(full_url)=>{
+  const relative_url=full_url.replace("http://127.0.0.1:8000/pa","")
+  const response=api.get(relative_url)
+  console.log(response)
+}
+export const apiCreateStudy=async(data)=>{
+  try{
+    const response = await api.post(`/estudios/`,data)
+    return { success: true, data: response.data };
+  }
+  catch(error){
+   
+    if (error.response) {
+      // El servidor respondió con un código de estado que está fuera del rango de 2xx
+      const errorMessages = error.response.data;
+      let errorMessage = "Error(s):\n";
+      
+      if (errorMessages.code) {
+        errorMessage += `- ${errorMessages.code.join(', ')}\n`;
+      }
+      if (errorMessages.fecha) {
+        errorMessage += `- ${errorMessages.fecha.join(', ')}\n`;
+      }
+      console.log(errorMessages)
+      return { success: false, message: errorMessage };
+    } else if (error.request) {
+      // La solicitud se hizo pero no se recibió respuesta
+      return { success: false, message: "No response from server." };
+    } else {
+      // Algo pasó al configurar la solicitud
+      return { success: false, message: "Error setting up request." };
+    }
+  }
+}
+export const apiUpdateStudy=async(id,data)=>{
+  try{
+    alert("agua")
+    const response = await api.put(`/estudios/${id}/`,data)
+    console.log("ever",response)
+    return { success: true, data: response.data };
+  }
+  catch(error){
+    console.log("error",error)
+    if (error.response) {
+      // El servidor respondió con un código de estado que está fuera del rango de 2xx
+      const errorMessages = error.response.data;
+      let errorMessage = "Error(s):\n";
+      
+      if (errorMessages.code) {
+        errorMessage += `- ${errorMessages.hc.join(', ')}\n`;
+      }
+     
+      return { success: false, message: errorMessage };
+    } else if (error.request) {
+      // La solicitud se hizo pero no se recibió respuesta
+      return { success: false, message: "No response from server." };
+    } else {
+      // Algo pasó al configurar la solicitud
+      return { success: false, message: "Error setting up request." };
+    }
+  }
+}
+export const apiDeleteStudy=async(id)=>{
+  try{
+    const response = await api.delete(`/estudios/${id}/`)
+    return { success: true, data: response.data };
+  }
+  catch(error){
+    console.log("error",error)
+    if (error.response) {
+      // El servidor respondió con un código de estado que está fuera del rango de 2xx
+      const errorMessages = error.response.data;
+      
+      let errorMessage = "Error(s):\n";
+      
+      if (errorMessages.code) {
+        errorMessage += `- ${errorMessages.code.join(', ')}\n`;
+      }
+     
+      return { success: false, message: errorMessage };
+    } else if (error.request) {
+      // La solicitud se hizo pero no se recibió respuesta
+      return { success: false, message: "No response from server." };
+    } else {
+      // Algo pasó al configurar la solicitud
+      return { success: false, message: "Error setting up request." };
+    }
+  }
+}
+export const apiGetStudies = async() => {
+  try {
+    const response = await api.get(`/estudios/`);
+    return { success: true, data: response.data };
+    return response;
+  } catch (error) {
+    alert("error")
+    if (error.response) {
+      // El servidor respondió con un código de estado que está fuera del rango de 2xx
+      const errorMessages = error.response.data;
+      let errorMessage = "Error(s):\n";
+      
+      //Catchear errores especificos
+      // if (errorMessages.hc) {
+      //   errorMessage += `- ${errorMessages.hc.join(', ')}\n`;
+      // }
+    
+      return { success: false, message: errorMessage };
+    } else if (error.request) {
+      // La solicitud se hizo pero no se recibió respuesta
+      return { success: false, message: "No response from server." };
+    } else {
+      // Algo pasó al configurar la solicitud
+      return { success: false, message: "Error setting up request." };
+    }
+  }
+};
+export const apiGetStudy=async(id,data)=>{
+  try{
+    console.log("id",id)
+    const response = await api.get(`/estudios/${id}/`,data)
+    return { success: true, data: response.data };
+  }
+  catch(error){
+    console.log("error",error)
+    if (error.response) {
+      // El servidor respondió con un código de estado que está fuera del rango de 2xx
+      const errorMessages = error.response.data;
+      let errorMessage = "Error(s):\n";
+      
+      if (errorMessages.code) {
+        errorMessage += `- ${errorMessages.hc.join(', ')}\n`;
+      }
+     
+      return { success: false, message: errorMessage };
+    } else if (error.request) {
+      // La solicitud se hizo pero no se recibió respuesta
+      return { success: false, message: "No response from server." };
+    } else {
+      // Algo pasó al configurar la solicitud
+      return { success: false, message: "Error setting up request." };
+    }
+  }
+}
 export const apiGetDefunct = (id) =>{
   try{
     const response=api.get(`/fallecidos/${id}/`);

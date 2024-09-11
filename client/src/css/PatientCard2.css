@@ -3,13 +3,13 @@
     position: relative;
 } */
   
-.patient-list{
+.card-list{
     /* background-color: rgba(13, 40, 246, 0.506); */
-    color: black;
-    display: flex;
+    /* color: black; */
+    /* display: flex;
     flex-wrap: wrap;
     gap:10px;
-    position: relative;
+    position: relative; */
     /* z-index: 0; */
 }
 
@@ -85,13 +85,13 @@
     z-index: 2;
 } */
 
-body.show-details .patient-list::before {
-    content: "";
+body.show-details .card-list::before {
+    /* content: "";
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.5); /* Difuminado oscuro */
-    z-index: 100; /* Justo debajo de la tarjeta seleccionada */
+    /* z-index: 100; Justo debajo de la tarjeta seleccionada */ 
   }

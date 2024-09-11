@@ -15,6 +15,7 @@ router.register(r'diagnosticos', DiagnosisViewSet)
 urlpatterns = [
     
      path('', include(router.urls)),
+     path('paciente/<str:hc>/', views.all_patient_detail, name='paciente-detail'),
     #  path('paciente/estudios/<str:hc>/',PatientStudies.as_view(),name='patient-studies-detail'),
     #  path('estudios/<str:code>', StudyViewSet.as_view({'get_estudios': 'list'}),name='estudio-detail'),
     

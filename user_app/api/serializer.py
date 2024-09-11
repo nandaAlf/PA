@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User, Group
-
+from django.contrib.auth import authenticate
 
 class RegistrationSerializaer(serializers.ModelSerializer):
     password2=serializers.CharField(style={'input_type':'password'},write_only=True)
@@ -35,3 +35,14 @@ class RegistrationSerializaer(serializers.ModelSerializer):
         except Group.DoesNotExist:
             raise serializers.ValidationError({'error': 'El grupo especificado no existe'})
         return account
+    
+    
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        user = authenticate(**data)
+        if user and user.is_active:
+            return {'user': user}
+        raise serializers.ValidationError("Credenciales incorrectas.")

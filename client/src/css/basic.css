@@ -1,13 +1,23 @@
-input[type='button']{
+:root{
+    --ligthBlue:#00a5c1;
+    --darkBlue: #071930;
+    --gray: #828282;
+    --white: #dbd9d9;
+    /* --titulos:'Arima' , arial ;
+    --parrafos: 'Mulish' , sans-serif; */
+}
+
+
+/* input[type='button']{
     background-color: blue;
     border-radius: 2px;
     margin: 10px;
-}
+} */
 
-.close{
+/* .close{
     position: absolute;
     top: 0;
     right: 0;
     padding-right: 10px;
     margin-bottom: 10px;
-}
+} */

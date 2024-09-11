@@ -14,11 +14,13 @@ from rest_framework import filters
 from django.db.models import Q, OuterRef, Subquery
 from django.views.generic import ListView
 from rest_framework.permissions import IsAuthenticated
-#Filtros para las vistas
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import action
 class BaseStudyFilter(rest_framework.FilterSet):
     
     finalizado = rest_framework.BooleanFilter(method='filter_by_finalizado')
     search_code = rest_framework.CharFilter(field_name='code', lookup_expr='icontains') 
+    
     class Meta:
         fields = ['search_code']
         
@@ -27,6 +29,8 @@ class BaseStudyFilter(rest_framework.FilterSet):
     def filter_by_finalizado(self, queryset, name, value):
         pass
 class StudyFilter(BaseStudyFilter):
+    
+    tipo=rest_framework.CharFilter(field_name='tipo')
     class Meta(BaseStudyFilter.Meta):
         model = Estudio
         
@@ -84,7 +88,7 @@ class PatientViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.OrderingFilter, DjangoFilterBackend]
     filterset_class = PacienteFilter
     
-    permission_classes=[IsAuthenticated,DiagnosisPermission]
+    # permission_classes=[IsAuthenticated,DiagnosisPermission]
     # pagination_class=PatientPagination
     
     def get_queryset(self):
@@ -97,19 +101,56 @@ class PatientViewSet(viewsets.ModelViewSet):
                 ).values_list('id_proceso__cod_est__hc_paciente', flat=True)
             ).distinct()
         else: return Paciente.objects.all()
+        
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
+      
+    
+    @action(detail=False, methods=['post'])  
+    def create_with_fallecido(self, request):
+        # Crear el paciente
+        paciente_serializer = PatientSerializer(data=request.data)
+        if paciente_serializer.is_valid():
+            paciente = paciente_serializer.save()
+
+            # Si el paciente es fallecido, crear también el registro en la tabla Fallecido
+            if request.data.get('es_fallecido'):
+                fallecido_data = request.data.get('fallecido', {})
+                fallecido_data['hc'] = paciente.hc  # Asociar el hc del paciente creado
+                fallecido_serializer = DefunctSerializer(data=fallecido_data)
+                if fallecido_serializer.is_valid():
+                    fallecido_serializer.save()
+                else:
+                    paciente.delete()  # Si falla, revertir la creación del paciente
+                    return Response(fallecido_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            return Response(paciente_serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(paciente_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class DefunctViewSet(viewsets.ModelViewSet):
     queryset = Fallecido.objects.all()
     serializer_class = DefunctSerializer
     
-    permission_classes=[IsAuthenticated,IsStaffGroupPermission]
+    # permission_classes=[IsAuthenticated,IsStaffGroupPermission]
     
 class StudyViewSet(viewsets.ModelViewSet):
     queryset = Estudio.objects.all()
+    # study=Estudio.objects.prefetch_related('proceso_est__diagnostico').get(code='some_code')
     serializer_class = StudySerializer
     lookup_field = 'code'
     
-    permission_classes=[IsAuthenticated,IsStaffGroupPermission]
+    # def list(self, request, *args, **kwargs):
+    #     response = super().list(request, *args, **kwargs)
+    #     print('Response Data:', response.data)
+    #     return response
+    
+    # permission_classes=[IsAuthenticated,IsStaffGroupPermission]
     
     filter_backends = [rest_framework.DjangoFilterBackend,filters.OrderingFilter]
     filterset_class = StudyFilter  
@@ -118,7 +159,7 @@ class NecropsyViewSet(viewsets.ModelViewSet):
     serializer_class = NecropsySerializer
     lookup_field = 'code'
     
-    permission_classes=[IsAuthenticated,IsStaffGroupPermission]
+    # permission_classes=[IsAuthenticated,IsStaffGroupPermission]
     
     filter_backends = [rest_framework.DjangoFilterBackend,filters.OrderingFilter]
     filterset_class = NecropsyFilter
@@ -126,7 +167,7 @@ class ProcessViewSet(viewsets.ModelViewSet):
     queryset = Proceso.objects.all()
     serializer_class = ProcessSerializer
     
-    permission_classes=[IsAuthenticated,IsStaffGroupPermission]
+    # permission_classes=[IsAuthenticated,IsStaffGroupPermission]
     
     # Sobrecarga el método get_object para determinar el identificador en funcion de si es un estudio o una necropsia
     def get_object(self):
@@ -143,6 +184,32 @@ class ProcessViewSet(viewsets.ModelViewSet):
                 return Proceso.objects.get(cod_est=code)
             except Proceso.DoesNotExist:
                 pass    
+            
+    def update(self, request, *args, **kwargs):
+        # Obtén el proceso que se está actualizando
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        
+        # Actualiza el proceso usando el serializer
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        
+        # Si en la request también vienen datos para el diagnóstico, actualízalo
+        diagnostico_data = request.data.get('diagnostico')
+        if diagnostico_data:
+            # Busca el diagnóstico relacionado
+            try:
+                diagnostico = instance.diagnostico # Asumiendo que es una relación uno a uno
+                if diagnostico:
+                    # Si se encuentra, actualiza el diagnóstico
+                    diagnostico_serializer = DiagnosisSerializer(diagnostico, data=diagnostico_data, partial=partial)
+                    diagnostico_serializer.is_valid(raise_exception=True)
+                    diagnostico_serializer.save()
+            except Diagnostico.DoesNotExist:
+                pass
+
+        return Response(serializer.data)
               
 class DiagnosisViewSet(viewsets.ModelViewSet):
     queryset = Diagnostico.objects.all()
@@ -151,7 +218,7 @@ class DiagnosisViewSet(viewsets.ModelViewSet):
   
     filter_backends = [filters.OrderingFilter]
     
-    permission_classes = [IsAuthenticated, DiagnosisPermission]
+    # permission_classes = [IsAuthenticated, DiagnosisPermission]
     
     def get_queryset(self):
         user = self.request.user
@@ -160,4 +227,42 @@ class DiagnosisViewSet(viewsets.ModelViewSet):
         else:
             return Diagnostico.objects.all()
 
+
+from django.http import JsonResponse
+
+@api_view(['GET'])
+# @permission_classes([IsAuthenticated, DiagnosisPermission])
+def all_patient_detail(request, hc):
+    # Obtener el paciente por su hc (historia clínica)
+    paciente = get_object_or_404(Paciente, hc=hc)
     
+    # Inicializar los datos de respuesta con la información del paciente
+    paciente_data = {
+        'hc': paciente.hc,
+        'cid': paciente.cid,
+        'nombre': paciente.nombre,
+        'edad': paciente.edad,
+        'sexo': paciente.sexo,
+        'raza': paciente.raza,
+        'es_fallecido': paciente.es_fallecido,
+    }
+
+    # Si el paciente es fallecido, agregar los detalles de la tabla fallecido
+    if paciente.es_fallecido:
+        fallecido = Fallecido.objects.filter(hc=paciente).first()  # Obtener detalles si existe
+        if fallecido:
+            paciente_data['fallecido'] = {
+                'provincia': fallecido.provincia,
+                'municipio': fallecido.municipio,
+                'direccion': fallecido.direccion,
+                'app': fallecido.app,
+                'apf': fallecido.apf,
+                'hea': fallecido.hea,
+                'apgar': fallecido.apgar,
+                'edad_gest': fallecido.edad_gest,
+                'fecha_muerte': fallecido.fecha_muerte,
+            }
+    
+    return JsonResponse(paciente_data)
+
+  
