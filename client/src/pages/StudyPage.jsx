@@ -12,12 +12,13 @@ import { Dropdown } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Button from "../components/Button";
 import { useService } from "../util/useService";
-
+import { InfoCard } from "../components/InfoCard";
 import {
   handleApiError,
   toastInfo,
   toastSuccess,
 } from "../util/Notification";
+import AccionButtons from "../components/AccionButtons";
 
 function StudyPage() {
   const [studies, setStudies] = useState([]);
@@ -128,6 +129,27 @@ function StudyPage() {
   return (
     <div className="component study">
       {/* <div className="container"> */}
+      
+      <div className="section-info">
+        <InfoCard
+          title="Total Pacientes"
+          patientCount={10}
+          description={`Hombres ${10} Mujeres ${29}`}
+          // icon={<FaClock size={24} color="#28a745" />}
+        />
+        <InfoCard
+          title="Pacientes fallecidos"
+          patientCount={10}
+          description="Total Patients 10 today"
+          // icon={<FaClock size={24} color="#28a745" />}
+        />
+        <InfoCard
+          title="Menores de 16 años"
+          patientCount={10}
+          description="Total Patients 10 today"
+          // icon={<FaClock size={24} color="#28a745" />}
+        />
+      </div>
 
       <div className="section-search">
         {/* <div className="dropdow-menu">
@@ -185,7 +207,8 @@ function StudyPage() {
       </div>
       {/* </div> */}
 
-      {selectedStudies.length == 0 ? (
+      <AccionButtons selectedStudies={selectedStudies} handleEdit={handleEditStudy} handleDelete={handleDeleteClick} handleCreate={handleCreateStudy }/>
+      {/* {selectedStudies.length == 0 ? (
         <Button
           iconNumber={1}
           details={"circular add"}
@@ -204,7 +227,7 @@ function StudyPage() {
             action={handleDeleteClick}
           />{" "}
         </>
-      )}
+      )} */}
 
     </div>
   );

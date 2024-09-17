@@ -1,35 +1,41 @@
-import React from 'react'
+import React from "react";
 import { Dropdown } from "react-bootstrap";
-import "../css/userBar.css"
+import "../css/userBar.css";
 
-export default function UserBar() {
+export default function UserBar({user}) {
+  // const name = localStorage.getItem('name'); // Obtener el nombre de usuario
+  {console.log("jjj",user)}
   return (
-    <div className='container user-bar'>
-       <Dropdown onSelect={null}>
-            <Dropdown.Toggle
-              style={{
-                backgroundColor: "black",
-                color: "black",
-                border: "none",
-                borderRadius:"50%",
-                width:"50px",
-                height:"50px",
-                right:"0",
-              }}
-              id="dropdown-basic"
-            >
-              <img src='../../public/vite.svg' alt="user-profile" style={{
-                borderRadius:"50%",
-
-              }}/>
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item eventKey={true}>Profile</Dropdown.Item>{" "}
-              <Dropdown.Item eventKey={false}>Logout</Dropdown.Item>{" "}
-           
-            </Dropdown.Menu>
-            Dr. Juan
-          </Dropdown>
+    <div className="user-info">
+      <Dropdown onSelect={null}>
+        <Dropdown.Toggle
+          style={{
+            backgroundColor: "black",
+            color: "black",
+            border: "none",
+            borderRadius: "50%",
+            width: "50px",
+            height: "50px",
+          }}
+          id="dropdown-basic"
+        >
+          <img
+            src="../../vite.svg"
+            alt="user-profile"
+            style={{
+              borderRadius: "50%",
+              width: "100%",
+              height: "100%",
+            }}
+          />
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          <Dropdown.Item eventKey={true}>Profile</Dropdown.Item>
+          <Dropdown.Item eventKey={false}>Logout</Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
+      <span></span>
+      <span className="user-name">{user.username }</span>
     </div>
-  )
+  );
 }

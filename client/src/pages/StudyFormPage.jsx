@@ -9,6 +9,8 @@ import { handleApiError, toastSuccess } from "../util/Notification";
 import { useNavigate } from "react-router-dom";
 import { useStudy } from "../util/useStudy";
 import { useService } from "../util/useService";
+import Button from "../components/Button";
+import "../css/form.css"
 
 export default function StudyFormPage() {
   const [study, setStudy] = useState(null);
@@ -138,6 +140,7 @@ export default function StudyFormPage() {
   // };
 
   const onSubmit = async (data) => {
+
     console.log("data", data);
     const studyData = {
       code: data.code,
@@ -158,36 +161,39 @@ export default function StudyFormPage() {
         observaciones: data.observaciones,
       },
     };
+    console.log("processss data",processData)
 
-    let result;
-    if (isEditing) {
-      result = await handleUpdateStudy(studyData.code, data);
-    } else {
-      result = await handleCreateStudy(studyData);
-    }
+    // let result;
+    // if (isEditing) {
+    //   result = await handleUpdateStudy(studyData.code, data);
+    // } else {
+    //   result = await handleCreateStudy(studyData);
+    // }
 
-    // const result = isEditing
-    // ? await handleUpdateStudy(studyData.code, data)
-    // : await handleCreateStudy(studyData);
+    const result = isEditing
+    ? await handleUpdateStudy(studyData.code, data)
+    : await handleCreateStudy(studyData);
 
+    //ARREGLAR EDIT PROCESON 
     if (result) {
       console.log("aaaaaa");
-      await handleUpdateProcess(studyData.code, processData);
+      // await handleUpdateProcess(studyData.code, processData);
       // navigate("/studies/");
     }
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <StudyForm studyData={study} register={register} setValue={setValue} />
+      <div className="form-container component">
+      <form onSubmit={handleSubmit(onSubmit)} className="study form ">
+        <StudyForm studyData={study} register={register} setValue={setValue} className="form"/>
         <DiagnosisForm
           diagnosisData={diagnosis}
           processData={process}
           register={register}
           setValue={setValue}
         />
-        <button type="submit">Guardar</button>
+        {/* <button type="submit">Guardar</button> */}
+        <Button prop={"Enviar"} details={"formButton"}/>
       </form>
     </div>
   );

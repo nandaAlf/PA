@@ -1,11 +1,25 @@
 .sidebar {
   width: 220px;
   height: 100vh;
-  /* background-color: #2c3e50; */
-  /* padding: 20px; */
+  background-color: #fff;
+  padding: auto;
   position: fixed;
   top: 0;
   left: 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+ 
+}
+.hamburger-menu {
+  display: none;
+  background: none;
+  border: none;
+  position: fixed;
+  top: 15px;
+  left: 10px; /* Ubicación inicial del botón */
+  cursor: pointer;
+  z-index: 101;
+  transition: left 0.3s ease; /* Transición suave al mover el botón */
+  color: #34db71;
 }
 
 .sidebar h2 {
@@ -18,8 +32,8 @@
 }
 
 .sidebar ul li {
-  padding: 15px;
-  margin: 20px 5px;
+  padding: 20px;
+  margin: 30px 5px;
   display: block;
   border-radius: 5px;
 }
@@ -27,7 +41,7 @@
 .sidebar ul li a {
   color: black;
   text-decoration: none;
-  font-size: 18px;
+  font-size: 16px;
   display: flex;
   align-items: center; /* Alinea el ícono y el texto en el centro verticalmente */
   transition: color 0.3s, border-bottom 0.3s;
@@ -41,8 +55,29 @@
   color: #34db71;
   background-color: #34db7122;
 }
-
 .sidebar ul li a svg {
   margin-right: 30px; /* Espacio entre el ícono y el texto */
   font-size: 20px; /* Ajusta el tamaño del ícono si es necesario */
+}
+
+/* Mostrar el menú hamburguesa en pantallas pequeñas */
+@media (max-width: 768px) {
+  .hamburger-menu {
+    display: block; /* Mostrar el botón hamburguesa */
+  }
+
+  .sidebar {
+    z-index: 100; /* Asegura que el sidebar esté por encima del contenido */
+    transform: translateX(-100%); /* Sidebar oculto por defecto */
+  }
+
+  .sidebar.open {
+    transform: translateX(0); /* Muestra el sidebar */
+    transition: transform 1s ease;
+  }
+
+  .main-content {
+    margin-left: 0; /* El contenido principal no deja espacio para el sidebar cuando está cerrado */
+    transition: margin-left 0.3s ease;
+  }
 }

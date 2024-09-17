@@ -7,14 +7,18 @@
     /* padding: auto; */
     /* background-color: rgb(255, 255, 255);  */
     margin: 20px;
-    background-color: #ffff;
+    /* background-color: #ffff; */
     border-radius: 5px;
+    height: auto;
 }
 
 .header-container{
     display: flex;
     background-color: rgb(6, 6, 6);
     /* padding: 10px; */
+    
+    background-color: #ffff;
+
 }
 
 .card-list{
@@ -33,6 +37,8 @@
 
 .search-bar-container{
     /* box-sizing: border-box; */
+    
+    /* background-color: #ffff; */
     padding:7px;
 }
 
@@ -58,6 +64,8 @@
     /* margin: 10px; */
     /* margin-bottom: 10px;
     margin-left: 10px; */
+    
+    background-color: #ffff;
 }
 .section-search .dropdow-menu{
  /* background-color: rgb(31, 31, 178); */
@@ -68,3 +76,22 @@
 #dropdown-basic{
     width: 100%;
 }
+
+.chart-container{
+    background-color: #fff;
+    width: 70%;
+    padding: 15px;
+}
+
+.section-info{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex: 1;
+    margin: 0;
+    padding: 0;
+}
+.dropdown-toggle::after {
+    display: none !important; /* Oculta la flecha del dropdown */
+  }

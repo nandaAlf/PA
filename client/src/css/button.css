@@ -31,14 +31,14 @@
   animation: bounce 0.2s infinite;
 }
 
-.basic-button.circular.delete {
+/* .basic-button.circular.delete {
   bottom: 0px;
   right: 8%;
   animation: reverseBounce 1s infinite;
 }
 .basic-button.circular.delete:hover {
     animation: reverseBounce 0.2s infinite;
-  }
+  } */
 
 @keyframes bounce {
   0%,
@@ -57,4 +57,11 @@
   50% {
     transform: translateY(0px);
   }
+}
+
+.formButton{
+  display: block; /* Asegura que se comporte como un bloque */
+  margin:  auto; /* Centrado horizontal */
+  margin-top: 40px;
+  width: 50%;
 }

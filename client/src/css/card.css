@@ -37,7 +37,10 @@
   width: 20%;
   color: black;
 }
-
+  .card-details .dropdow{
+    width: 5%;
+  }
+  
 .container-card.isSelected {
   /* background-color: #aa0808bc; */
   background-color: #f0f0f0;

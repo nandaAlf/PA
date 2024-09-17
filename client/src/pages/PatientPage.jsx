@@ -7,12 +7,17 @@ import { useNavigate } from "react-router-dom";
 import "../css/page.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+import { FaClock } from "react-icons/fa"; // Usa react-icons para los íconos
 import ApiService from "../services/apiService";
-import { handleApiError } from "../util/Notification";
+import { handleApiError, toastSuccess } from "../util/Notification";
 import HeadCard from "../components/HeadCard";
 import Button from "../components/Button";
 import { Dropdown } from "react-bootstrap";
 import SearchFilter from "../components/SearchFilter";
+import { InfoCard } from "../components/InfoCard";
+import { useService } from "../util/useService";
+import AccionButtons from "../components/AccionButtons";
+import { toast } from "react-toastify";
 
 function PatientPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -20,22 +25,16 @@ function PatientPage() {
   const [searchBy, setSearchBy] = useState("nombre");
   const [selectedPatients, setSelectedPatients] = useState([]);
   const navigate = useNavigate();
+  
+  const {fetchItems,handleDelete} =useService("pacientes");
 
   useEffect(() => {
-    fetchPatients();
+    fetchPatients("nombre");
   }, []);
 
-  async function fetchPatients(es_fallecido = "") {
-    const result = await ApiService.get(
-      `/pacientes/?es_fallecido=${es_fallecido}`
-    );
-    if (result.success) {
-      setPatients(result.data);
-      handleURLParams();
-    } else {
-      alert("ver")
-      handleApiError(result);
-    }
+  async function fetchPatients(orderParam="",filterParm={}) {
+    const patients = await fetchItems({ ordering: orderParam, filters:filterParm});
+    setPatients(patients)
   }
 
   const handleURLParams = () => {
@@ -63,20 +62,9 @@ function PatientPage() {
     );
   };
 
-  const handleEditPatinet = () => {
-    if (selectedPatients.length != 1) {
-      toastInfo("Solo es posible editar un estudio a la vez");
-      return;
-    }
-    navigate(`/patient/${selectedPatients[0]}`);
-  };
   const handleDeletePatient = async (id) => {
-    // const response = await apiDeletePatient(id);
-    const result = await ApiService.delete(`/pacientes/${id}`);
-    if (result.success) {
-      toastSuccess(`Paciente${id} eliminado`);
-    } else {
-      handleApiError(result);
+    if(await handleDelete(id)){
+      toastSuccess(`Se ha eliminado el paciente ${id} `)
     }
   };
 
@@ -93,6 +81,7 @@ function PatientPage() {
         handleDeletePatient(selectedPatients[i]);
       }
       // location.reload();
+      navigate("/patients")
     }
 
     // event.stopPropagation(); // Evita que el clic cierre o abra la tarjeta
@@ -112,6 +101,27 @@ function PatientPage() {
     <div className="component patient">
       {/* <div className="container"> */}
       {/* <div className="header"> */}
+      <div className="section-info">
+        <InfoCard
+          title="Total Pacientes"
+          patientCount={10}
+          description={`Hombres ${10} Mujeres ${29}`}
+          icon={<FaClock size={24} color="#28a745" />}
+        />
+        <InfoCard
+          title="Pacientes fallecidos"
+          patientCount={10}
+          description="Total Patients 10 today"
+          icon={<FaClock size={24} color="#28a745" />}
+        />
+        <InfoCard
+          title="Menores de 16 años"
+          patientCount={10}
+          description="Total Patients 10 today"
+          icon={<FaClock size={24} color="#28a745" />}
+        />
+      </div>
+
       <div className="section-search">
         <div className="dropdow-menu">
           <Dropdown onSelect={handleTypeSelect}>
@@ -141,25 +151,12 @@ function PatientPage() {
           onSearchByChange={setSearchBy}
           options={["hc", "cid", "nombre"]}
         />
-        {/* <AccionBar
-            onInsert={handleCreatePatient}
-            onEdit={handleEditPatinet}
-            onDelete={handleDeleteClick}
-          /> */}
-        {/* <div className="search-bar">
-            <SearchBar
-              searchTerm={searchTerm}
-              onChange={setSearchTerm}
-              searchBy={searchBy}
-              onSearchByChange={setSearchBy}
-              options={["cid", "hc", "nombre"]}
-            />
-          </div> */}
+       
       </div>
       {/* </div> */}
 
       <div className={`card-list patient`}>
-        <HeadCard titles={["HC", "Nombre", "Id", "Fallecido"]} />
+        <HeadCard titles={["HC", "Nombre", "Id", "Fallecido",]} />
         {filteredPatients.map((patients, index) => (
           <PatientCard
             key={patients.hc}
@@ -173,26 +170,8 @@ function PatientPage() {
         ))}
       </div>
 
-      {selectedPatients.length == 0 ? (
-        <Button
-          iconNumber={1}
-          details={"circular add"}
-          action={handleCreatePatient}
-        />
-      ) : (
-        <>
-          <Button
-            iconNumber={2}
-            details={"circular edit"}
-            action={handleEditPatinet}
-          />{" "}
-          <Button
-            iconNumber={3}
-            details={"circular delete"}
-            action={handleDeleteClick}
-          />{" "}
-        </>
-      )}
+     <AccionButtons selectedStudies={selectedPatients} handleDelete={handleDeleteClick} handleCreate={handleCreatePatient}/>
+      
     </div>
   );
 }

@@ -9,14 +9,10 @@ const refresh= ()=>{
      refreshAccessToken()
 }
 
-export default function LoginPage() {
+export default function LoginPage({changeUser}) {
   return (
     <>
-     <button onClick={()=>toastSuccess("agua")}>KKK</button>
-      <button onClick={refresh}>Refresh</button>
-      <UserForm/>
-     
-      {/* {toastSuccess("¡Operación exitosa!")} */}
+      <UserForm changeUser={changeUser}/>
     </>
   )
 }

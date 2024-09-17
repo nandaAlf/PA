@@ -1,59 +1,63 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import InputForForm from "./inputForForm";
+import InputContainer from "./InputContainer";
+export default function StudyForm({ studyData, register, setValue }) {
+  const navigate = useNavigate();
 
-export default function StudyForm({ studyData,register,setValue}) {
-  const navigate=useNavigate()
-  
   //arreglar METER EN UN USEFEECT
-  const [doctors, setDoctors] = useState([
-    { username: "juan", id: 14 },
-    { username: "pedre", id: 12 },
-  ]);
-  const [specialists, setSpecialists] = useState([
-    { username: "p1", id: 5 },
-    { username: "p2", id: 17 },
-  ]);
+  const [doctors, setDoctors] = useState([{ username: "doctor1", id: 7 }]);
+  const [specialists, setSpecialists] = useState([{ username: "esp1", id: 8 }]);
 
   useEffect(() => {
     if (studyData) {
       for (const [key, value] of Object.entries(studyData)) {
         setValue(key, value);
       }
-      setValue('fecha',studyData.fecha)
+      setValue("fecha", studyData.fecha);
     }
   }, [studyData, setValue]);
 
-
   return (
     <div className=" ">
-        <div>
-          <label htmlFor="code">Code:</label>
-          <input
-            id="code"
-            type="text"
-            {...register("code", { required: true })}
-          />
-        </div>
+      {/* <div>
+        <label htmlFor="code">Code:</label>
+        <input
+          id="code"
+          type="text"
+          {...register("code", { required: true })}
+        />
+      </div> */}
 
-        <div>
-          <label htmlFor="tipo">Tipo:</label>
-          <input
-            id="tipo"
-            type="text"
-            maxLength="1"
-            {...register("tipo", { required: true })}
-          />
-        </div>
+      <InputForForm
+        labelText="code"
+        id="code"
+        type="text"
+        register={register}
+        required={true}
+      />
 
-        <div>
-          <label htmlFor="hc_paciente">HC Paciente:</label>
-          <input
-            id="hc_paciente"
-            type="text"
-            {...register("hc_paciente", { required: true })}
-          />
-        </div>
+      <InputContainer
+        inputs={[
+          {
+            labelText: "hc_paciente",
+            id: "hc_paciente",
+            type: "text",
+            required: true,
+          },
+          { labelText: "tipo", id: "tipo", type: "text", required: true },
+        ]}
+        register={register}
+      />
+      <InputContainer
+        inputs={[
+          { labelText: "Entidad", id: "entidad", type: "text", required: true },
+          { labelText: "fecha", id: "fecha", type: "date", required: true },
+        ]}
+        register={register}
+      />
 
+      <div className="section-short-input">
         <div>
           <label htmlFor="medico">Médico:</label>
           <select id="medico" {...register("medico", { required: true })}>
@@ -78,35 +82,21 @@ export default function StudyForm({ studyData,register,setValue}) {
             ))}
           </select>
         </div>
+      </div>
 
-        <div>
-          <label htmlFor="imp_diag">Impresión Diagnóstica:</label>
-          <input id="imp_diag" type="text" {...register("imp_diag")} />
-        </div>
+      <div>
+        <label htmlFor="imp_diag">Impresión Diagnóstica:</label>
+        <input id="imp_diag" type="text" {...register("imp_diag")} />
+      </div>
 
-        <div>
-          <label htmlFor="pieza">Pieza:</label>
-          <input
-            id="pieza"
-            type="text"
-            {...register("pieza", { required: true })}
-          />
-        </div>
-
-        <div>
-          <label htmlFor="fecha">Fecha:</label>
-          <input id="fecha" type="date" {...register("fecha")} />
-        </div>
-
-        <div>
-          <label htmlFor="entidad">Entidad:</label>
-          <input
-            id="entidad"
-            type="text"
-            maxLength="2"
-            {...register("entidad")}
-          />
-        </div>
+      <div>
+        <label htmlFor="pieza">Pieza:</label>
+        <input
+          id="pieza"
+          type="text"
+          {...register("pieza", { required: true })}
+        />
+      </div>
     </div>
   );
 }

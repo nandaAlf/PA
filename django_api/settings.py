@@ -83,11 +83,11 @@ WSGI_APPLICATION = 'django_api.wsgi.application'
 
 # DATABASES = {
 #     'default': {
-#         # 'ENGINE': 'django.db.backends.sqlite3',
-#         # 'NAME': BASE_DIR / 'db.sqlite3',
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
-
+# DEBUG = True
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -156,11 +156,14 @@ REST_FRAMEWORK={
 SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True, #new token for each token expired
     # #Developer mode
-    # 'ACCESS_TOKEN_LIFETIME': timedelta(days=365),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=365),
     # 'REFRESH_TOKEN_LIFETIME': timedelta(hours=1),
     # 'ACCESS_TOKEN_LIFETIME': timedelta(seconds=190),
     # 'REFRESH_TOKEN_LIFETIME': timedelta(seconds=30),
 }
+
+AUTH_USER_MODEL = 'user_app.CustomUser'
+
 
 try:
     from .local_settings import DATABASES,DEBUG

@@ -8,6 +8,7 @@ export default function HeadCard({ titles = [] }) {
         {titles.map((title,index) => (
           <p key={index}>{title}</p>
         ))}
+        <>Acciones</>
       </div>
     </div>
   );

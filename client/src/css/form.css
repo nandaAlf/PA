@@ -1,0 +1,94 @@
+input{
+    background-color: #fff;
+    border-radius: 5px;
+    border: 1px solid var(--ligthGray);
+    padding: 10px;
+    width: 100%;
+    color: black;
+}
+
+.form{
+    padding: 15px;
+    height: auto;
+    width: 100%;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* justify-content: center; */
+    /* align-items: center; */
+}
+.form input[type='text']{
+    /* background-color: #fff;
+    border-radius: 5px;
+    border: 1px solid var(--ligthGray);
+    padding: 10px;
+    color: black; */
+    margin: 5px;
+    width: 100%;
+    
+    /* margin-bottom: 40px; */
+    /* gap :20px; */
+    
+
+}
+.form label{
+    /* background-color: blue; */
+    margin-left: 15px;
+    padding: 1px;
+    font-weight: bold;
+    margin-top:10px;
+    margin-bottom: 5px;
+}
+.form-container{
+    /* margin-left: 20%; *
+    /* width: calc(100vh - 1000px); */
+   /* background-color: #ff0000; */
+   /* padding: 20px; */
+    /* height: auto;   */
+    /* height: 100vh; */
+    z-index: 102; /* Asegura que el formulario esté por encima del difuminado */
+}   
+.section-short-input{
+    /* background-color: blue; */
+    display: flex;
+    /* flex:1; */
+    gap: 20px;
+    /* justify-content:space-between;
+    align-items: center;
+    margin: 0;
+    padding: 0; */
+}
+.section-short-input div{
+    /* background-color: #fff; */
+    /* background-color: blue; */
+    /* display: flex; */
+    flex:1;
+    /* justify-content: space-between; */
+    /* width: 100%; */
+    /* padding: 10px; */
+}
+.form input[type="checkbox"] {
+    display: inline-block;
+    width: auto;
+    transform: scale(1.2);
+    margin-left: 10px;
+  }
+
+  @media (max-width: 768px) {
+    .section-short-input {
+      flex-direction: column;
+      gap: 10px;
+    }
+  }
+/* body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.885); /* Difuminado oscuro */
+    /* z-index: 102; */
+/* } */ 

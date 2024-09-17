@@ -150,13 +150,6 @@ class DiagnosisSerializer(serializers.ModelSerializer):
 class ProcessSerializer(serializers.ModelSerializer):
     diagnostico = DiagnosisSerializer( read_only=True)  # Usa related_name en la ForeignKey del diagnóstico
 
-    # diagnostico = DiagnosisSerializer(read_only=True)
-    # En el serializador de procesos
-    # def to_representation(self, instance):
-    #     representation = super().to_representation(instance)
-    #     print('Proceso Representation:', representation)
-    #     return representation
-
     class Meta:
         model = Proceso
         fields = '__all__'

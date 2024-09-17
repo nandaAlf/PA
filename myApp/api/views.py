@@ -178,12 +178,12 @@ class ProcessViewSet(viewsets.ModelViewSet):
             try:
                 return Proceso.objects.get(cod_necro=code)
             except Proceso.DoesNotExist:
-                pass
+                raise Http404("Proceso con necropsia no encontrado.")
         elif code[0]=='B' or code[0]=='C':
             try:
                 return Proceso.objects.get(cod_est=code)
             except Proceso.DoesNotExist:
-                pass    
+                raise Http404("Proceso con estudio no encontrado.")
             
     def update(self, request, *args, **kwargs):
         # Obtén el proceso que se está actualizando
@@ -201,7 +201,9 @@ class ProcessViewSet(viewsets.ModelViewSet):
             # Busca el diagnóstico relacionado
             try:
                 diagnostico = instance.diagnostico # Asumiendo que es una relación uno a uno
-                if diagnostico:
+                # if diagnostico:
+                if hasattr(instance, 'diagnostico'):
+                    diagnostico = instance.diagnostico
                     # Si se encuentra, actualiza el diagnóstico
                     diagnostico_serializer = DiagnosisSerializer(diagnostico, data=diagnostico_data, partial=partial)
                     diagnostico_serializer.is_valid(raise_exception=True)
@@ -228,7 +230,7 @@ class DiagnosisViewSet(viewsets.ModelViewSet):
             return Diagnostico.objects.all()
 
 
-from django.http import JsonResponse
+from django.http import Http404, JsonResponse
 
 @api_view(['GET'])
 # @permission_classes([IsAuthenticated, DiagnosisPermission])
@@ -265,4 +267,4 @@ def all_patient_detail(request, hc):
     
     return JsonResponse(paciente_data)
 
-  
+   

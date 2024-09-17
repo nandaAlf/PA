@@ -8,12 +8,18 @@ html {
 .app-container {
   display: flex;
   height: 100vh; /* Hace que ocupe toda la altura de la pantalla */
+  background-color: var(--ligthGray);
+  
 }
 
 .container-sidebar {
+  position: fixed;
+  /* position: fixed; */
   width: 220px; /*Fija el tamaño del Sidebar*/
-  background-color: #fffffff4/* Ajusta el color según tu preferencia*/
+  
 }
+
+
 
 .main-content { 
   flex: 1; /* Hace que el contenido principal ocupe el resto del espacio */
@@ -21,7 +27,21 @@ html {
  /* background-color: #fff; /* Fondo del contenido */
  /* overflow-y: auto; /* Añade scroll si el contenido es demasiado largo */
     width: 100%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
     background-color: var(--ligthGray);
+    margin-left: 220px; /* Deja espacio para el Sidebar */
+    margin-top: 60px; /* Deja espacio para la UserBar */
+    transition: margin-left 1s ease; 
 }
 
+
+.user-bar {
+  position: fixed;
+  top: 0;
+  left: 225px; /* Para que aparezca justo al lado del Sidebar */
+  width: calc(100% - 220px);
+  height: 60px;
+  /* background-color: red; */
+  background: var(--ligthGray);
+  z-index: 101;
+}
