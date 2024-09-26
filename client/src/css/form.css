@@ -1,87 +1,112 @@
-input{
-    background-color: #fff;
-    border-radius: 5px;
-    border: 1px solid var(--ligthGray);
-    padding: 10px;
-    width: 100%;
-    color: black;
+input {
+  tab-size: 4;
+  border: 0 solid #e5e7eb;
+  box-sizing: border-box;
+  font-feature-settings: inherit;
+  color: inherit;
+  font-family: inherit;
+  font-variation-settings: inherit;
+  margin: 0;
+  margin-top: 0.75rem;
+  width: 100%;
+  border-radius: 0.5rem;
+  border-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgb(232 235 238 / var(--tw-border-opacity));
+  background-color: initial;
+  padding: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 300;
 }
 
-.form{
-    padding: 15px;
-    height: auto;
-    width: 100%;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    /* display: flex; */
-    /* flex-direction: column; */
-    /* justify-content: center; */
-    /* align-items: center; */
+.form {
+  padding: 15px;
+  height: auto;
+  width: 100%;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  
+  /* font-family: "Poppins, sans-serif"; */
+  font-size: 14px;
+  font-weight:500;
 }
-.form input[type='text']{
-    /* background-color: #fff;
-    border-radius: 5px;
-    border: 1px solid var(--ligthGray);
-    padding: 10px;
-    color: black; */
-    margin: 5px;
-    width: 100%;
-    
-    /* margin-bottom: 40px; */
-    /* gap :20px; */
-    
+.form input {
+ 
+  margin: 12px 0px 0px;
+  padding: 12px;
+  width: 100%;
+  
+}
+.form label {
+ 
+  margin-left: 15px;
+  padding: 1px;
+ 
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+.form-container {
+  margin-top: 30px;
+  z-index: 102; 
+}
+.section-short-input {
+  display: flex;
+  gap: 20px;
+  
 
 }
-.form label{
-    /* background-color: blue; */
-    margin-left: 15px;
-    padding: 1px;
-    font-weight: bold;
-    margin-top:10px;
-    margin-bottom: 5px;
+
+.section-short-input div {
+  flex: 1;
+
 }
-.form-container{
-    /* margin-left: 20%; *
-    /* width: calc(100vh - 1000px); */
-   /* background-color: #ff0000; */
-   /* padding: 20px; */
-    /* height: auto;   */
-    /* height: 100vh; */
-    z-index: 102; /* Asegura que el formulario esté por encima del difuminado */
-}   
-.section-short-input{
-    /* background-color: blue; */
-    display: flex;
-    /* flex:1; */
-    gap: 20px;
-    /* justify-content:space-between;
-    align-items: center;
-    margin: 0;
-    padding: 0; */
-}
-.section-short-input div{
-    /* background-color: #fff; */
-    /* background-color: blue; */
-    /* display: flex; */
-    flex:1;
-    /* justify-content: space-between; */
-    /* width: 100%; */
-    /* padding: 10px; */
+.grid-input-container{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Dos columnas de igual tamaño */
+  gap: 1rem; 
+  margin-bottom: 1rem; /* Espacio entre contenedores */
 }
 .form input[type="checkbox"] {
-    display: inline-block;
-    width: auto;
-    transform: scale(1.2);
-    margin-left: 10px;
+  display: inline-block;
+  width: auto;
+  transform: scale(1.2);
+  margin-left: 10px;
+}
+.select-input-container{
+  display: inherit;
+  flex-direction: column;
+}
+.select-input{
+  background-color: inherit;
+  tab-size: 4;
+  border: 0 solid #e5e7eb;
+  box-sizing: border-box;
+  font-feature-settings: inherit;
+  color: inherit;
+  font-family: inherit;
+  font-variation-settings: inherit;
+  margin: 0;
+  margin-top: 0.75rem;
+  /* width: 100%; */
+  border-radius: 0.5rem;
+  border-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgb(232 235 238 / var(--tw-border-opacity));
+  background-color: initial;
+  padding: 0.8rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 300;
+  width: 100%;
+}
+@media (max-width: 768px) {
+  .section-short-input {
+    flex-direction: column;
+    gap: 10px;
   }
-
-  @media (max-width: 768px) {
-    .section-short-input {
-      flex-direction: column;
-      gap: 10px;
-    }
-  }
+}
 /* body::before {
     content: "";
     position: fixed;
@@ -90,5 +115,5 @@ input{
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.885); /* Difuminado oscuro */
-    /* z-index: 102; */
-/* } */ 
+/* z-index: 102; */
+/* } */

@@ -2,7 +2,7 @@
   width: 220px;
   height: 100vh;
   background-color: #fff;
-  padding: auto;
+  padding: 16px 24px;
   position: fixed;
   top: 0;
   left: 0;
@@ -39,7 +39,7 @@
 }
 
 .sidebar ul li a {
-  color: black;
+  color: rgb(27, 25, 25);
   text-decoration: none;
   font-size: 16px;
   display: flex;
@@ -49,15 +49,20 @@
 }
 
 .sidebar ul li a:hover {
-  color: #34db71;
+  color: var(--darkGreen);
 }
 .sidebar ul li:hover {
-  color: #34db71;
+  /* color: #34db71; */
   background-color: #34db7122;
 }
 .sidebar ul li a svg {
   margin-right: 30px; /* Espacio entre el ícono y el texto */
   font-size: 20px; /* Ajusta el tamaño del ícono si es necesario */
+}
+li.active{
+  color: var(--darkGreen);
+  
+  background-color: #34db7122;
 }
 
 /* Mostrar el menú hamburguesa en pantallas pequeñas */

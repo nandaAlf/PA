@@ -2,6 +2,7 @@
 from django.db.models.signals import post_save
 from django.conf import settings
 from django.dispatch import receiver
+from django.forms import ValidationError
 from rest_framework.authtoken.models import Token
 from django.db import models
 from django.contrib.auth.models import User
@@ -108,12 +109,15 @@ class CustomUser(AbstractUser):
     titulo= models.CharField(max_length=10, blank=True, null=True, choices=[('Dr.', 'Doctor'), ('Admin.', 'Admin')])
     
     # Indicadores de estado
-    
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_superadmin = models.BooleanField(default=False)
 
+    # Campo para la imagen de perfil
+    profile_image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
+
+  
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = [ 'first_name', 'last_name','email','cid']
 
@@ -137,3 +141,16 @@ class CustomUser(AbstractUser):
     # class Meta:
     #     verbose_name = 'user'
     #     verbose_name_plural = 'users'
+    
+def validate_image(image):
+    # Validar el tamaño de la imagen (máximo 2MB)
+    file_size = image.file.size
+    limit_kb = 2048  # 2 MB
+    if file_size > limit_kb * 1024:
+        raise ValidationError(f"El tamaño máximo de archivo es de {limit_kb} KB")
+
+    # Validar el tipo de archivo (permitir solo JPG y PNG)
+    valid_mime_types = ['image/jpeg', 'image/png']
+    file_mime_type = image.file.content_type
+    if file_mime_type not in valid_mime_types:
+        raise ValidationError("Solo se permiten archivos JPG y PNG")

@@ -7,6 +7,12 @@
   font-size: 20px;
   padding: 10px;
   box-shadow: 1px 4px 8px var(--ligthGreen); /* Sombra sutil */
+  width: 100%;
+  margin-top: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
 }
 .basic-button:hover {
   background-color: var(--ligthGreen);
@@ -22,7 +28,9 @@
   height: 60px;
   /* text-align; */
   /* justify-items: center; */
-  text-align: center;
+  /* text-align: center; */
+  
+ 
   /* z-index: 1; */
   animation: bounce 1s infinite; /* Aplicar la animación de rebote */
   transition: transform 0.2s ease-in-out; /* Transición suave */
@@ -31,14 +39,21 @@
   animation: bounce 0.2s infinite;
 }
 
-/* .basic-button.circular.delete {
-  bottom: 0px;
-  right: 8%;
-  animation: reverseBounce 1s infinite;
+.grayButton{
+  background-color: var(--ligthGray);
+  color: black;
+  font-size: 12px;
+  box-shadow: none;
+  height: 60px;
 }
-.basic-button.circular.delete:hover {
-    animation: reverseBounce 0.2s infinite;
-  } */
+.grayButton.selected-button{
+  background-color: #f2faf8ff;
+  color:var(--ligthGreen) ;
+}
+.grayButton:hover{
+  background-color: #f2faf8ff;
+  color:var(--ligthGreen) ;
+}
 
 @keyframes bounce {
   0%,
@@ -63,5 +78,9 @@
   display: block; /* Asegura que se comporte como un bloque */
   margin:  auto; /* Centrado horizontal */
   margin-top: 40px;
-  width: 50%;
+  width: 100%;
+  transition: 0.2s ease-in-out;
+  box-shadow: none;
 }
+
+

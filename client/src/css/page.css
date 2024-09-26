@@ -28,8 +28,10 @@
     /* flex-wrap: wrap; */
     /* gap:1px; */
     /* position: relative; */
-
+    /* font-size: 14px; */
 }
+
+
 
 /* .section-search{
     background-color: #ffffffe0;
@@ -38,7 +40,7 @@
 .search-bar-container{
     /* box-sizing: border-box; */
     
-    /* background-color: #ffff; */
+    background-color: #ffff;
     padding:7px;
 }
 
@@ -46,31 +48,25 @@
     background-color: var(--ligthGray);
     /* border-radius: 10px; */
     border: none;
-    padding: 5px;
+    /* padding: 5px; */
+    
     margin-bottom: 10px;
     margin-left: 5px;
+   
 }
 .section-search{
-    /* background-color: blueviolet; */
     display: flex;
     align-items: center;
-    /* padding: 10px; */
-    /* margin-left: 10px; */
-    /* flex:1; */
-    gap: 10px;
+    /* gap: 10px; */
     box-sizing: border-box;
     width: 100%;
-    padding: 10px;
-    /* margin: 10px; */
-    /* margin-bottom: 10px;
-    margin-left: 10px; */
-    
-    background-color: #ffff;
+    /* padding: 10px; */
+    /* margin-top: 1rem; */
 }
 .section-search .dropdow-menu{
  /* background-color: rgb(31, 31, 178); */
- padding: 10px;
- width: 20%;
+ /* padding: 10px; */
+ width: 30%;
 }
 
 #dropdown-basic{
@@ -85,13 +81,37 @@
 
 .section-info{
     display: flex;
-    justify-content: space-between;
+    flex:1;
+    width: 100%;
+    /* justify-content: space-between;
     align-items: center;
     gap: 20px;
     flex: 1;
     margin: 0;
-    padding: 0;
+    padding: 0; */
 }
 .dropdown-toggle::after {
     display: none !important; /* Oculta la flecha del dropdown */
   }
+
+.search-card-container{
+    
+    font-family: Poppins,sans-serif;
+    border: 0 solid #e5e7eb;
+    box-sizing: border-box;
+    
+    /* margin-bottom: 2rem; */
+    margin-top: 2rem;
+    border-radius: .75rem;
+    border-width: 1px;
+    --tw-border-opacity: 1;
+    border-color: rgb(232 235 238/var(--tw-border-opacity));
+    --tw-bg-opacity: 1;
+    background-color: rgb(255 255 255/var(--tw-bg-opacity));
+    
+    transition-property: opacity,transform;
+    transition-timing-function: ease;
+    transition-duration: 1s;
+    opacity: 1;
+    transform: translateZ(0);
+}

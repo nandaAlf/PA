@@ -11,24 +11,28 @@ const SearchFilter = ({
 }) => {
   return (
     <div className="search-filter">
-      {/* <select value={searchBy} onChange={(e) => onSearchByChange(e.target.value)}>
-        {options.map(op=>(
-          <option key={op} value={op}>{op}</option>
-        ))}
-        
-      </select> */}
+     
+     
       <div className="dropdown-menu-container">
         <Dropdown onSelect={(eventKey) => onSearchByChange(eventKey)}>
           <Dropdown.Toggle
             style={{
               backgroundColor: "#f7f9faff",
-              color: "black",
-              border: "1px solid #ccc",
-              // borderRadius:1px
+              color: "gray",
+              border: "none",
+              display:"flex",
+              justifyContent:"center",
+              alignItems:"center",
+              gap:"10px",
+              width:"100%",
+              padding:"16px 8px",
+              fontSize:"16px",
+              // fontFamily:"Poppins, sans-serif",
+              // borderRadius:"1px"
             }}
             id="dropdown-basic"
           >
-            Search by
+            <p>Search by</p>
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
@@ -43,7 +47,7 @@ const SearchFilter = ({
 
       <input
         type="text"
-        placeholder={`Buscar paciente por ${searchBy}...`}
+        placeholder={`Buscar por ${searchBy}...`}
         value={searchTerm}
         onChange={(e) => onChange(e.target.value)}
       />

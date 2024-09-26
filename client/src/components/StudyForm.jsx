@@ -2,7 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import InputForForm from "./inputForForm";
 import InputContainer from "./InputContainer";
-export default function StudyForm({ studyData, register, setValue }) {
+export default function StudyForm({
+  studyData,
+  register,
+  setValue,
+  isViewing,
+  user,
+}) {
   const navigate = useNavigate();
 
   //arreglar METER EN UN USEFEECT
@@ -16,51 +22,78 @@ export default function StudyForm({ studyData, register, setValue }) {
       }
       setValue("fecha", studyData.fecha);
     }
+    // setValue("especialista",user.id);
+    console.log("tudy ", user);
   }, [studyData, setValue]);
 
+  useEffect(() => {
+    if (user) {
+      // Setear el user.id en el campo "especialista"
+      setValue("especialista", user.id);
+    }
+  }, [user, setValue]);
+
+  if (!user) return;
   return (
     <div className=" ">
-      {/* <div>
-        <label htmlFor="code">Code:</label>
-        <input
-          id="code"
-          type="text"
-          {...register("code", { required: true })}
+      {isViewing ? (
+        <InputContainer
+          inputs={[
+            { labelText: "Codigo", id: "code" },
+            { labelText: "Historia Clinica", id: "hc_paciente" },
+          ]}
+          register={register}
+          disabled
         />
-      </div> */}
-
-      <InputForForm
-        labelText="code"
-        id="code"
-        type="text"
-        register={register}
-        required={true}
-      />
+      ) : (
+        <InputContainer
+          inputs={[{ labelText: "Historia Clinica", id: "hc_paciente" }]}
+          register={register}
+        />
+      )}
 
       <InputContainer
         inputs={[
           {
-            labelText: "hc_paciente",
-            id: "hc_paciente",
+            labelText: "tipo",
+            id: "tipo",
             type: "text",
             required: true,
+            options: [
+              { value: "B", label: "Biopsa" },
+              { value: "C", label: "Citología" },
+            ],
           },
-          { labelText: "tipo", id: "tipo", type: "text", required: true },
         ]}
         register={register}
       />
       <InputContainer
         inputs={[
-          { labelText: "Entidad", id: "entidad", type: "text", required: true },
+          {
+            labelText: "Entidad",
+            id: "entidad",
+            type: "text",
+            required: true,
+            options: [
+              { value: "H", label: "Hospital Pediátrico" },
+              { value: "CE", label: "Clínica Especialidades" },
+              { value: "HP", label: "Hospital Provincial" },
+            ],
+          },
           { labelText: "fecha", id: "fecha", type: "date", required: true },
         ]}
         register={register}
+        // disabled
       />
 
       <div className="section-short-input">
-        <div>
+        <div className="select-input-container">
           <label htmlFor="medico">Médico:</label>
-          <select id="medico" {...register("medico", { required: true })}>
+          <select
+            className="select-input"
+            id="medico"
+            {...register("medico", { required: true })}
+          >
             {doctors.map((doctor) => (
               <option key={doctor.id} value={doctor.id}>
                 {doctor.username}
@@ -69,6 +102,23 @@ export default function StudyForm({ studyData, register, setValue }) {
           </select>
         </div>
 
+        <div>
+          <label htmlFor="">Especialista:</label>
+          <input
+            id="especialista"
+            type="text"
+            // {...register("especialista", { required: true })}
+            placeholder={user.first_name}
+            disabled
+          />
+        </div>
+        {/* El campo oculto que realmente enviará el ID del especialista */}
+        <input
+          type="hidden"
+          {...register("especialista", { required: true })}
+        />
+
+        {/* 
         <div>
           <label htmlFor="especialista">Especialista:</label>
           <select
@@ -81,12 +131,13 @@ export default function StudyForm({ studyData, register, setValue }) {
               </option>
             ))}
           </select>
-        </div>
+        </div> */}
       </div>
 
       <div>
         <label htmlFor="imp_diag">Impresión Diagnóstica:</label>
-        <input id="imp_diag" type="text" {...register("imp_diag")} />
+        <input id="imp_diag" type="text" {...register("imp_diag")} 
+         disabled={isViewing}/>
       </div>
 
       <div>
@@ -95,6 +146,7 @@ export default function StudyForm({ studyData, register, setValue }) {
           id="pieza"
           type="text"
           {...register("pieza", { required: true })}
+          disabled={isViewing}
         />
       </div>
     </div>

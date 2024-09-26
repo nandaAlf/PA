@@ -126,11 +126,7 @@ class PatientSerializer(serializers.ModelSerializer):
         
 class NecropsySerializer(serializers.ModelSerializer):
     
-    hc_fallecido= serializers.HyperlinkedRelatedField(
-        many=False,
-        read_only=True,
-        view_name='fallecido-detail',
-    )
+    code = serializers.CharField(read_only=True) 
     class Meta:
         model = Necropsia
         fields = '__all__'
@@ -143,7 +139,7 @@ class DiagnosisSerializer(serializers.ModelSerializer):
     class Meta:
         model = Diagnostico
         # fields = '__all__'
-        fields = ['diagnostico', 'observaciones', 'fecha', 'finalizado']
+        fields = ['diagnostico', 'observaciones']
 
 
        
@@ -158,7 +154,7 @@ class ProcessSerializer(serializers.ModelSerializer):
         
 class StudySerializer(serializers.ModelSerializer):
     
-
+    code = serializers.CharField(read_only=True)  # El código es solo de lectura
     # proceso_est = ProcessSerializer(read_only=True)  # Si quieres incluir los datos del proceso
     # diagnostico = DiagnosisSerializer(read_only=True)  # Si hay varios diagnósticos relacionados
 

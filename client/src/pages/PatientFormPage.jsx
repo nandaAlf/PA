@@ -2,14 +2,11 @@ import PatientForm from "../components/PatientForm";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
-import ApiService from "../services/apiService";
-import { handleApiError, toastSuccess } from "../util/Notification";
+import { toastSuccess } from "../util/Notification";
 import React from "react";
 import Button from "../components/Button";
 import "../css/form.css";
 import { useService } from "../util/useService";
-import StudyForm from "../components/StudyForm";
-import StudyCard from "../components/StudyCard";
 import { useNavigate } from "react-router-dom";
 export default function PatientFormPage() {
   const [patient, setPatient] = useState({});
@@ -21,7 +18,7 @@ export default function PatientFormPage() {
     handleUpdate: handleUpdatePatient,
   } = useService("pacientes");
   const params = useParams();
-  const { handleSubmit, register, setValue } = useForm();
+  const { handleSubmit, register, setValue, unregister ,errors} = useForm();
   const navigate = useNavigate();
   // const [process, setProcess] = useState({});
 
@@ -37,23 +34,8 @@ export default function PatientFormPage() {
     }
   }, [params]);
 
-  // const handleCreatePatient = async (data) => {
-  //   const result = await ApiService.post("/pacientes/", data);
-  //   if (result.success) {
-  //     toastSuccess("Paciente creado con exito");
-  //   } else handleApiError(result);
-
-  //   return result.success;
-  // };
-  // const handleUpdatePatient = async (id, data) => {
-  //   const result = await ApiService.put(`/pacientes/${id}/`, data);
-  //   if (result.success) {
-  //     toastSuccess("Paciente actualizado con éxito.");
-  //   } else handleApiError(result);
-  //   return result.success;
-  // };
-
   const onSubmit = async (patientData) => {
+    console.log("data", patientData);
     let result;
     if (isEditing) {
       result = await handleUpdatePatient(patientData.hc, patientData);
@@ -79,32 +61,55 @@ export default function PatientFormPage() {
           register={register}
           setValue={setValue}
           isEditing={isViewing}
+          unregister={unregister}
+          errors={errors}
         />
         {!isViewing ? (
           <Button prop={"Enviar"} details={"formButton"} />
         ) : (
           <>
             <hr />
-            <a
-              href={`/studies?hc_paciente=${patient.hc}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Todos los estudios
-            </a>
-            <ul>
-              {patient.studies?.map((study, index) => (
-                <li key={index}>
-                  <a
-                    href={`/studies?code=C-24-01`}
-                    target="_blank" //abre el enlace en una nueva pestana
-                    rel="noopener noreferrer"
-                  >
-                    {`Estudio ${index + 1}(Poner el codigo)`}
-                  </a>
-                </li>
-              ))}
-            </ul>
+            {patient.studies?.length > 0 ? (
+              <>
+                <a
+                  href={`/studies?hc_paciente=${patient.hc}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Todos los estudios
+                </a>
+                <ul>
+                  {patient.studies?.map((study, index) => (
+                    <li key={index}>
+                      <a
+                        href={`/studies?code=${study}`}
+                        target="_blank" //abre el enlace en una nueva pestana
+                        rel="noopener noreferrer"
+                      >
+                        {`${index + 1} - ${study}`}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : (
+              ""
+            )}
+            {patient.es_fallecido ? (
+              patient.fallecido.necropsy ? (
+                <a
+                  href={`/studies?code=${patient.fallecido.necropsy[0]}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                 Necropsia: {patient.fallecido.necropsy[0]}
+                </a>
+              ) : (
+                ""
+              )
+            ) : (
+              ""
+            )}
           </>
         )}
       </form>

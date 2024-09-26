@@ -2,7 +2,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
+  padding: 10px;
   background-color: #fff;
   border-radius: 10px;
   /* box-shadow: "0 4px 8px rgba(0; 0; 0; 0.1)"; */
@@ -10,13 +10,17 @@
   margin-bottom: 20px;
   /* margin-right: 10px; */
   width: 100%;
+  min-height: fit-content;
   border: 1px solid #e7e7e7;
+  
+  /* font-size: 16px; */
 }
 .content {
   display: flex;
   justify-content: space-between;
   width: 100%;
   align-items: center;
+  /* background-color: var(--ligthGreen); */
 }
 .textContent {
   flex: 1;

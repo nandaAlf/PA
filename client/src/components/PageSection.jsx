@@ -1,6 +1,6 @@
 import React from "react";
 import "../css/pageSection.css";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 export default function PageSection({ name, description, icon, link }) {
   const navigate = useNavigate();
@@ -8,7 +8,7 @@ export default function PageSection({ name, description, icon, link }) {
     navigate(link);
   };
   return (
-    <div className="page-section-container"  onClick={handleClick}>
+    <div className="page-section-container" onClick={handleClick}>
       <div className="icon">{icon}</div>
       <div className="text-container">
         <p className="title">{name}</p>

@@ -1,7 +1,6 @@
 import React from 'react'
 import UserForm from '../components/UserForm'
 import { refreshAccessToken } from '../services/api'
-import {toastSuccess} from "../util/Notification"
 
 
 
@@ -9,10 +8,10 @@ const refresh= ()=>{
      refreshAccessToken()
 }
 
-export default function LoginPage({changeUser}) {
+export default function LoginPage() {
   return (
     <>
-      <UserForm changeUser={changeUser}/>
+      <UserForm />
     </>
   )
 }

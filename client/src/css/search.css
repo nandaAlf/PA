@@ -9,8 +9,7 @@
   /* flex-direction: row; */
   align-items:center;
   width: 100%;
-  /* background-color: rgb(0, 30, 255); */
-  /* padding: 10px; */
+  padding: 10px;
   /* box-sizing: border-box; */
 }
 /* .search-filter select {
@@ -25,13 +24,14 @@
 /* } */
 .dropdown-menu-container{
   width: 25%;
+  height: 100%;
 }
 
 .search-filter input {
   width: 100%;
   background-color: var(--ligthGray);
   /* flex-grow: 1; */
-  /* padding: 10px; */
+  padding: 16px 8px;
   border: 1px solid #cccccc2a;
   /* border-top-right-radius: 5px; */
   /* border-bottom-right-radius: 5px; */

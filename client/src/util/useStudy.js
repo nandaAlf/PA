@@ -1,4 +1,4 @@
-import ApiService from "../services/apiService.js"
+import {apiService} from "../services/apiService.js"
 import { useState,useEffect } from "react";
 export const useStudy = (params) => {
     const [study, setStudy] = useState({});

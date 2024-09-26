@@ -1,5 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+tr:hover {
+  background-color: #f2f5f7ff;
+  transition: background-color 0.3s ease;
+}
+thead {
+  background-color: #f7f9faff;
+  /* transition: background-color 0.3s ease; */
+  
+  border-bottom: 0.1px solid rgba(106, 184, 167, 0.05);
+}
+.bg-selected {
+  background-color: #f2f5f7ff; /* Un color de fondo ligero */
+  border-bottom: 0.1px solid rgba(106, 184, 167, 0.188);
+}
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Poppins", system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -21,7 +40,7 @@
   --ligthGreen:#89bec4ff;
   --darkGreen:#6ab8a7ff;
   --gray:#b8babaff;
-
+  --gren:#89BEC5
 
   box-sizing: border-box;
 }

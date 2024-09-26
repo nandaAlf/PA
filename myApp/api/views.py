@@ -1,4 +1,6 @@
 from abc import abstractmethod
+
+from django.db import connection
 from myApp.api.pagination import PatientPagination
 from myApp.api.permissions import  DiagnosisPermission, IsDoctorGroupPermission, IsStaffGroupPermission
 from myApp.api.serializer import *
@@ -18,16 +20,18 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.decorators import action
 class BaseStudyFilter(rest_framework.FilterSet):
     
-    finalizado = rest_framework.BooleanFilter(method='filter_by_finalizado')
+    # finalizado = rest_framework.BooleanFilter(method='filter_by_finalizado')
+    
+    finalizado=rest_framework.BooleanFilter(field_name='finalizado')
     search_code = rest_framework.CharFilter(field_name='code', lookup_expr='icontains') 
     
     class Meta:
         fields = ['search_code']
         
-    @classmethod
-    @abstractmethod
-    def filter_by_finalizado(self, queryset, name, value):
-        pass
+    # @classmethod
+    # @abstractmethod
+    # def filter_by_finalizado(self, queryset, name, value):
+    #     pass
 class StudyFilter(BaseStudyFilter):
     
     tipo=rest_framework.CharFilter(field_name='tipo')
@@ -48,14 +52,7 @@ class NecropsyFilter(BaseStudyFilter):
     class Meta(BaseStudyFilter.Meta):
         model = Necropsia
     
-    def filter_by_finalizado(self, queryset, name, value):
-        
-        subquery = Diagnostico.objects.filter(
-            id_proceso__cod_necro=OuterRef('code'), 
-            finalizado=value
-        ).values('id_proceso__cod_necro')
-
-        return queryset.filter(code__in=Subquery(subquery))
+    
     
 # class DiagnosisFilter(rest_framework.FilterSet):
     
@@ -76,6 +73,7 @@ class PacienteFilter(rest_framework.FilterSet):
     search_name = rest_framework.CharFilter(field_name='nombre', lookup_expr='icontains')
     search_id = rest_framework.CharFilter(field_name='cid', lookup_expr='icontains')
     search_hc = rest_framework.CharFilter(field_name='hc', lookup_expr='icontains')
+    es_fallecido=rest_framework.BooleanFilter(field_name='es_fallecido')
     class Meta:
         model = Paciente
         fields = ['search_name', 'search_id', 'search_hc', 'es_fallecido']
@@ -267,4 +265,17 @@ def all_patient_detail(request, hc):
     
     return JsonResponse(paciente_data)
 
-   
+@api_view(['GET'])
+def get_patient_statistics(request):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT * FROM get_patient_stats()")
+        result = cursor.fetchone()
+        data = {
+            "total_patients": result[0],
+            "total_men": result[1],
+            "total_women": result[2],
+            "total_deceased": result[3],
+            "total_under_16": result[4],
+            "total_under_1": result[5],
+        }
+    return JsonResponse(data)

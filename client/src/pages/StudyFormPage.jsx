@@ -2,21 +2,21 @@ import React, { useState } from "react";
 import StudyForm from "../components/StudyForm";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import ApiService from "../services/apiService";
 import DiagnosisForm from "../components/DiagnosisForm";
 import { useForm } from "react-hook-form";
-import { handleApiError, toastSuccess } from "../util/Notification";
+import { toastSuccess } from "../util/Notification";
 import { useNavigate } from "react-router-dom";
-import { useStudy } from "../util/useStudy";
 import { useService } from "../util/useService";
 import Button from "../components/Button";
-import "../css/form.css"
+import "../css/form.css";
+import NecroForm from "../components/NecroForm";
 
-export default function StudyFormPage() {
+export default function StudyFormPage({ typeStudy = "estudios", user }) {
   const [study, setStudy] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [process, setProcess] = useState(null);
   const [diagnosis, setDiagnosis] = useState(null);
+  const [isViewing, setIsViewing] = useState(false);
   const params = useParams();
   // const {  process, diagnosis, isEditing } = useStudy(params);
   const { handleSubmit, register, setValue } = useForm();
@@ -25,30 +25,13 @@ export default function StudyFormPage() {
     fetchItem: fetchStudy,
     handleCreate: handleCreateStudy,
     handleUpdate: handleUpdateStudy,
-  } = useService("estudios");
+  } = useService(typeStudy);
   const { fetchItem: fetchProcess, handleUpdate: handleUpdateProcess } =
     useService("procesos");
 
   useEffect(() => {
-    // const { hc, code } = params;
-
     loadStudy();
-    // if (hc) {
-    //   // Caso de crear un nuevo estudio para un paciente específico
-    //   setStudy({ hc_paciente: hc });
-    // } else if (code === "create") {
-    //   // Caso de crear un nuevo estudio desde cero
-    //   setStudy({}); // Iniciar con un objeto vacío
-    // } else if (code) {
-    //   // Caso de editar un estudio existente
-    //   // setIsEditing(true);
-    //   //  await fetchStudy(code,{setStudy});
-    //   const load=async()=>{await fetchStudy(code,{setStudy})}
-    //   load()
-    //   // setStudy(studyData)
-    //   // fetchProcess(code)
-    //   // // fetchDiagnosiss(process.id)
-    // }
+    console.log("usuario", user);
   }, [params]);
 
   const loadStudy = async () => {
@@ -62,7 +45,8 @@ export default function StudyFormPage() {
       setStudy({}); // Iniciar con un objeto vacío
     } else if (code) {
       // Caso de editar un estudio existente
-      setIsEditing(true);
+      if (location.pathname.includes("/view")) setIsViewing(true);
+      else setIsEditing(true);
       const result = await fetchStudy(code, setStudy);
       if (result.success) {
         const process_diag = await fetchProcess(code, setProcess);
@@ -72,87 +56,35 @@ export default function StudyFormPage() {
       }
     }
   };
-  // const fetchStudy = async (code) => {
-  //   const result = await ApiService.get(`/estudios/${code}`);
-  //   if (result.success) {
-  //     setStudy(result.data);
-  //     // console.log(result.data)
-  //     fetchProcess(code);
-  //   } else handleApiError(error);
-  // };
-  // const fetchProcess = async (code) => {
-  //   const result = await ApiService.get(`/procesos/${code}`);
-  //   if (result.success) {
-  //     const { diagnostico, ...proceso } = result.data;
-  //     setProcess(proceso);
-  //     setDiagnosis(diagnostico);
-  //     console.log(diagnosis)
-  //     // console.log("process",proceso)
-  //     // console.log("diags",diagnostico)
-  //     // fetchDiagnosiss(result.data.id);
-  //   } else handleApiError(error);
-  // };
-  // // const fetchDiagnosiss = async (id) => {
-  // //   const result = await ApiService.get(`/diagnosticos/${id}`);
-  // //   if (result.success) {
-  // //     setDiagnosis(result.data);
-  // //   } else handleApiError(error);
-  // // };
-
-  // const handleCreateStudy = async (data) => {
-  //   const result = await ApiService.post("/estudios/", data);
-  //   if (result.success) {
-  //     toastSuccess("Estudio creado con exito");
-  //   } else handleApiError(result);
-  //   console.log(result);
-  //   return result.success;
-  // };
-  // const handleUpdateStudy = async (code, data) => {
-  //   const result = await ApiService.put(`/estudios/${code}/`, data);
-  //   if (result.success) {
-  //     // toastSuccess("Estudio actualizado con éxito.");
-  //   } else handleApiError(result);
-  //   return result.success;
-  // };
-  // const handleUpdateProcess = async (code, data) => {
-  //   const result = await ApiService.put(`/procesos/${code}/`, data);
-  //   if (!result.success) {
-  //     handleApiError(result);
-  //   }
-  //   return result;
-  // };
-  // const handleUpdateDiagnosis = async (id, data) => {
-  //   const result = await ApiService.put(`/diagnosticos/${id}/`, data);
-  //   if (!result.success) {
-  //     handleApiError(result);
-  //   }
-  //   return result;
-  // };
-
-  // const handleDiagnosisProcess = async (code, processData) => {
-  //   const process_result = await handleUpdateProcess(code, processData);
-  //   if (process_result.success) {
-  //     // console.log("ok")
-  //     toastSuccess("Estudio actualizado con éxito.");
-  //   } else {
-  //     return process_result;
-  //   }
-  // };
 
   const onSubmit = async (data) => {
-
     console.log("data", data);
-    const studyData = {
-      code: data.code,
-      tipo: data.tipo,
-      hc_paciente: data.hc_paciente,
-      medico: data.medico,
-      especialista: data.especialista,
-      imp_diag: data.imp_diag,
-      pieza: data.pieza,
-      fecha: data.fecha,
-      entidad: data.entidad,
-    };
+    let studyData;
+    if (typeStudy == "estudios") {
+      studyData = {
+        // code: data.code,
+        tipo: data.tipo,
+        hc_paciente: data.hc_paciente,
+        medico: data.medico,
+        especialista: data.especialista,
+        imp_diag: data.imp_diag,
+        pieza: data.pieza,
+        fecha: data.fecha,
+        entidad: data.entidad,
+        finalizado: data.finalizado,
+      };
+    } else if (typeStudy == "necropsias") {
+      studyData = {
+        // code: data.code,
+        hc_paciente: data.hc_paciente,
+        especialista: data.especialista,
+        habito_externo: data.habito_externo,
+        hallazgos: data.hallazgos,
+        certif_defuncion: data.certif_defuncion,
+        finalizado: data.finalizado,
+      };
+    }
+
     const processData = {
       descripcion_micro: data.descripcion_micro,
       descripcion_macro: data.descripcion_macro,
@@ -161,31 +93,39 @@ export default function StudyFormPage() {
         observaciones: data.observaciones,
       },
     };
-    console.log("processss data",processData)
-
-    // let result;
-    // if (isEditing) {
-    //   result = await handleUpdateStudy(studyData.code, data);
-    // } else {
-    //   result = await handleCreateStudy(studyData);
-    // }
 
     const result = isEditing
-    ? await handleUpdateStudy(studyData.code, data)
-    : await handleCreateStudy(studyData);
+      ? await handleUpdateStudy(data.code, data)
+      : await handleCreateStudy(studyData);
 
-    //ARREGLAR EDIT PROCESON 
-    if (result) {
-      console.log("aaaaaa");
-      // await handleUpdateProcess(studyData.code, processData);
-      // navigate("/studies/");
+    if (result.success) {
+      let new_code;
+      data.code ? (new_code = data.code) : (new_code = result.data.code);
+      await handleUpdateProcess(new_code, processData);
+      toastSuccess("ok");
     }
   };
 
   return (
-      <div className="form-container component">
+    <div className="form-container component">
       <form onSubmit={handleSubmit(onSubmit)} className="study form ">
-        <StudyForm studyData={study} register={register} setValue={setValue} className="form"/>
+        {typeStudy == "estudios" ? (
+          <StudyForm
+            studyData={study}
+            register={register}
+            setValue={setValue}
+            isViewing={isViewing}
+            className="form"
+            user={user}
+          />
+        ) : (
+          <NecroForm
+            studyData={study}
+            register={register}
+            setValue={setValue}
+            className="form"
+          />
+        )}
         <DiagnosisForm
           diagnosisData={diagnosis}
           processData={process}
@@ -193,7 +133,7 @@ export default function StudyFormPage() {
           setValue={setValue}
         />
         {/* <button type="submit">Guardar</button> */}
-        <Button prop={"Enviar"} details={"formButton"}/>
+        {!isViewing ? <Button prop={"Enviar"} details={"formButton"} /> : <></>}
       </form>
     </div>
   );

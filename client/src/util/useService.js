@@ -1,10 +1,10 @@
-import ApiService from "../services/apiService.js";
+import {apiService} from "../services/apiService.js";
 import { useState, useEffect } from "react";
 import { handleApiError } from "./Notification.js";
 
 export const useService = (baseUrls) => {
   const fetchItem = async (id, setItem) => {
-    const result = await ApiService.get(`/${baseUrls}/${id}`);
+    const result = await apiService.get(`/${baseUrls}/${id}`);
     if (result.success) {
       // console.log(result.data)
       setItem(result.data);
@@ -28,7 +28,7 @@ export const useService = (baseUrls) => {
       ordering, // Ordenamiento
       ...validFilters, // Filtros adicionales
     }).toString();
-    const result = await ApiService.get(`/${baseUrls}/?${filterParams}`);
+    const result = await apiService.get(`/${baseUrls}/?${filterParams}`);
     console.log("aqui", `/${baseUrls}/?${filterParams}`);
     if (result.success) {
       console.log("resul", result);
@@ -38,23 +38,28 @@ export const useService = (baseUrls) => {
     }
   };
   const handleDelete = async (id) => {
-    const result = await ApiService.delete(`/${baseUrls}/${id}`);
+    const result = await apiService.delete(`/${baseUrls}/${id}`);
     if (!result.success) {
       handleApiError(result);
     }
     return result.success;
   };
   const handleCreate = async (data) => {
-    const result = await ApiService.post(`/${baseUrls}/`, data);
+    const result = await apiService.post(`/${baseUrls}/`, data);
+    console.log(result)
     if (!result.success) {
       handleApiError(result);
     }
-    return result.success;
+    return result;
   };
   const handleUpdate = async (id, data) => {
-    const result = await ApiService.put(`/${baseUrls}/${id}/`, data);
+    const result = await apiService.put(`/${baseUrls}/${id}/`, data);
     if (!result.success) handleApiError(result);
-    return result.success;
+    return result;
   };
-  return { fetchItem, fetchItems, handleCreate, handleUpdate, handleDelete };
+  const fetchStats= async()=>{
+    const result=await apiService.get(`/${baseUrls}-estadisticas/`);
+    return result.data
+  }
+  return { fetchItem, fetchItems, handleCreate, handleUpdate, handleDelete, fetchStats };
 };

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link ,useLocation} from "react-router-dom";
 import "../css/sidebar.css"; // Puedes personalizar el estilo del Sidebar aquí
 import { BsPeopleFill } from "react-icons/bs";
 import { useState } from "react";
@@ -11,35 +11,39 @@ import { FaBars } from "react-icons/fa"; // Importar el ícono de menú
 
 function Sidebar({ isSidebarOpen, toggleSidebar }) {
   // const [pressed,setPresssed]=useState(null)
+  const location = useLocation(); // Para obtener la ruta actual
+
+  // Función para verificar si el enlace está activo
+  const isActive = (path) => location.pathname === path;
   return (
     <>
       {/* <h2>Home</h2> */}
-      <ul>
-        <li>
+      <ul className="nav-menu">
+        <li className={isActive("/home") ? "active" : ""}>
           <Link to="/home">
             {" "}
-            <FaHome color="#34db71" /> Inicio
+            <FaHome color="#65b5a2ff" /> Inicio
           </Link>
         </li>
-        <li>
+        <li className={isActive("/patients") ? "active" : ""}>
           <Link to="/patients">
             {" "}
-            <BsPeopleFill color="#34db71" /> Pacientes
+            <BsPeopleFill color="#65b5a2ff" /> Pacientes
           </Link>
         </li>
-        <li>
+        <li  className={isActive("/studies") ? "active" : ""}>
           <Link to="/studies">
-            <FaBookMedical color="#34db71" /> Estudios
+            <FaBookMedical color="#65b5a2ff" /> Estudios
           </Link>
         </li>
-        <li>
+        <li  className={isActive("/necropsies") ? "active" : ""}>
           <Link to="/necropsies">
-            <FaBookDead color="#34db71" /> Necropsias
+            <FaBookDead color="#65b5a2ff" /> Necropsias
           </Link>
         </li>
-        <li>
+        <li  className={isActive("/settings") ? "active" : ""}>
           <Link to="/settings">
-            <IoMdSettings color="#34db71" /> Ajustes
+            <IoMdSettings color="#65b5a2ff" /> Ajustes
           </Link>
         </li>
       </ul>

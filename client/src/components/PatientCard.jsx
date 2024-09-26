@@ -65,7 +65,15 @@ const PatientCard = ({
           <strong></strong> {patient.cid}
         </p>
         <p>
-          <strong></strong> {patient.es_fallecido ? "Si" : "No"}
+          {/* <strong></strong> {patient.es_fallecido ? "Si" : "No"} */}
+          <input
+            className="checkbox"
+            type="checkbox"
+            checked={patient.es_fallecido}
+            // onChange={handleCheckboxChange}
+            name=""
+            id=""
+          />
         </p>
 
         <Dropdown className="dropdow">

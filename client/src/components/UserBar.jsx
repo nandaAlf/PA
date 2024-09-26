@@ -2,9 +2,11 @@ import React from "react";
 import { Dropdown } from "react-bootstrap";
 import "../css/userBar.css";
 
-export default function UserBar({user}) {
+export default function UserBar({ user }) {
   // const name = localStorage.getItem('name'); // Obtener el nombre de usuario
-  {console.log("jjj",user)}
+  {
+    console.log("jjj", user);
+  }
   return (
     <div className="user-info">
       <Dropdown onSelect={null}>
@@ -30,12 +32,12 @@ export default function UserBar({user}) {
           />
         </Dropdown.Toggle>
         <Dropdown.Menu>
-          <Dropdown.Item eventKey={true}>Profile</Dropdown.Item>
+          <Dropdown.Item eventKey={true} href="/user-profile">Profile</Dropdown.Item>
           <Dropdown.Item eventKey={false}>Logout</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
       <span></span>
-      <span className="user-name">{user.username }</span>
+      <span className="user-name">{user.username}</span>
     </div>
   );
 }

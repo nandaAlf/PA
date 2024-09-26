@@ -1,51 +1,27 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import ApiService from "../services/apiService";
 import "../css/card.css";
+import { toastInfo } from "../util/Notification";
+import DropdownToggle from "./DropdownToggle";
+import { FaEdit } from "react-icons/fa";
 
-const StudyCard = ({ study, isSelected, onStudySelected, index }) => {
+import { BsEye } from "react-icons/bs";
+
+import { BsThreeDots } from "react-icons/bs";
+const StudyCard = ({ study,values=[], onStudySelected, index ,isSelected,type}) => {
   const [showDetails, setShowDetails] = useState(false);
   const [process, setProcess] = useState({});
   const [diagnosis, setDiagnosis] = useState({});
 
   useEffect(() => {
-    const fetchProcessAndDiagnosis = async () => {
-      try {
-        console.log("Fetching process for study code:", study.code);
-        const processResponse = await ApiService.get(
-          `/procesos/${study.code}/`
-        );
-        console.log("Process data:", processResponse.data);
-        setProcess(processResponse.data);
-
-        if (processResponse.data.id) {
-          console.log(
-            "Fetching diagnosis for process ID:",
-            processResponse.data.id
-          );
-          const diagnosisResponse = await ApiService.get(
-            `/diagnosticos/${processResponse.data.id}/`
-          );
-          console.log("Diagnosis data:", diagnosisResponse.data);
-          setDiagnosis(diagnosisResponse.data);
-        }
-      } catch (error) {
-        console.error("Error fetching process or diagnosis:", error);
-      }
-    };
-
-    if (showDetails) {
-      fetchProcessAndDiagnosis();
-    }
-  }, [showDetails, study.code]);
-
-  const handleDoubleClick = () => {
-    setShowDetails(!showDetails);
-    document.body.classList.toggle("show-details", !showDetails);
-  };
+    console.log(values);
+  }, []);
 
   const handleClick = () => {
-    onStudySelected(study.code);
+    onStudySelected(values[0]);
+  };
+  const handleCheckboxChange = () => {
+    toastInfo("Vaya a la opcion editar estudio para cambiar este valor");
   };
 
   return (
@@ -53,48 +29,52 @@ const StudyCard = ({ study, isSelected, onStudySelected, index }) => {
       className={`container-card ${showDetails ? "selected" : "noSelected"} ${
         isSelected ? "isSelected" : ""
       } `}
-      onDoubleClick={handleDoubleClick}
+      // onDoubleClick={handleDoubleClick}
       onClick={handleClick}
     >
-  
-
       <div className={`card-details ${showDetails ? "selected" : ""}`}>
         {index}
-        <p className="">{study.code}</p>
+        <p className="">{values[0]}</p>
+        <p>
+          <a href={`/patients?hc=${values[1]}`}>{values[1]}</a>
+        </p>
+        <p>{values[2]}</p>
 
         <p>
-          <a href={`/patients?hc=${study.hc_paciente}`}>{study.hc_paciente}</a>
+          <input
+            className="checkbox"
+            type="checkbox"
+            checked={values[3]}
+            onChange={handleCheckboxChange}
+            name=""
+            id=""
+          />
         </p>
 
-        <p>
-          <strong>Pieza:</strong> {study.pieza}
-        </p>
-
-        <p>
-          <strong>Date:</strong> {study.fecha}
-        </p>
-        {/* </div> */}
-
-        {/* {showDetails && (
-          <div className="card-extra-details">
-            <p>
-              <strong>Impresion:</strong> {study.imp_diag}
-            </p>
-            <p>
-              <strong>Especialista:</strong> {study.especialista}
-            </p>
-            <p>
-              <strong>Medico:</strong> {study.especialista}
-            </p>
-            {console.log("d", diagnosis, process)}
-            <p>
-              <strong>Observaciones</strong> {diagnosis.observaciones}
-            </p>
-            <p>
-              <strong>Diagnostico</strong> {diagnosis.diagnostico}
-            </p>
-          </div>
-        )}  */}
+        <DropdownToggle
+          className="dropdow"
+          icon={<BsThreeDots size={20} color="#79889c" />}
+          items={[
+            { label: " Ver", url:`/${type}/view/${values[0]}`,icon: <BsEye size={12} /> },
+            {
+              label: ` Editar`,
+              url: `/${type}/${values[0]}`,
+              icon: <FaEdit size={12} />,
+            },
+          ]}
+          styles={{
+            backgroundColor: "#f7f9faff",
+            border: "1px solid #e4e6ebff",
+            padding: "5px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            boxShadow: "none",
+            color: "black",
+            width: "40px",
+            height: "40px",
+          }}
+        />
       </div>
     </div>
   );

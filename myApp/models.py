@@ -9,6 +9,7 @@ from django.db import models
 from django.urls import reverse
 from django.core.validators import MinValueValidator,MaxValueValidator
 from user_app.models import CustomUser
+from django.utils import timezone 
 
 #arreglar el modelo asi
 # edad = models.IntegerField(blank=True, null=True, validators=[MinValueValidator(0), MaxValueValidator(120)])
@@ -40,11 +41,33 @@ class Estudio(models.Model):
     pieza = models.CharField(max_length=50)
     fecha = models.DateField(blank=True, null=True)
     entidad = models.CharField(max_length=2, blank=True, null=True)
+    finalizado = models.BooleanField(blank=True, null=True,default=False)
 
     # class Meta:
     #     managed = True
     #     db_table = 'estudio'
+    
+    def save(self, *args, **kwargs):
+        if not self.code:
+            # Generar el código automáticamente
+            self.code = self.generate_code()
+        super(Estudio, self).save(*args, **kwargs)
+
+    def generate_code(self):
+        # Obtener el año actual
+        current_year = timezone.now().year
+        # Obtener el último código creado del mismo tipo en el mismo año
+        last_study = Estudio.objects.filter(code__startswith=f"{self.tipo}-{current_year}-").order_by('code').last()
         
+        if last_study:
+            # Obtener el número secuencial y aumentarlo
+            last_number = int(last_study.code.split("-")[-1])
+            new_number = last_number + 1
+        else:
+            new_number = 1  # Si no existe, empezamos desde 1
+
+        # Formatear el código con el tipo, año y número
+        return f"{self.tipo}-{current_year}-{new_number:02d}"
         
     def __str__(self):
         return self.code
@@ -72,7 +95,7 @@ class Fallecido(models.Model):
 
 class Necropsia(models.Model):
     code = models.CharField(primary_key=True, max_length=10)
-    hc_fallecido = models.ForeignKey(Fallecido, models.CASCADE, db_column='hc_fallecido',related_name='necropsy')
+    hc_paciente= models.ForeignKey(Fallecido, models.CASCADE, db_column='hc_fallecido',related_name='necropsy')
     certif_defuncion = models.CharField(blank=True, null=True,max_length=50)
     # especialista = models.CharField(max_length=11, blank=True, null=True)
     especialista = models.ForeignKey(
@@ -88,10 +111,33 @@ class Necropsia(models.Model):
     analisis_por_aparatos = models.CharField(blank=True, null=True,max_length=50)
     hallazgos = models.CharField(blank=True, null=True,max_length=50)
     epicrisis = models.CharField(blank=True, null=True,max_length=50)
+    finalizado = models.BooleanField(blank=True, null=True,default=False)
 
     # class Meta:
     #     managed = True
     #     db_table = 'necropsia'
+    
+    def save(self, *args, **kwargs):
+        if not self.code:
+            # Generar el código automáticamente
+            self.code = self.generate_code()
+        super(Necropsia, self).save(*args, **kwargs)
+
+    def generate_code(self):
+        # Obtener el año actual
+        current_year = timezone.now().year
+        # Obtener el último código creado en el mismo año
+        last_necropsia = Necropsia.objects.filter(code__startswith=f"N-{current_year}-").order_by('code').last()
+        
+        if last_necropsia:
+            # Obtener el número secuencial y aumentarlo
+            last_number = int(last_necropsia.code.split("-")[-1])
+            new_number = last_number + 1
+        else:
+            new_number = 1  # Si no existe, empezamos desde 1
+
+        # Formatear el código con el tipo, año y número
+        return f"N-{current_year}-{new_number:02d}"
         
     def __str__(self):
         return self.code
@@ -149,8 +195,8 @@ class Diagnostico(models.Model):
     id_proceso=models.OneToOneField('Proceso', db_column='id_proceso',on_delete=models.CASCADE,related_name='diagnostico')
     diagnostico = models.CharField(blank=True, null=True,max_length=50)
     observaciones = models.TextField(blank=True, null=True,max_length=50)
-    fecha = models.DateField(blank=True, null=True)
-    finalizado = models.BooleanField(blank=True, null=True,default=False)
+    # fecha = models.DateField(blank=True, null=True)
+    # finalizado = models.BooleanField(blank=True, null=True,default=False)
 
     # class Meta:
     #     managed = True

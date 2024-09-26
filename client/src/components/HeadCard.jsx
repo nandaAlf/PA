@@ -5,7 +5,7 @@ export default function HeadCard({ titles = [] }) {
     <div className="container-card header">
       <div className="card-details">
         <span>#</span>
-        {titles.map((title,index) => (
+        {titles.map((title, index) => (
           <p key={index}>{title}</p>
         ))}
         <>Acciones</>

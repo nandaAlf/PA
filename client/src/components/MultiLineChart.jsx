@@ -30,9 +30,9 @@ const MultiLineChart = () => {
         label: "Dato 1",
         data: [65, 59, 80], // Valores de dato 1
         fill: true, // Para sombrear el área debajo de la línea
-        backgroundColor: 'rgba(75, 192, 192, 0.2)', // Color de fondo con transparencia
-        borderColor: 'rgba(75, 192, 192, 1)',  // Color de la línea
-        pointBackgroundColor: 'rgba(75, 192, 192, 1)', // Color de los puntos
+        backgroundColor: "rgba(75, 192, 192, 0.2)", // Color de fondo con transparencia
+        borderColor: "rgba(75, 192, 192, 1)", // Color de la línea
+        pointBackgroundColor: "rgba(75, 192, 192, 1)", // Color de los puntos
         tension: 0.4, // Suaviza las curvas
         borderWidth: 1,
       },
@@ -40,9 +40,9 @@ const MultiLineChart = () => {
         label: "Dato 2",
         data: [28, 48, 40], // Valores de dato 2
         fill: true, // Para sombrear el área debajo de la línea
-        backgroundColor: 'rgba(75, 192, 192, 0.2)', // Color de fondo con transparencia
-        borderColor: 'rgba(75, 192, 192, 1)',  // Color de la línea
-        pointBackgroundColor: 'rgba(75, 192, 192, 1)', // Color de los puntos
+        backgroundColor: "rgba(75, 192, 192, 0.2)", // Color de fondo con transparencia
+        borderColor: "rgba(75, 192, 192, 1)", // Color de la línea
+        pointBackgroundColor: "rgba(75, 192, 192, 1)", // Color de los puntos
         tension: 0.4, // Suaviza las curvas
         borderWidth: 1,
       },
@@ -50,9 +50,9 @@ const MultiLineChart = () => {
         label: "Dato 3",
         data: [35, 60, 55], // Valores de dato 3
         fill: true, // Para sombrear el área debajo de la línea
-        backgroundColor: 'rgba(75, 192, 192, 0)', // Color de fondo con transparencia
-        borderColor: 'rgba(75, 192, 192, 1)',  // Color de la línea
-        pointBackgroundColor: 'rgba(75, 192, 192, 1)', // Color de los puntos
+        backgroundColor: "rgba(75, 192, 192, 0)", // Color de fondo con transparencia
+        borderColor: "rgba(75, 192, 192, 1)", // Color de la línea
+        pointBackgroundColor: "rgba(75, 192, 192, 1)", // Color de los puntos
         tension: 0.4, // Suaviza las curvas
         borderWidth: 1,
       },
@@ -60,9 +60,9 @@ const MultiLineChart = () => {
         label: "Dato 5",
         data: [23, 40, 45], // Valores de dato 3
         fill: true, // Para sombrear el área debajo de la línea
-        backgroundColor: 'rgba(75, 192, 192, 0.2)', // Color de fondo con transparencia
-        borderColor: 'rgba(75, 192, 192, 1)',  // Color de la línea
-        pointBackgroundColor: 'rgba(75, 192, 192, 1)', // Color de los puntos
+        backgroundColor: "rgba(75, 192, 192, 0.2)", // Color de fondo con transparencia
+        borderColor: "rgba(75, 192, 192, 1)", // Color de la línea
+        pointBackgroundColor: "rgba(75, 192, 192, 1)", // Color de los puntos
         tension: 0.4, // Suaviza las curvas
         borderWidth: 1,
       },
@@ -76,8 +76,8 @@ const MultiLineChart = () => {
         display: true, // Oculta la leyenda por defecto
         position: "right",
         labels: {
-            padding: 40, // Espacio entre la leyenda y el borde
-            boxWidth: 20, // Ajusta el tamaño del cuadro de color
+          padding: 40, // Espacio entre la leyenda y el borde
+          boxWidth: 20, // Ajusta el tamaño del cuadro de color
         },
       },
       title: {
@@ -98,8 +98,8 @@ const MultiLineChart = () => {
       },
       y: {
         grid: {
-            // display: false, 
-        //   borderDash: [0], 
+          // display: false,
+          //   borderDash: [0],
           color: "rgba(200, 200, 200, 0.1)", // Líneas de la cuadrícula con transparencia
         },
         // ticks: {
@@ -109,9 +109,9 @@ const MultiLineChart = () => {
         // },
         // beginAtZero: true,  // Asegura que el gráfico comience en cero
         border: {
-            display: false, // Esto quita la línea vertical en el punto 0
-        }
-    },
+          display: false, // Esto quita la línea vertical en el punto 0
+        },
+      },
     },
   };
 
@@ -127,7 +127,7 @@ const MultiLineChart = () => {
           fontSize: "14px",
         }}
       >
-       bla bla
+        bla bla
       </div>
       <div
         style={{

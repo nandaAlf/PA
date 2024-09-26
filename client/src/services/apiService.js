@@ -132,4 +132,7 @@ class ApiService {
 }
 
 // local
-export default new ApiService("http://127.0.0.1:8000/pa");
+const apiService= new ApiService("http://127.0.0.1:8000/pa");
+const accountService= new ApiService("http://127.0.0.1:8000/account");
+
+export { apiService ,accountService};

@@ -1,0 +1,63 @@
+.form-container {
+  /* margin-top: 5%; */
+  display: flex;
+  justify-content: space-between;
+  /* align-items: center; */
+  padding: 20px;
+  gap: 20px;
+  /* background-color: #4caf50; */
+  min-height: 70vh;
+}
+
+.user-profile {
+  width: 35%;
+  display: inherit;
+  flex-direction: column;
+  /* gap:"30px"; */
+  /* background-color: #fff; */
+}
+
+.profile-picture-container {
+  display: inherit;
+  justify-content: center;
+  align-items: end;
+  text-align: center;
+  padding: 30px;
+}
+.profile-picture-container button {
+  background-color: aqua;
+  border-radius: 50%;
+  /* margin-right: 0px; */
+}
+.profile-picture {
+  width: 150px;
+  height: 120px;
+  border-radius: 50%;
+  background-color: rgba(211, 239, 195, 0.729);
+}
+
+.user-info h3 {
+  /* background-color: red; */
+
+  margin-top: 15px;
+  margin-left: 30%;
+  text-align: center;
+  font-size: 18px;
+}
+
+.user-actions {
+  display: flex;
+  flex-direction: column;
+  /* background-color: blueviolet; */
+  gap: 10px;
+  margin-top: 40px;
+}
+
+.password {
+  display: flex;
+  flex-direction: column;
+  /* gap: 240px; */
+  /* align-items:center; */
+  justify-content: center;
+  /* justify-content: space-between; */
+}

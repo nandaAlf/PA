@@ -1,62 +1,71 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
-import SearchFilter from "../components/SearchFilter";
-import StudyCard from "../components/StudyCard";
-import HeadCard from "../components/HeadCard";
-// import Dropdown from "../components/Dropdown.jsx";
-import { useNavigate } from "react-router-dom";
-// import apiService from "../services/apiService";
-import ApiService from "../services/apiService";
-import "../css/page.css";
-import { Dropdown } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Button from "../components/Button";
-import { useService } from "../util/useService";
-import { InfoCard } from "../components/InfoCard";
-import {
-  handleApiError,
-  toastInfo,
-  toastSuccess,
-} from "../util/Notification";
+import { FaEdit } from "react-icons/fa";
 import AccionButtons from "../components/AccionButtons";
+import InformationCard from "../components/InformationCard";
+import SearchSection from "../components/SearchSection";
+import Table from "../components/Table";
+import "../css/page.css";
+import { usePage } from "../util/usePage";
+import { BsEye } from "react-icons/bs";
 
-function StudyPage() {
-  const [studies, setStudies] = useState([]);
-  const [searchBy, setSearchBy] = useState("code");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedStudies, setSelectedStudies] = useState([]);
-  const {fetchItems,handleDelete} =useService("estudios");
+function StudyPage({ service }) {
+  const filterOptions =
+    service === "estudios"
+      ? [
+          { label: "Biopsias", eventKey: { filterKey: "tipo", value: "B" } },
+          { label: "Citologías", eventKey: { filterKey: "tipo", value: "C" } },
+          {
+            label: "No diagnosticados",
+            eventKey: { filterKey: "finalizado", value: false },
+          },
+        ]
+      : [
+          {
+            label: "No diagnosticados",
+            eventKey: { filterKey: "finalizado", value: false },
+          },
+        ];
+  const dataField =
+    service === "estudios" || service === "necropsias"
+      ? ["code", "hc_paciente", "fecha", "finalizado"]
+      : [];
+  const headerTable =
+    service === "estudios" || service === "necropsias"
+      ? ["#", "Código", "Paciente", "Fecha", "Diagnostico", "Acciones"]
+      : [];
+  const optionsSearch =
+    service === "estudios" || service === "necropsias"
+      ? ["code", "hc_paciente"]
+      : [];
 
-  // const [type, setType] = useState("");
+  const {
+    items: filteredStudies,
+    searchBy,
+    searchTerm,
+    setSearchBy,
+    setSearchTerm,
+    selectedItems: selectedStudies,
+    handleItemSelected: handleStudySelected,
+    handleNavigate,
+    fetchStats,
+    handleTypeSelect,
+    handleDeleteClick,
+  } = usePage(service, optionsSearch);
 
-  const navigate = useNavigate();
-
+  const params = new URLSearchParams(location.search);
+  const [route, setRoute] = useState("");
   useEffect(() => {
-    fetchStudies("-fecha");
-    handleURLParams() 
-    // const data=fetchItems({ordering: "-fecha"})
-    // setStudies(data)
-    // console.log(data)
-  }, []);
+    handleURLParams();
 
-  const fetchStudies = async (orderParam="", filterParm={}) => { 
-    const studies = await fetchItems({ ordering: orderParam, filters:filterParm});
-    setStudies(studies)
-    console.log("fetch",studies);
-  };
-  // async function fetchStudies(date = "-fecha", type = "") {
-  //   const result = await ApiService.get(
-  //     `/estudios/?ordering=${date}&tipo=${type}`
-  //   );
-  //   if (result.success) {
-  //     setStudies(result.data);
-  //     handleURLParams();
-  //   } else handleApiError(result);
-  // }
+    if (service === "estudios") {
+      setRoute("study");
+    } else if (service === "necropsias") {
+      setRoute("necro");
+    }
+  }, [service, params]);
 
   const handleURLParams = () => {
-    const params = new URLSearchParams(location.search);
-
     const searchParams = [
       { key: "code", setter: setSearchBy },
       { key: "hc_paciente", setter: setSearchBy },
@@ -72,163 +81,127 @@ function StudyPage() {
     }
   };
 
-  const filteredStudies = studies.filter((studies) =>
-    studies[searchBy].toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  //   studies[searchBy].toLowerCase().includes(searchTerm.toLowerCase())
+  // );
 
-  const handleStudySelected = (code) => {
-    setSelectedStudies((prevSelected) =>
-      prevSelected.includes(code)
-        ? prevSelected.filter((selectedCode) => selectedCode !== code)
-        : [...prevSelected, code]
-    );
-  };
+  // const handleStudySelected = (code) => {
+  //   setSelectedStudies((prevSelected) =>
+  //     prevSelected.includes(code)
+  //       ? prevSelected.filter((selectedCode) => selectedCode !== code)
+  //       : [...prevSelected, code]
+  //   );
+  // };
 
-  const handleCreateStudy = () => {
-    navigate(`/study/create/`);
-  };
+  // const handleCreateStudy = () => {
+  //   navigate(`/study/create/`);
+  // };
 
-  const handleEditStudy = () => {
-    if (selectedStudies.length != 1) {
-      toastInfo("Solo es posible editar un estudio a la vez");
-      return;
-    }
-    navigate(`/study/${selectedStudies[0]}`);
-  };
+  // const handleEditStudy = () => {
+  //   if (selectedStudies.length != 1) {
+  //     toastInfo("Solo es posible editar un estudio a la vez");
+  //     return;
+  //   }
+  //   navigate(`/study/${selectedStudies[0]}`);
+  // };
 
-  const handleDeleteClick = () => {
-    if (selectedStudies.length <= 0) return;
+  // const handleDeleteClick = () => {
+  //   if (selectedStudies.length <= 0) return;
 
-    const confirmed = window.confirm(
-      "¿Estás seguro de que deseas eliminar este estudio?"
-    );
-    if (!confirmed) return;
+  //   const confirmed = window.confirm(
+  //     "¿Estás seguro de que deseas eliminar este estudio?"
+  //   );
+  //   if (!confirmed) return;
+  //   console.log("eliminar",selectedStudies)
+  //   {
+  //     for (let i = 0; i < selectedStudies.length; i++) {
+  //       // const result = handleDeleteStudy(selectedStudies[i]);
 
-    {
-      for (let i = 0; i < selectedStudies.length; i++) {
-        // const result = handleDeleteStudy(selectedStudies[i]);
-        handleDelete(selectedStudies[i])
-      }
-    }
-  };
-
-  // const handleDeleteStudy = async (id) => {
-  //   const result = await ApiService.delete(`/estudios/${id}`);
-  //   if (result.success) {
-  //     toastSuccess(`Estudio ${id} eliminado`);
-  //   } else {
-  //     handleApiError(result);
+  //       handleDelete(selectedStudies[i]);
+  //     }
   //   }
   // };
 
-  const handleTypeSelect = (eventKey) => {
-    // alert(eventKey)
-    // setType(eventKey); // Actualiza el estado del tipo seleccionado
-    fetchStudies("-fecha", {tipo:eventKey}); // Trae los estudios filtrados por el tipo
-  };
+  // const handleTypeSelect = (eventKey) => {
+  //   fetchStudies("-fecha", { tipo: eventKey }); // Trae los estudios filtrados por el tipo
+  // };
   return (
     <div className="component study">
-      {/* <div className="container"> */}
-      
-      <div className="section-info">
-        <InfoCard
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+        <InformationCard
           title="Total Pacientes"
-          patientCount={10}
-          description={`Hombres ${10} Mujeres ${29}`}
-          // icon={<FaClock size={24} color="#28a745" />}
+          total={6}
+          description={66}
+          value={`Mujeres: `}
         />
-        <InfoCard
+        <InformationCard
           title="Pacientes fallecidos"
-          patientCount={10}
+          total={8}
           description="Total Patients 10 today"
-          // icon={<FaClock size={24} color="#28a745" />}
         />
-        <InfoCard
-          title="Menores de 16 años"
-          patientCount={10}
-          description="Total Patients 10 today"
-          // icon={<FaClock size={24} color="#28a745" />}
-        />
+        <InformationCard title="Menores de 16 años" total={0} description={9} />
       </div>
 
-      <div className="section-search">
-        {/* <div className="dropdow-menu">
-          <AccionBar
-            onInsert={handleCreateStudy}
-            onEdit={handleEditStudy}
-            onDelete={handleDeleteClick}
+      {/* <div className="search-card-container"> */}
+      <div className="bg-white my-8 rounded-xl border-[1px] border-border p-4">
+        <div className="section-search">
+          <SearchSection
+            items={filterOptions}
+            onSelect={handleTypeSelect}
+            options={optionsSearch}
+            searchTerm={searchTerm}
+            searchBy={searchBy}
+            setSearchTerm={setSearchTerm}
+            setSearchBy={setSearchBy}
           />
-          </div> */}
-
-        {/* <Dropdown /> */}
-        {/* Dropdown para filtrar por tipo */}
-        <div className="dropdow-menu">
-          <Dropdown onSelect={handleTypeSelect}>
-            <Dropdown.Toggle
-              style={{
-                backgroundColor: "#6ab8a7ff",
-                color: "white",
-                border: "none",
-              }}
-              id="dropdown-basic"
-            >
-              Filter By
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item eventKey="">Todos</Dropdown.Item>{" "}
-              <Dropdown.Item eventKey="B">Biopsia</Dropdown.Item>{" "}
-              <Dropdown.Item eventKey="C">Citologías</Dropdown.Item>{" "}
-            </Dropdown.Menu>
-          </Dropdown>
         </div>
+        <>
+          <Table
+            data={filteredStudies}
+            headerTable={headerTable}
+            dataFields={dataField}
+            actions={(item) => [
+              {
+                label: "Ver",
+                url: `/${route}/view/${item.code}`,
+                icon: <BsEye size={12} />,
+              },
+              {
+                label: "Editar",
+                url: `/${route}/${item.code}`,
+                icon: <FaEdit size={12} />,
+              },
+            ]}
+            handleRowSelect={handleStudySelected}
+            selectedRows={selectedStudies}
+          />
+        </>
 
-        {/* <div className="search-bar-container"> */}
-        <SearchFilter
-          searchTerm={searchTerm}
-          onChange={setSearchTerm}
-          searchBy={searchBy}
-          onSearchByChange={setSearchBy}
-          options={["code", "hc_paciente"]}
-        />
-        {/* </div> */}
-      </div>
-
-      <div className="card-list study">
-        <HeadCard titles={["Código", "Paciente", "Pieza", "Fecha"]} />
+        {/* <div className="card-list study">
+        <HeadCard titles={["Código", "Paciente", "Fecha", "Diagnosticado"]} />
         {filteredStudies.map((study, index) => (
           <StudyCard
             index={index}
-            study={study}
+            values={[
+              study.code,
+              study.hc_paciente,
+              study.fecha,
+              study.finalizado,
+            ]}
             key={study.code}
             onStudySelected={handleStudySelected}
             isSelected={selectedStudies.includes(study.code)}
+            type={route}
           />
         ))}
+      </div> */}
       </div>
-      {/* </div> */}
-
-      <AccionButtons selectedStudies={selectedStudies} handleEdit={handleEditStudy} handleDelete={handleDeleteClick} handleCreate={handleCreateStudy }/>
-      {/* {selectedStudies.length == 0 ? (
-        <Button
-          iconNumber={1}
-          details={"circular add"}
-          action={handleCreateStudy}
-        />
-      ) : (
-        <>
-          <Button
-            iconNumber={2}
-            details={"circular edit"}
-            action={handleEditStudy}
-          />{" "}
-          <Button
-            iconNumber={3}
-            details={"circular delete"}
-            action={handleDeleteClick}
-          />{" "}
-        </>
-      )} */}
-
+      <AccionButtons
+        selectedStudies={selectedStudies}
+        handleDelete={handleDeleteClick}
+        handleCreate={() => {
+          handleNavigate(`/${route}/create/`);
+        }}
+      />
     </div>
   );
 }

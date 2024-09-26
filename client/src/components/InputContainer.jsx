@@ -1,11 +1,14 @@
 import React from "react";
 import InputForForm from "./inputForForm";
-export default function InputContainer({ inputs = [], register,disabled=false }) {
+export default function InputContainer({
+  inputs = [],
+  register,
+  disabled = false,
+}) {
   return (
     <div className="section-short-input">
-      {inputs.map((input,index) => (
+      {inputs.map((input, index) => (
         <div>
-          
           <InputForForm
             key={index}
             labelText={input.labelText}
@@ -14,6 +17,10 @@ export default function InputContainer({ inputs = [], register,disabled=false })
             required={input.required}
             type={input.type}
             disabled={disabled}
+            options={input.options }
+            maxLength={input.maxLength}
+            placeholder={input.placeholder}
+            defaultValue={input.defaultValue}
           />
         </div>
       ))}

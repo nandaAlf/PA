@@ -9,9 +9,11 @@ from django.contrib import auth
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
-from user_app.api.serializer import RegistrationSerializer
+from user_app.api.serializer import ChangePasswordSerializer, CustomUserSerializer, RegistrationSerializer
 from user_app.models import CustomUser
 from django.contrib.auth.models import Group
+from rest_framework.views import APIView
+
 @api_view(['POST'])
 def logout_view(request):
     # if request.method=='POST':
@@ -142,3 +144,57 @@ def get_doctors_view (request):
     
     except Group.DoesNotExist:
         return Response({'error': 'El grupo DoctorsGroup no existe.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    
+class UserProfileView(APIView):
+    # permission_classes = [IsAuthenticated]  # Solo usuarios autenticados pueden acceder a esta vista
+
+    def get(self, request):
+        user = request.user
+        if request.user.is_anonymous:
+            return Response({"detail": "No estás autenticado."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        serializer = CustomUserSerializer(user)
+        return Response(serializer.data)
+    
+    def put(self, request, *args, **kwargs):
+        user = request.user
+        serializer = CustomUserSerializer(user, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+class ChangePasswordView(APIView):
+    # permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = ChangePasswordSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"detail": "Contraseña cambiada exitosamente"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET'])
+def get_lab_staff_view (request):
+    try:
+        # Obtén el grupo 'DoctorGroup'
+        group = Group.objects.get(name='LabStaffGroup')
+        
+        # Obtén todos los usuarios en ese grupo
+        members = group.user_set.all()
+
+        # Serializa la información de los usuarios
+        users_data = [{
+            'name':user.full_name(),
+            'id': user.id
+        } for user in members]
+
+        return Response(users_data, status=status.HTTP_200_OK)
+    
+    except Group.DoesNotExist:
+        return Response({'error': 'El grupo LabStaff no existe.'}, status=status.HTTP_404_NOT_FOUND)
+ 
+ 

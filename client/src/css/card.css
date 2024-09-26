@@ -20,6 +20,7 @@
 .card-details {
   display: flex;
   /* flex-direction: column; */
+  flex: 1;
   justify-content: space-between;
   align-items: center;
   padding: 5px;
@@ -36,11 +37,14 @@
   text-overflow: ellipsis;
   width: 20%;
   color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-  .card-details .dropdow{
+.card-details .dropdow{
     width: 5%;
   }
-  
+
 .container-card.isSelected {
   /* background-color: #aa0808bc; */
   background-color: #f0f0f0;

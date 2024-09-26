@@ -2,6 +2,8 @@ from rest_framework import serializers
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate
 
+from django.contrib.auth.password_validation import validate_password
+
 from user_app.models import CustomUser
 
 # from user_app.models import Profile
@@ -155,15 +157,29 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return account
     
     
-       
-# class RegistrationSerializer:
-#     pass
-# class LoginSerializer(serializers.Serializer):
-#     username = serializers.CharField()
-#     password = serializers.CharField(write_only=True)
+class CustomUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id','username', 'first_name', 'last_name', 'email', 'cid', 'dpto', 'titulo', 'is_admin', 'is_staff', 'is_active', 'is_superadmin','profile_image']
+        
+    
 
-#     def validate(self, data):
-#         user = authenticate(**data)
-#         if user and user.is_active:
-#             return {'user': user}
-#         raise serializers.ValidationError("Credenciales incorrectas.")
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True, validators=[validate_password])
+
+    def validate_old_password(self, value):
+        user = self.context['request'].user
+        if not user.check_password(value):
+            raise serializers.ValidationError("La contraseña actual no es correcta")
+        return value
+
+    def validate(self, attrs):
+        # Validación adicional si es necesaria
+        return attrs
+
+    def save(self, **kwargs):
+        user = self.context['request'].user
+        user.set_password(self.validated_data['new_password'])
+        user.save()
+        return user
