@@ -1,4 +1,4 @@
-import PatientForm from "../components/PatientForm";
+import PatientForm from "../components/forms/PatientForm";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
@@ -18,7 +18,7 @@ export default function PatientFormPage() {
     handleUpdate: handleUpdatePatient,
   } = useService("pacientes");
   const params = useParams();
-  const { handleSubmit, register, setValue, unregister ,errors} = useForm();
+  const { handleSubmit, register, setValue, unregister ,formState: { errors }} = useForm();
   const navigate = useNavigate();
   // const [process, setProcess] = useState({});
 
@@ -35,6 +35,7 @@ export default function PatientFormPage() {
   }, [params]);
 
   const onSubmit = async (patientData) => {
+    console.log(patientData)
     console.log("data", patientData);
     let result;
     if (isEditing) {
@@ -60,7 +61,8 @@ export default function PatientFormPage() {
           patientData={patient}
           register={register}
           setValue={setValue}
-          isEditing={isViewing}
+          isViewing={isViewing}
+          isEditing={isEditing}
           unregister={unregister}
           errors={errors}
         />
@@ -83,7 +85,7 @@ export default function PatientFormPage() {
                     <li key={index}>
                       <a
                         href={`/studies?code=${study}`}
-                        target="_blank" //abre el enlace en una nueva pestana
+                        // target="_blank" //abre el enlace en una nueva pestana
                         rel="noopener noreferrer"
                       >
                         {`${index + 1} - ${study}`}
@@ -98,11 +100,11 @@ export default function PatientFormPage() {
             {patient.es_fallecido ? (
               patient.fallecido.necropsy ? (
                 <a
-                  href={`/studies?code=${patient.fallecido.necropsy[0]}`}
-                  target="_blank"
+                  href={`/necropsies?code=${patient.fallecido.necropsy}`}
+                  // target="_blank"
                   rel="noopener noreferrer"
                 >
-                 Necropsia: {patient.fallecido.necropsy[0]}
+                 Necropsia: {patient.fallecido.necropsy}
                 </a>
               ) : (
                 ""

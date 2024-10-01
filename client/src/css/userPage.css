@@ -8,7 +8,18 @@
   /* background-color: #4caf50; */
   min-height: 70vh;
 }
-
+@media (max-width: 768px) {
+  .form-container{
+    flex-direction: column;
+    
+  }
+  .user-profile.form {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  
+}
 .user-profile {
   width: 35%;
   display: inherit;

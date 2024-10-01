@@ -1,4 +1,5 @@
 import React from "react";
+import { toastError } from "../../util/Notification";
 
 export default function InputForForm({
   labelText = "",
@@ -13,6 +14,7 @@ export default function InputForForm({
   maxLength,
   defaultValue,
   validation = {},
+  errors={}
 }) {
   return (
     <div className="flex-column">
@@ -40,7 +42,8 @@ export default function InputForForm({
           id={id}
           type={type}
           placeholder={placeholder}
-          {...register(id, { required })}
+          // {...register(id, { required })}
+          {...register(id, { required, ...validation })}
           disabled={disabled}
           maxLength={maxLength}
           defaultValue={defaultValue}
@@ -56,6 +59,12 @@ export default function InputForForm({
         disabled={disabled}
        
       /> */}
+        {/* Mostrar el mensaje de error solo si existe */}
+      {errors[id]?.message && (
+        // <span className="error-message">{error[id].message}</span>
+        console.log("eeeeeeeerrrrrrrrooooor",errors[id].message)
+        
+      )}
     </div>
   );
 }

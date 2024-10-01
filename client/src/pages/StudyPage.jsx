@@ -8,6 +8,8 @@ import Table from "../components/Table";
 import "../css/page.css";
 import { usePage } from "../util/usePage";
 import { BsEye } from "react-icons/bs";
+import Loader from "../components/Loader";
+import ModalComponent from "../components/Modal";
 
 function StudyPage({ service }) {
   const filterOptions =
@@ -20,24 +22,28 @@ function StudyPage({ service }) {
             eventKey: { filterKey: "finalizado", value: false },
           },
         ]
-      : [
+      : service === "necropsias"
+      ? [
           {
             label: "No diagnosticados",
             eventKey: { filterKey: "finalizado", value: false },
           },
-        ];
+        ]
+      : [];
   const dataField =
     service === "estudios" || service === "necropsias"
       ? ["code", "hc_paciente", "fecha", "finalizado"]
-      : [];
+      : ["nombre", "cid", "dpto"];
   const headerTable =
     service === "estudios" || service === "necropsias"
       ? ["#", "Código", "Paciente", "Fecha", "Diagnostico", "Acciones"]
-      : [];
+      : ["#", "Nombre", "ID", "Departamento", "Acciones"];
   const optionsSearch =
     service === "estudios" || service === "necropsias"
       ? ["code", "hc_paciente"]
-      : [];
+      : ["nombre", "cid", "dpto"];
+
+  const identifier=service === "estudios" || service === "necropsias" ? "code" : "id"
 
   const {
     items: filteredStudies,
@@ -51,19 +57,73 @@ function StudyPage({ service }) {
     fetchStats,
     handleTypeSelect,
     handleDeleteClick,
+    loading,
+    setLoading,
+    showModal,
+    setShowModal,
+    confirmDelete
   } = usePage(service, optionsSearch);
 
   const params = new URLSearchParams(location.search);
   const [route, setRoute] = useState("");
+  const [stats, setStats] = useState(null);
+  // const [loading, setLoading] = useState(true); // Estado para manejar el Loader
+  // const [loading, setLoading] = useState(false);
+  const statsData =
+    stats && service === "estudios"
+      ? [
+          {
+            title: "Total Estudios",
+            total: stats.total_studies,
+            description: `Biopsia: ${stats.total_b}`,
+            value: ` Citología: ${stats.total_c}`,
+          },
+
+          {
+            title: "Total año:",
+            total: stats.total_year,
+            description: `Mes: ${stats.total_month}`,
+            value: ` Día: ${stats.total_day}`,
+          },
+        ]
+      : stats && service === "necropsias"
+      ? [
+          {
+            title: "Total Necropsias",
+            total: stats.total_necro,
+            description: `Finalizado: ${stats.finished}%`,
+            value: `No finalizado: ${stats.no_finished} %`,
+          },
+          {
+            title: "Total año:",
+            total: stats.necro_year,
+            description: `Mes: ${stats.necro_month}`,
+            value: ` Día: ${stats.necro_day}`,
+          },
+        ]
+      : [];
   useEffect(() => {
     handleURLParams();
-
+    setLoading(true);
     if (service === "estudios") {
       setRoute("study");
+      fetchStats().then((fetchedStats) => {
+        setStats(fetchedStats);
+        console.log("Stats fetched:", fetchedStats);
+      });
+      setLoading(false);
     } else if (service === "necropsias") {
       setRoute("necro");
+      fetchStats().then((fetchedStats) => {
+        setStats(fetchedStats);
+        console.log("Stats fetched:", fetchedStats);
+      });
+      setLoading(false);
+    } else {
+      setRoute("doctor");
+      setLoading(false);
     }
-  }, [service, params]);
+  }, [service]);
 
   const handleURLParams = () => {
     const searchParams = [
@@ -80,66 +140,42 @@ function StudyPage({ service }) {
       }
     }
   };
+  // if (
+  //   !service ||
+  //   !filterOptions ||
+  //   !dataField ||
+  //   !headerTable ||
+  //   !optionsSearch ||
+  //   !route
+  // )
 
-  //   studies[searchBy].toLowerCase().includes(searchTerm.toLowerCase())
-  // );
-
-  // const handleStudySelected = (code) => {
-  //   setSelectedStudies((prevSelected) =>
-  //     prevSelected.includes(code)
-  //       ? prevSelected.filter((selectedCode) => selectedCode !== code)
-  //       : [...prevSelected, code]
-  //   );
-  // };
-
-  // const handleCreateStudy = () => {
-  //   navigate(`/study/create/`);
-  // };
-
-  // const handleEditStudy = () => {
-  //   if (selectedStudies.length != 1) {
-  //     toastInfo("Solo es posible editar un estudio a la vez");
-  //     return;
-  //   }
-  //   navigate(`/study/${selectedStudies[0]}`);
-  // };
-
-  // const handleDeleteClick = () => {
-  //   if (selectedStudies.length <= 0) return;
-
-  //   const confirmed = window.confirm(
-  //     "¿Estás seguro de que deseas eliminar este estudio?"
-  //   );
-  //   if (!confirmed) return;
-  //   console.log("eliminar",selectedStudies)
-  //   {
-  //     for (let i = 0; i < selectedStudies.length; i++) {
-  //       // const result = handleDeleteStudy(selectedStudies[i]);
-
-  //       handleDelete(selectedStudies[i]);
-  //     }
-  //   }
-  // };
-
-  // const handleTypeSelect = (eventKey) => {
-  //   fetchStudies("-fecha", { tipo: eventKey }); // Trae los estudios filtrados por el tipo
-  // };
+  
+  //   return;
+  if (loading) {
+    return (
+      <>
+     <Loader/>
+     {/* {alert(loading)} */}
+      </>
+    );
+  } 
   return (
-    <div className="component study">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-        <InformationCard
-          title="Total Pacientes"
-          total={6}
-          description={66}
-          value={`Mujeres: `}
-        />
-        <InformationCard
-          title="Pacientes fallecidos"
-          total={8}
-          description="Total Patients 10 today"
-        />
-        <InformationCard title="Menores de 16 años" total={0} description={9} />
-      </div>
+    <div className="component study ">
+     
+      {stats && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8 mt-8 ">
+          {console.log(statsData)}
+          {statsData.map((stat, index) => (
+            <InformationCard
+              key={index}
+              title={stat.title}
+              total={stat.total}
+              description={stat.description}
+              value={stat.value}
+            />
+          ))}
+        </div>
+      )}
 
       {/* <div className="search-card-container"> */}
       <div className="bg-white my-8 rounded-xl border-[1px] border-border p-4">
@@ -162,38 +198,20 @@ function StudyPage({ service }) {
             actions={(item) => [
               {
                 label: "Ver",
-                url: `/${route}/view/${item.code}`,
+                url: `/${route}/view/${item.code || item.id}`,
                 icon: <BsEye size={12} />,
               },
               {
                 label: "Editar",
-                url: `/${route}/${item.code}`,
+                url: `/${route}/${item.code || item.id}`,
                 icon: <FaEdit size={12} />,
               },
             ]}
+            id={identifier}
             handleRowSelect={handleStudySelected}
             selectedRows={selectedStudies}
           />
         </>
-
-        {/* <div className="card-list study">
-        <HeadCard titles={["Código", "Paciente", "Fecha", "Diagnosticado"]} />
-        {filteredStudies.map((study, index) => (
-          <StudyCard
-            index={index}
-            values={[
-              study.code,
-              study.hc_paciente,
-              study.fecha,
-              study.finalizado,
-            ]}
-            key={study.code}
-            onStudySelected={handleStudySelected}
-            isSelected={selectedStudies.includes(study.code)}
-            type={route}
-          />
-        ))}
-      </div> */}
       </div>
       <AccionButtons
         selectedStudies={selectedStudies}
@@ -201,6 +219,13 @@ function StudyPage({ service }) {
         handleCreate={() => {
           handleNavigate(`/${route}/create/`);
         }}
+      />
+      <ModalComponent
+        show={showModal}
+        handleClose={() => setShowModal(false)}
+        handleConfirm={confirmDelete}
+        title={`Eliminar ${service}`}
+        description={`Está seguro que desea eliminar los elementos seleccionados ?`}
       />
     </div>
   );

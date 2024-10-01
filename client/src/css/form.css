@@ -68,6 +68,11 @@ input {
   gap: 1rem; 
   margin-bottom: 1rem; /* Espacio entre contenedores */
 }
+@media (max-width: 768px) {
+  .grid-input-container{
+    grid-template-columns: repeat(1, 1fr)
+  }
+}
 .form input[type="checkbox"] {
   display: inline-block;
   width: auto;

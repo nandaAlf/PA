@@ -1,30 +1,25 @@
 import React, { useEffect, useState } from "react";
-
+import Loader from "./Loader"
 import { Dropdown } from "react-bootstrap";
 import { useServiceAccount } from "../util/useServiceAccount";
-const Header = ({ isOpen, toggleSidebar}) => {
-  // const profileImageUrl = http://127.0.0.1:8000/media/profile_images/admin_3XG82wk.png';
-  // const profileImageUrl =`http://127.0.0.1:800${user.image_profile}`
-  useEffect(() => {
-    const fetchUser = async () => {
-      const userData = await handleGetUser();
-      setUser(userData.data)
-      console.log("xxx",user)
-    };
- 
-    fetchUser(); // Ejecuta la función
-  }, []);
+// import Loader from "./Loader";
+const Header = ({ isOpen, toggleSidebar ,user,setUser}) => {
+  // const [user, setUser] = useState(null);
+  const { handleGetUser, handleLogout } = useServiceAccount();
+  const logout = async () => {
+    setUser(null)
+    handleLogout()
+    
+  };
 
-  const [user,setUser]=useState();
-  const { handleGetUser } = useServiceAccount();
-  if(!user) return
+  if (!user) return ;
   return (
     <div className="xl:w-5/6 w-full 2xl:max-w-[1640px] bg-gray-50 grid md:grid-cols-2 grid-cols-12 items-center bg-opacity-95 fixed top-0 z-40 xs:px-8 px-2">
       <div
         className="md:col-span-1 sm:col-span-11 col-span-10 flex gap-4 items-center md:py-0 py-4 bg-inherit"
         onClick={toggleSidebar}
       >
-        <button className="block xl:hidden border text-2xl bg-gray-200 w-16 md:w-12 h-12 rounded-md flex items-center justify-center transition hover:bg-gray-300">
+        <button className=" xl:hidden border text-2xl bg-gray-200 w-16 md:w-12 h-12 rounded-md flex items-center justify-center transition hover:bg-gray-300">
           <svg
             stroke="currentColor"
             fill="currentColor"
@@ -104,16 +99,14 @@ const Header = ({ isOpen, toggleSidebar}) => {
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                       <Dropdown.Item eventKey={true} href="/user-profile">
-                        Profile
+                        Perfil
                       </Dropdown.Item>
-                      <Dropdown.Item eventKey={false}>Logout</Dropdown.Item>
+                      <Dropdown.Item onClick={logout}>
+                        Logout{" "}
+                      </Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
-                  {/* <img
-                    src="../public/vite.svg"
-                    alt="user"
-                    className="w-12 border border-gray-300 object-cover h-12 rounded-full"
-                  /> */}
+
                   <p className="text-sm text-gray-500 font-medium">
                     {" "}
                     {user.first_name}

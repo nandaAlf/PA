@@ -1,5 +1,5 @@
 import React from "react";
-import InputForForm from "./inputForForm";
+import InputForForm from "./InputForForm"
 export default function InputContainer({
   inputs = [],
   register,

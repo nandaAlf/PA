@@ -1,4 +1,4 @@
-import { useState ,useEffect} from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
@@ -20,38 +20,36 @@ import HomePage from "./pages/HomePage";
 import UserPage from "./pages/UserPage";
 import { accountService, apiService } from "./services/apiService";
 import { useServiceAccount } from "./util/useServiceAccount";
+import DoctorFormPage from "./pages/DoctorFormPage";
+import { useNavigate } from "react-router-dom";
 function App() {
-  const [user, setUser] = useState();
+  const [user, setUser] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Estado para controlar el sidebar
-
+  const changeUser=(newUser)=>{
+    setUser(newUser)
+  }
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen); // Alternar entre mostrar/ocultar el sidebar
     console.log("open", isSidebarOpen);
   };
-  const {handleGetUser}=useServiceAccount();
+  const { handleGetUser } = useServiceAccount();
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await handleGetUser() ;
-        console.log("aa",response)
-        setUser(response.data); 
-       
+        // alert(user)
+        const response = await handleGetUser();
+        console.log("USUARIO", response.data);
+        setUser(response.data);
+
       } catch (error) {
-        // setError("Error al cargar los datos del usuario");
-        // setLoading(false);
       }
     };
-   
-    fetchUser(); // Llamada a la función para obtener el perfil
-  }, []);
-  // useEffect(() => {
-  //   if (user) {
-  //     console.log("Estado del usuario actualizado", user);
-  //   }
-  // }, [user]);  // Este useEffect se ejecuta cada vez que 'user' cambia.
-  if (!user) {
-    // return <p>No se pudo cargar el usuario</p>; // Mostrar un mensaje si no se pudo obtener el usuario
-  }
+    const token = localStorage.getItem("access_token");
+    if (token) {
+      fetchUser(); // Llamada a la función para obtener el perfil
+    }
+  }, [!user]);
+
   return (
     <>
       <BrowserRouter>
@@ -60,7 +58,7 @@ function App() {
             <SidebarMenu isOpen={isSidebarOpen} />
           </nav>
           <header>
-            <Header toggleSidebar={toggleSidebar} />
+            <Header toggleSidebar={toggleSidebar} user={user} setUser={setUser}/>
           </header>
 
           {/* <button className={`hamburger-menu`} onClick={toggleSidebar}>
@@ -81,12 +79,10 @@ function App() {
             className={`main-content ${isSidebarOpen ? "" : "sidebar-closed"}`}
           >
             <Routes>
-              <Route path="/" element={<LoginPage changeUser={null}/>} />
+              <Route path="/" element={<LoginPage changeUser={changeUser} />} />
               <Route path="/home" element={<HomePage />} />
-              <Route
-                path="/login"
-                element={<LoginPage changeUser={null} />}
-              />
+              <Route path="/login" element={<LoginPage changeUser={changeUser} />} />
+
               <Route path="/user-profile" element={<UserPage />} />
               <Route path="/patients" element={<PatientPage />} />
               <Route path="/patient/:id" element={<PatientFormPage />} />
@@ -101,8 +97,11 @@ function App() {
                 path="/study/create/:hc/"
                 element={<StudyFormPage user={user} />}
               />
-              <Route path="/study/:code/" element={<StudyFormPage user={user} />} />
-              <Route path="/study/view/:code" element={<StudyFormPage user={user} />} />
+              <Route
+                path="/study/:code/"
+                element={<StudyFormPage user={user} />}
+              />
+              <Route path="/study/view/:code" element={<StudyFormPage />} />
 
               <Route
                 path="/necropsies"
@@ -110,19 +109,26 @@ function App() {
               />
               <Route
                 path="/necro/create/:hc"
-                element={<StudyFormPage typeStudy={"necropsias"} />}
+                element={<StudyFormPage typeStudy={"necropsias"} user={user} />}
               />
               <Route
                 path="/necro/:code/"
-                element={<StudyFormPage typeStudy={"necropsias"} />}
+                element={<StudyFormPage typeStudy={"necropsias"} user={user} />}
               />
               <Route
                 path="/necro/view/:code"
-                element={<StudyFormPage typeStudy={"necropsias"} />}
+                element={<StudyFormPage typeStudy={"necropsias"} user={user} />}
               />
+
+              <Route
+                path="/doctors"
+                element={<StudyPage service="doctores" />}
+              />
+
+              <Route path="/doctor/create/" element={<DoctorFormPage />} />
+              <Route path="/doctor/:id" element={<DoctorFormPage />} />
             </Routes>
           </div>
-
         </div>
         <ToastContainer />
       </BrowserRouter>

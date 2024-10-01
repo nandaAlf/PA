@@ -16,21 +16,34 @@ from django.utils import timezone
 #     sexo = models.CharField(max_length=1, blank=True, null=True, choices=[('M', 'Masculino'), ('F', 'Femenino')])
 #     raza = models.CharField(max_length=1, blank=True, null=True, choices=[('B', 'Blanca'), ('N', 'Negra'), ('O', 'Otra')])
 
-
+class Doctor(models.Model):
+   
+    cid = models.CharField(unique=True, max_length=11, blank=True, null=True)
+    nombre = models.CharField(max_length=150)
+    dpto=models.CharField(max_length=150)
+   
+    # class Meta:
+    #     managed = True
+    #     db_table = 'paciente'
+        
+    def __str__(self):
+        return self.nombre
+    
+   
 class Estudio(models.Model):
     code = models.CharField(primary_key=True, max_length=15)
     tipo = models.CharField(max_length=1)
     hc_paciente = models.ForeignKey('Paciente', models.CASCADE, db_column='hc_paciente',related_name='studies')
-    # medico = models.CharField(max_length=11, blank=True, null=True)
-    medico = models.ForeignKey(
-        CustomUser,
-        on_delete=models.CASCADE,
-        limit_choices_to={'groups__name': 'DoctorsGroup'} ,
-        db_column='medico',
-        related_name='doctor'
+   
+    doctor = models.ForeignKey(
+        Doctor,
+        on_delete=models.SET_NULL,
+        # limit_choices_to={'groups__name': 'DoctorsGroup'} ,
+        db_column='doctor',
+        related_name='doctor',
+        null=True
     )
     imp_diag = models.CharField(blank=True, null=True,max_length=50)
-    # especialista = models.CharField(max_length=11, blank=True, null=True)
     especialista = models.ForeignKey(
         CustomUser,
         on_delete=models.CASCADE,
@@ -168,9 +181,8 @@ class Paciente(models.Model):
 
 class Proceso(models.Model):
     # id_proceso=models.IntegerField(primary_key=True,db_column='id_proceso')
-    # cod_est = models.ForeignKey('Estudio', models.DO_NOTHING, db_column='cod_est', blank=True, null=True,related_name='proceso_est')
     cod_est=models.OneToOneField('Estudio', models.CASCADE, db_column='cod_est', blank=True, null=True,related_name='proceso_est')
-    cod_necro = models.ForeignKey('Necropsia', models.CASCADE, db_column='cod_necro', blank=True, null=True,related_name='proceso_necro')
+    cod_necro = models.OneToOneField('Necropsia', models.CASCADE, db_column='cod_necro', blank=True, null=True,related_name='proceso_necro')
     descripcion_macro = models.CharField(blank=True, null=True,max_length=50)
     no_fragmentos = models.IntegerField(blank=True, null=True)
     no_bloques = models.IntegerField(blank=True, null=True)
@@ -204,3 +216,4 @@ class Diagnostico(models.Model):
         
     def __str__(self):
         return f"Diagnóstico para proceso {self.id_proceso}"
+

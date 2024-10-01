@@ -57,9 +57,13 @@ export const useService = (baseUrls) => {
     if (!result.success) handleApiError(result);
     return result;
   };
-  const fetchStats= async()=>{
-    const result=await apiService.get(`/${baseUrls}-estadisticas/`);
+  const fetchStats= async(url)=>{
+
+    const result=await apiService.get(`/${url ||baseUrls}-estadisticas/`);
     return result.data
   }
+  // const handleNavigate = (url) => {
+  //   navigate(url);
+  // };
   return { fetchItem, fetchItems, handleCreate, handleUpdate, handleDelete, fetchStats };
 };

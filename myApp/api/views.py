@@ -1,14 +1,9 @@
-from abc import abstractmethod
 
 from django.db import connection
-from myApp.api.pagination import PatientPagination
-from myApp.api.permissions import  DiagnosisPermission, IsDoctorGroupPermission, IsStaffGroupPermission
 from myApp.api.serializer import *
 from myApp.models import *
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from  rest_framework import viewsets, status,generics,mixins
-from django.shortcuts import get_object_or_404
+from  rest_framework import viewsets, status
 from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
 from django_filters import rest_framework 
@@ -18,6 +13,7 @@ from django.views.generic import ListView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.decorators import action
+
 class BaseStudyFilter(rest_framework.FilterSet):
     
     # finalizado = rest_framework.BooleanFilter(method='filter_by_finalizado')
@@ -51,23 +47,6 @@ class StudyFilter(BaseStudyFilter):
 class NecropsyFilter(BaseStudyFilter):
     class Meta(BaseStudyFilter.Meta):
         model = Necropsia
-    
-    
-    
-# class DiagnosisFilter(rest_framework.FilterSet):
-    
-#     doctor = rest_framework.CharFilter(method='filter_by_doctor')
-#     class Meta:
-#         model = Diagnostico
-#         fields = ['doctor']
-
-#     # def filter_by_doctor(self, queryset, name, value):
-#     #     subquery = Diagnostico.objects.filter(id_proceso__cod_est__medico=value)
-#     #     return subquery
-    
-#     def filter_by_doctor(self, queryset, name, value):
-#         return queryset.filter(id_proceso__cod_est__medico=value)
-    
 class PacienteFilter(rest_framework.FilterSet):
     
     search_name = rest_framework.CharFilter(field_name='nombre', lookup_expr='icontains')
@@ -86,19 +65,19 @@ class PatientViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.OrderingFilter, DjangoFilterBackend]
     filterset_class = PacienteFilter
     
-    # permission_classes=[IsAuthenticated,DiagnosisPermission]
+    permission_classes=[IsAuthenticated]
     # pagination_class=PatientPagination
     
-    def get_queryset(self):
-        user = self.request.user
-        if user.groups.filter(name='DoctorsGroup').exists():
-            # Filtrar pacientes que están asociados a diagnósticos donde el doctor es responsable del estudio
-            return Paciente.objects.filter(
-                hc__in=Diagnostico.objects.filter(
-                    id_proceso__cod_est__medico=user.id
-                ).values_list('id_proceso__cod_est__hc_paciente', flat=True)
-            ).distinct()
-        else: return Paciente.objects.all()
+    # def get_queryset(self):
+    #     user = self.request.user
+    #     if user.groups.filter(name='DoctorsGroup').exists():
+    #         # Filtrar pacientes que están asociados a diagnósticos donde el doctor es responsable del estudio
+    #         return Paciente.objects.filter(
+    #             hc__in=Diagnostico.objects.filter(
+    #                 id_proceso__cod_est__medico=user.id
+    #             ).values_list('id_proceso__cod_est__hc_paciente', flat=True)
+    #         ).distinct()
+    #     else: return Paciente.objects.all()
         
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
@@ -109,33 +88,34 @@ class PatientViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
       
     
-    @action(detail=False, methods=['post'])  
-    def create_with_fallecido(self, request):
-        # Crear el paciente
-        paciente_serializer = PatientSerializer(data=request.data)
-        if paciente_serializer.is_valid():
-            paciente = paciente_serializer.save()
+    # @action(detail=False, methods=['post'])  
+    # def create_with_fallecido(self, request):
+    #     # Crear el paciente
+    #     paciente_serializer = PatientSerializer(data=request.data)
+    #     if paciente_serializer.is_valid():
+    #         paciente = paciente_serializer.save()
 
-            # Si el paciente es fallecido, crear también el registro en la tabla Fallecido
-            if request.data.get('es_fallecido'):
-                fallecido_data = request.data.get('fallecido', {})
-                fallecido_data['hc'] = paciente.hc  # Asociar el hc del paciente creado
-                fallecido_serializer = DefunctSerializer(data=fallecido_data)
-                if fallecido_serializer.is_valid():
-                    fallecido_serializer.save()
-                else:
-                    paciente.delete()  # Si falla, revertir la creación del paciente
-                    return Response(fallecido_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #         # Si el paciente es fallecido, crear también el registro en la tabla Fallecido
+    #         if request.data.get('es_fallecido'):
+    #             fallecido_data = request.data.get('fallecido', {})
+    #             fallecido_data['hc'] = paciente.hc  # Asociar el hc del paciente creado
+    #             fallecido_serializer = DefunctSerializer(data=fallecido_data)
+    #             if fallecido_serializer.is_valid():
+    #                 fallecido_serializer.save()
+    #             else:
+    #                 paciente.delete()  # Si falla, revertir la creación del paciente
+    #                 return Response(fallecido_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            return Response(paciente_serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(paciente_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #         return Response(paciente_serializer.data, status=status.HTTP_201_CREATED)
+    #     else:
+    #         return Response(paciente_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class DefunctViewSet(viewsets.ModelViewSet):
     queryset = Fallecido.objects.all()
     serializer_class = DefunctSerializer
     
     # permission_classes=[IsAuthenticated,IsStaffGroupPermission]
+    permission_classes=[IsAuthenticated]
     
 class StudyViewSet(viewsets.ModelViewSet):
     queryset = Estudio.objects.all()
@@ -149,6 +129,7 @@ class StudyViewSet(viewsets.ModelViewSet):
     #     return response
     
     # permission_classes=[IsAuthenticated,IsStaffGroupPermission]
+    # permission_classes=[IsAuthenticated]
     
     filter_backends = [rest_framework.DjangoFilterBackend,filters.OrderingFilter]
     filterset_class = StudyFilter  
@@ -158,6 +139,7 @@ class NecropsyViewSet(viewsets.ModelViewSet):
     lookup_field = 'code'
     
     # permission_classes=[IsAuthenticated,IsStaffGroupPermission]
+    permission_classes=[IsAuthenticated]
     
     filter_backends = [rest_framework.DjangoFilterBackend,filters.OrderingFilter]
     filterset_class = NecropsyFilter
@@ -166,6 +148,7 @@ class ProcessViewSet(viewsets.ModelViewSet):
     serializer_class = ProcessSerializer
     
     # permission_classes=[IsAuthenticated,IsStaffGroupPermission]
+    permission_classes=[IsAuthenticated]
     
     # Sobrecarga el método get_object para determinar el identificador en funcion de si es un estudio o una necropsia
     def get_object(self):
@@ -219,6 +202,7 @@ class DiagnosisViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.OrderingFilter]
     
     # permission_classes = [IsAuthenticated, DiagnosisPermission]
+    permission_classes=[IsAuthenticated]
     
     def get_queryset(self):
         user = self.request.user
@@ -228,44 +212,57 @@ class DiagnosisViewSet(viewsets.ModelViewSet):
             return Diagnostico.objects.all()
 
 
+class DoctorViewSet(viewsets.ModelViewSet):
+    queryset = Doctor.objects.all()
+    serializer_class = DoctorSerializer
+    lookup_field = 'id'
+  
+    # filter_backends = [filters.OrderingFilter]
+    
+    # permission_classes = [IsAuthenticated, DiagnosisPermission]
+    permission_classes=[IsAuthenticated]
+    
+  
+
 from django.http import Http404, JsonResponse
 
-@api_view(['GET'])
+# @api_view(['GET'])
 # @permission_classes([IsAuthenticated, DiagnosisPermission])
-def all_patient_detail(request, hc):
+# def all_patient_detail(request, hc):
     # Obtener el paciente por su hc (historia clínica)
-    paciente = get_object_or_404(Paciente, hc=hc)
+    # paciente = get_object_or_404(Paciente, hc=hc)
     
-    # Inicializar los datos de respuesta con la información del paciente
-    paciente_data = {
-        'hc': paciente.hc,
-        'cid': paciente.cid,
-        'nombre': paciente.nombre,
-        'edad': paciente.edad,
-        'sexo': paciente.sexo,
-        'raza': paciente.raza,
-        'es_fallecido': paciente.es_fallecido,
-    }
+    # # Inicializar los datos de respuesta con la información del paciente
+    # paciente_data = {
+    #     'hc': paciente.hc,
+    #     'cid': paciente.cid,
+    #     'nombre': paciente.nombre,
+    #     'edad': paciente.edad,
+    #     'sexo': paciente.sexo,
+    #     'raza': paciente.raza,
+    #     'es_fallecido': paciente.es_fallecido,
+    # }
 
     # Si el paciente es fallecido, agregar los detalles de la tabla fallecido
-    if paciente.es_fallecido:
-        fallecido = Fallecido.objects.filter(hc=paciente).first()  # Obtener detalles si existe
-        if fallecido:
-            paciente_data['fallecido'] = {
-                'provincia': fallecido.provincia,
-                'municipio': fallecido.municipio,
-                'direccion': fallecido.direccion,
-                'app': fallecido.app,
-                'apf': fallecido.apf,
-                'hea': fallecido.hea,
-                'apgar': fallecido.apgar,
-                'edad_gest': fallecido.edad_gest,
-                'fecha_muerte': fallecido.fecha_muerte,
-            }
+    # if paciente.es_fallecido:
+    #     fallecido = Fallecido.objects.filter(hc=paciente).first()  # Obtener detalles si existe
+    #     if fallecido:
+    #         paciente_data['fallecido'] = {
+    #             'provincia': fallecido.provincia,
+    #             'municipio': fallecido.municipio,
+    #             'direccion': fallecido.direccion,
+    #             'app': fallecido.app,
+    #             'apf': fallecido.apf,
+    #             'hea': fallecido.hea,
+    #             'apgar': fallecido.apgar,
+    #             'edad_gest': fallecido.edad_gest,
+    #             'fecha_muerte': fallecido.fecha_muerte,
+    #         }
     
-    return JsonResponse(paciente_data)
+    # return JsonResponse(paciente_data)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_patient_statistics(request):
     with connection.cursor() as cursor:
         cursor.execute("SELECT * FROM get_patient_stats()")
@@ -279,3 +276,87 @@ def get_patient_statistics(request):
             "total_under_1": result[5],
         }
     return JsonResponse(data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_study_statistics(request):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT * FROM get_studies_stats()")
+        result = cursor.fetchone()
+        data = {
+            "total_studies": result[0],
+            "total_b": result[1],
+            "total_c": result[2],
+            "total_year": result[3],
+            "total_month": result[4],
+            "total_day": result[5],
+        }
+    return JsonResponse(data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_necro_statistics(request):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT * FROM get_necro_stats()")
+        result = cursor.fetchone()
+        data = {
+            "total_necro": result[0],
+            "finished": result[1],
+            "no_finished": result[2],
+            "necro_year": result[3],
+            "necro_month": result[4],
+            "necro_day": result[5],
+        }
+    return JsonResponse(data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_entity_count(request):
+    with connection.cursor() as cursor:
+        cursor.callproc('public.get_entity_count')  # Llama a la función de SQL
+        rows = cursor.fetchall()  # Obtiene los resultados
+        
+    # Crea una lista de diccionarios para el JSON
+    result = [{'entity': row[0], 'total': row[1]} for row in rows]
+    
+    return JsonResponse(result, safe=False)  # Retorna el JSON
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_department_count(request):
+    with connection.cursor() as cursor:
+        cursor.callproc('public.get_department_study_count')  # Llama a la función de SQL
+        rows = cursor.fetchall()  # Obtiene los resultados
+        
+    # Crea una lista de diccionarios para el JSON
+    result = [{'department': row[0], 'total': row[1]} for row in rows]
+    
+    return JsonResponse(result, safe=False)  # Retorna el JSON
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_process_stats_by_month(request):
+    with connection.cursor() as cursor:
+        cursor.callproc('public.get_process_stats_by_month')
+        rows = cursor.fetchall()
+    
+    result = [{
+            "month":row[0],
+            "total_bloques":row[1],
+            "total_cr":row[2],
+            "total_ce":row[3],
+            "total_laminas":row[4],
+        } for row in rows]
+   
+    return JsonResponse(result,safe=False)
+
+# def db_conection(request,consult,my_data):
+#      with connection.cursor() as cursor:
+#         cursor.execute(consult)
+#         result = cursor.fetchone()
+#         data = {
+#             "entity": result[0],
+#             "count": result[1],
+#         }
+#     return JsonResponse(data)

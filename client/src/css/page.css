@@ -9,7 +9,6 @@
     margin: 20px;
     /* background-color: #ffff; */
     border-radius: 5px;
-    height: auto;
 }
 
 .header-container{
@@ -75,7 +74,7 @@
 
 .chart-container{
     background-color: #fff;
-    width: 70%;
+    width: 100%;
     padding: 15px;
 }
 

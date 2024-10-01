@@ -5,9 +5,10 @@ import { useEffect, useState } from "react";
 import { useServiceAccount } from "../util/useServiceAccount";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import InputForForm from "../components/inputForForm";
+import InputForForm from "../components/forms/InputForForm";
 import Button from "../components/Button";
 import { toastError, toastSuccess } from "../util/Notification";
+import Loader from "../components/Loader";
 // import "../css/userPage";
 
 function UserPage() {
@@ -25,19 +26,19 @@ function UserPage() {
   }, []);
 
   const fetchUserData = async () => {
+    
     const result = await handleGetUser();
     if (result.success) {
       setUserData(result.data);
       console.log("ud", userData);
       setLoading(false);
     }
- 
   };
   const handleFileChange = async (e) => {
     const file = e.target.files[0]; // Obtener el primer archivo seleccionado
     if (file) {
       changeProfilePicture(file);
-      window.location.reload(); 
+      window.location.reload();
     } else {
       console.log("No file selected");
     }
@@ -63,12 +64,12 @@ function UserPage() {
     }
   };
 
-  if (loading) return <p>Cargando...</p>;
+  while (loading) return <Loader />;
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="form-container ">
-      <div className="user-profile form">
+    <div className="form-container">
+      <div className="user-profile form ">
         {userData && (
           <>
             <div className="profile-picture-container ">

@@ -17,6 +17,7 @@ const Table = ({
   actions,
   selectedRows,
   handleRowSelect,
+  id
 }) => {
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
@@ -43,14 +44,14 @@ const Table = ({
 
   return (
     <div>
-      <div className="mt-8 w-full sm:overflow-x-scroll overflow-x-auto">
+      <div className="mt-8 w-full overflow-x-auto sm:overflow-x-visible min-h-fit ">
         <table className="table-auto w-full">
           <thead className="rounded-md overflow-hidden">
             <tr>
               {headerTable.map((header, index) => (
                 <th
                   key={index}
-                  className="text-start text-sm font-medium py-3 px-2 whitespace-nowrap"
+                  className="text-start text-sm font-medium py-3 px-2  whitespace-nowrap rounded-lg"
                 >
                   {header}
                 </th>
@@ -59,13 +60,13 @@ const Table = ({
           </thead>
           <tbody className="">
             {data.map((item, index) => {
-              const identifier = item[dataFields[0]]; // Obtener el primer campo
+              const identifier = item[id]; // Obtener el primer campo
 
               return (
                 <tr
                   key={index}
                   // className="border-b border-border hover:bg-greyed transitions"
-                  className={`border-b border-border hover:bg-greyed transitions ${
+                  className={`border-b border-border hover:bg-greyed transitions  ${
                     selectedRows?.includes(identifier) ? "bg-selected" : ""
                   }`}
                   onClick={() => handleRowSelect(identifier)}
@@ -81,7 +82,9 @@ const Table = ({
                       {field === "es_fallecido" || field === "finalizado" ? (
                         <input type="checkbox" checked={item[field]} readOnly />
                       ) : field === "hc_paciente" ? (
-                        <span class={`py-1 px-4 bg-green-500 text-subMain bg-opacity-10 text-xs rounded-xl `}>
+                        <span
+                          class={`py-1 px-4 bg-green-500 text-subMain bg-opacity-10 text-xs rounded-xl `}
+                        >
                           <a href={`/patients?hc=${item[field]}`}>
                             {item[field]}
                           </a>

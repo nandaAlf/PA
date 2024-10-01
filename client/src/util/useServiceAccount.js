@@ -7,6 +7,17 @@ export const useServiceAccount = () => {
     const result = await accountService.get("/user-profile/");
     return result;
   };
+  const handleLogout = async () => {
+    const result = await accountService.post("/logout/");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("username");
+
+    // Redirige al login o ejecuta cualquier otra lógica de logout
+    window.location.href = "/login"; // Puedes usar `useNavigate` si estás dentro de un Router
+ 
+    return result;
+  };
 
   const handleChangePassword = async (data) => {
     const result = await accountService.post("/password-change/", data);
@@ -40,5 +51,5 @@ export const useServiceAccount = () => {
     }
   };
 
-  return { handleGetUser, handleChangePassword, changeProfilePicture };
+  return { handleGetUser, handleChangePassword, changeProfilePicture,handleLogout };
 };

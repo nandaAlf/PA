@@ -17,9 +17,9 @@ from rest_framework.views import APIView
 @api_view(['POST'])
 def logout_view(request):
     # if request.method=='POST':
-    #     request.user.auth_token.delete()
-    #     return Response(status=status.HTTP_200_OK)
-    pass
+    request.user.auth_token.delete()
+    return Response(status=status.HTTP_200_OK)
+    # pass
     
 #
 #make a random password and user option changes password

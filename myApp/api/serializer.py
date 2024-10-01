@@ -48,11 +48,16 @@ def list_validator(value,list):
 
 class DefunctSerializer(serializers.ModelSerializer):
     
-    necropsy= serializers.HyperlinkedRelatedField(
+    # necropsy= serializers.HyperlinkedRelatedField(
+    #     many=True,
+    #     read_only=True,
+    #     view_name='necropsia-detail',
+    #     lookup_field='code'
+    # )
+    necropsy = serializers.SlugRelatedField(
         many=True,
         read_only=True,
-        view_name='necropsia-detail',
-        lookup_field='code'
+        slug_field='code'  # Aquí especificas que quieres que se muestre el campo 'code'
     )
     class Meta:
         model = Fallecido
@@ -66,12 +71,18 @@ class PatientSerializer(serializers.ModelSerializer):
     # studiesList=serializers.StringRelatedField(many=True,read_only=True)
     
     fallecido = DefunctSerializer(required=False, allow_null=True)
-    studies = serializers.HyperlinkedRelatedField(
+    # studies = serializers.HyperlinkedRelatedField(
+    #     many=True,
+    #     read_only=True,
+    #     view_name='estudio-detail',
+    #     lookup_field='code'
+    # )
+    studies = serializers.SlugRelatedField(
         many=True,
         read_only=True,
-        view_name='estudio-detail',
-        lookup_field='code'
+        slug_field='code'  # Aquí especificas que quieres que se muestre el campo 'code'
     )
+
     def create(self, validated_data):
         # Extraer los datos de fallecido si existen
         fallecido_data = validated_data.pop('fallecido', None)
@@ -127,6 +138,11 @@ class PatientSerializer(serializers.ModelSerializer):
 class NecropsySerializer(serializers.ModelSerializer):
     
     code = serializers.CharField(read_only=True) 
+    especialista_nombre = serializers.SerializerMethodField(read_only=True)  # Campo adicional para mostrar el nombre del especialista
+    
+    def get_especialista_nombre(self, obj):
+        # Aquí accedemos al especialista asociado y devolvemos su nombre
+        return f"{obj.especialista.full_name()}" if obj.especialista else None
     class Meta:
         model = Necropsia
         fields = '__all__'
@@ -155,12 +171,17 @@ class ProcessSerializer(serializers.ModelSerializer):
 class StudySerializer(serializers.ModelSerializer):
     
     code = serializers.CharField(read_only=True)  # El código es solo de lectura
-    # proceso_est = ProcessSerializer(read_only=True)  # Si quieres incluir los datos del proceso
-    # diagnostico = DiagnosisSerializer(read_only=True)  # Si hay varios diagnósticos relacionados
-
+    especialista_nombre = serializers.SerializerMethodField(read_only=True)  # Campo adicional para mostrar el nombre del especialista
+    
+    def get_especialista_nombre(self, obj):
+        # Aquí accedemos al especialista asociado y devolvemos su nombre
+        return f"{obj.especialista.full_name()}" if obj.especialista else None
+    
     class Meta:
         model=Estudio
-        fields="__all__"
+        # fields="__all__"
+        fields = ['code', 'tipo', 'hc_paciente', 'doctor', 'imp_diag', 'especialista', 'especialista_nombre', 'pieza', 'fecha', 'entidad', 'finalizado']
+       
         # fields = ['code', 'tipo', 'imp_diag', 'pieza', 'fecha', 'entidad', 'hc_paciente', 'medico', 'especialista', 'proceso_est']
         
     # arreglar    
@@ -172,5 +193,11 @@ class StudySerializer(serializers.ModelSerializer):
     def validate_fecha(self, value):
         return date_validator(value)
     def validate_entidad(self,value):
-        return list_validator(value,["H","HC","CE"])
+        return list_validator(value,["H","HP","CE"])
  
+class DoctorSerializer(serializers.ModelSerializer):
+    
+    # code = serializers.CharField(read_only=True) 
+    class Meta:
+        model = Doctor
+        fields = '__all__'

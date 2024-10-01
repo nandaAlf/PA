@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import InputContainer from "./InputContainer";
-import InputForForm from "./inputForForm";
+import InputForForm from "./InputForForm";
+import { Alert } from "react-bootstrap";
 export default function PatientForm({
   patientData,
   register,
   setValue,
-  isEditing,
+  isViewing,
   unregister,
-  errors
+  errors,
+  isEditing
 }) {
   useEffect(() => {
     if (patientData) {
@@ -16,15 +18,21 @@ export default function PatientForm({
         setValue(key, value);
       }
       if (patientData.es_fallecido) {
-        setIsDeceased(true); // Marcamos como fallecido si el paciente ya lo es
+        setIsDeceased(true);
+        if (patientData.fallecido) {
+          for (const [key, value] of Object.entries(patientData.fallecido)) {
+            setValue(`fallecido.${key}`, value);
+          }
+        }
       }
+      
     }
   }, [patientData, setValue]);
-  const params = useParams();
-  const navigate = useNavigate();
+
   const [isDeceased, setIsDeceased] = useState(false);
 
   const handleCheckboxChange = (e) => {
+    if(isViewing) return
     const checked = e.target.checked;
     setIsDeceased(checked);
     if (!checked) {
@@ -33,7 +41,7 @@ export default function PatientForm({
   };
   const formInputs = [
     { labelText: "Nombre", id: "nombre", maxLength: 50 },
-    { labelText: "Historia Clinica", id: "hc", maxLength: 6 },
+    { labelText: "Historia Clinica", id: "hc", maxLength: 6 ,disabled:isEditing},
     { labelText: "Carnet de identidad", id: "cid", maxLength: 11 },
     {
       labelText: "Edad",
@@ -47,7 +55,7 @@ export default function PatientForm({
         },
         max: {
           value: 120,
-          message: "La ", // Validación opcional para límite máximo
+          message: "La edad debe ser un númer menor que 120", // Validación opcional para límite
         },
       },
     },
@@ -59,7 +67,17 @@ export default function PatientForm({
         { value: "B", label: "Blanco" },
         { value: "N", label: "Negro" },
         { value: "M", label: "Multato" },
-        { value: null, label: "No especificado" },
+        { label: "No especificado" },
+      ],
+    },
+    {
+      labelText: "Sexo",
+      id: "sexo",
+      placeholder: "...",
+      options: [
+        { value: "F", label: "Femenino" },
+        { value: "M", label: "Masculino" },
+        { label: "No especificado" },
       ],
     },
   ];
@@ -70,91 +88,11 @@ export default function PatientForm({
     { labelText: "Municipio", id: "municipio" },
     { labelText: "APP", id: "app" },
     { labelText: "APF", id: "apf" },
-    { labelText: "APGAR", id: "apgar" },
+    { labelText: "APGAR", id: "apgar" ,type:"number"},
     { labelText: "Fecha de muerte", id: "fecha_muerte", type: "date" },
   ];
   return (
-    // <div>
-    //   <InputForForm
-    //     labelText="Nombre"
-    //     id="nombre"
-    //     register={register}
-    //     disabled={isEditing}
-    //   />
-    //   <InputContainer
-    //     inputs={[
-    //       { labelText: "Historia Clinica", id: "hc", maxLength: 6 },
-    //       { labelText: "Carnet de identidad", id: "cid", maxLength: 11 },
-    //     ]}
-    //     disabled={isEditing}
-    //     register={register}
-    //   />
-    //   <InputContainer
-    //     inputs={[
-    //       { labelText: "Edad", id: "edad", type: "number" },
-    //       {
-    //         labelText: "Raza",
-    //         id: "raza",
-    //         placeholder: "...",
-    //         options: [
-    //           { value: "B", label: "Blanco" },
-    //           { value: "N", label: "Negro" },
-    //           { value: "M", label: "Multato" },
-    //           { value: null, label: "No especificado" },
-    //         ],
-    //       },
-    //     ]}
-    //     disabled={isEditing}
-    //     register={register}
-    //   />
-
-    //   <label>Es fallecido</label>
-    //   <input
-    //     className="checkbox"
-    //     type="checkbox"
-    //     {...register("es_fallecido")}
-    //     checked={isDeceased}
-    //     onChange={handleCheckboxChange}
-    //   />
-    //   {isDeceased && (
-    //     <div className="fallecido-form">
-    //       <hr />
-
-    //       <InputContainer
-    //         register={register}
-    //         inputs={[
-    //           { labelText: "Provicia", id: "provicia" },
-    //           { labelText: "Municipio", id: "municipip" },
-    //           // { labelText: "Dirección", id: "direccion" },
-    //         ]}
-    //         disabled={isEditing}
-    //       />
-    //       <InputContainer
-    //         register={register}
-    //         inputs={[
-    //           { labelText: "APP", id: "app" },
-    //           { labelText: "APF", id: "apf" },
-    //           // { labelText: "HEA", id: "hea" },
-    //         ]}
-    //         disabled={isEditing}
-    //       />
-
-    //       <InputContainer
-    //         register={register}
-    //         inputs={[
-    //           { labelText: "APGAR", id: "apgar" },
-    //           { labelText: "Fecha muerte", type: "date", id: "fecha_muerte" },
-    //         ]}
-    //         disabled={isEditing}
-    //       />
-    //     </div>
-    //   )}
-    // </div>
     <div>
-      {/* Renderizado del formulario básico */}
-
-      {/* <InputContainer inputs={formInputs} disabled={isEditing} register={register} /> */}
-
       <div className="grid-input-container">
         {formInputs.map((input, index) => (
           <InputForForm
@@ -164,12 +102,13 @@ export default function PatientForm({
             register={register}
             required={input.required}
             type={input.type}
-            disabled={input.disabled}
+            disabled={isViewing || input.disabled}
             options={input.options}
             maxLength={input.maxLength}
             placeholder={input.placeholder}
             defaultValue={input.defaultValue}
             validation={input.validation} // Pasa las reglas de validación aquí
+            error={errors[input.id]}
           />
         ))}
       </div>
@@ -184,16 +123,16 @@ export default function PatientForm({
 
       {/* Mostrar inputs adicionales si el paciente es fallecido */}
       {isDeceased && (
-        <div className="grid-input-container">
+        <div className="grid-input-container ">
           {deceasedInputs.map((input, index) => (
             <InputForForm
               key={index}
               labelText={input.labelText}
-              id={input.id}
+              id={`fallecido.${input.id}`}
               register={register}
               required={input.required}
               type={input.type}
-              disabled={input.disabled}
+              disabled={ isViewing || input.disabled }
               options={input.options}
               maxLength={input.maxLength}
               placeholder={input.placeholder}

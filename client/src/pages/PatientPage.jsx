@@ -1,29 +1,27 @@
-import React, { useEffect } from "react";
-import PatientCard from "../components/PatientCard";
-import { useState } from "react";
-import "../css/PatientCard2.css";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "../css/PatientCard2.css";
 // import "../css/prueba.css";
-import "../css/page.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaEdit } from "react-icons/fa";
+import ModalComponent from "../components/Modal";
+import "../css/page.css";
 
 import { BsEye } from "react-icons/bs";
 import { FaFileMedical } from "react-icons/fa"; // Usa react-icons para los íconos
-import { toastSuccess } from "../util/Notification";
-import HeadCard from "../components/HeadCard";
-import { InfoCard } from "../components/InfoCard";
-import { useService } from "../util/useService";
 import AccionButtons from "../components/AccionButtons";
-import SearchSection from "../components/SearchSection";
 import InformationCard from "../components/InformationCard";
+import SearchSection from "../components/SearchSection";
 import Table from "../components/Table";
+import { toastSuccess } from "../util/Notification";
+import { useService } from "../util/useService";
 function PatientPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [patients, setPatients] = useState([]);
   const [stats, setStats] = useState([]);
   const [searchBy, setSearchBy] = useState("nombre");
   const [selectedPatients, setSelectedPatients] = useState([]);
+  const [showModal,setShowModal]=useState(false)
   const navigate = useNavigate();
 
   const { fetchItems, handleDelete, fetchStats } = useService("pacientes");
@@ -76,29 +74,36 @@ function PatientPage() {
     }
   };
 
-  const handleDeleteClick = async (event) => {
+  const handleDeleteClick = async () => {
     if (selectedPatients.length <= 0) return;
+    setShowModal(true)
+    // const confirmed = window.confirm(
+    //   "¿Estás seguro de que deseas eliminar este paciente?"
+    // );
+    // if (!confirmed) return;
 
-    const confirmed = window.confirm(
-      "¿Estás seguro de que deseas eliminar este paciente?"
-    );
-    if (!confirmed) return;
-
-    {
-      for (let i = 0; i < selectedPatients.length; i++) {
-        handleDeletePatient(selectedPatients[i]);
-      }
-      // location.reload();
-      navigate("/patients");
-    }
+    // {
+    //   for (let i = 0; i < selectedPatients.length; i++) {
+    //     handleDeletePatient(selectedPatients[i]);
+    //   }
+    //   // location.reload();
+    //   navigate("/patients");
+    // }
 
     // event.stopPropagation(); // Evita que el clic cierre o abra la tarjeta
   };
 
-  const removeBody = () => {
-    document.body.classList.remove("show-details");
+  const confirmDelete = async () => {
+    setShowModal(false); // Cierra el modal después de confirmar
+    // selectedItems.forEach(itemId => {
+    //   handleDelete(itemId);
+    // });
+    for (const itemId of selectedPatients) {
+      await handleDelete(itemId); // Elimina el estudio de la base de datos
+    }
+    await fetchPatients();
+    setSelectedPatients([]); // Limpiar selección después de eliminar
   };
-
   const handleTypeSelect = (eventKey) => {
     console.log(eventKey);
     // setType(eventKey); // Actualiza el estado del tipo seleccionado
@@ -127,24 +132,7 @@ function PatientPage() {
           total={stats.total_under_16}
           description={`Menores de 1 año: ${stats.total_under_1}`}
         />
-        {/* <InfoCard
-          title="Total Pacientes"
-          patientCount={stats.total_patients}
-          description={`Hombres: ${stats.total_men} Mujeres: ${stats.total_women}`}
-          icon={<FaClock size={24} color="#28a745" />}
-        />
-        <InfoCard
-          title="Pacientes fallecidos"
-          patientCount={stats.total_deceased}
-          description="Total Patients 10 today"
-          icon={<FaClock size={24} color="#28a745" />}
-        />
-        <InfoCard
-          title="Menores de 16 años"
-          patientCount={stats.total_under_16}
-          description={`Menores de 1 año: ${stats.total_under_1}`}
-          icon={<FaClock size={24} color="#28a745" />}
-        /> */}
+      
       </div>
 
       <div className="bg-white my-8 rounded-xl border-[1px] border-border p-4">
@@ -170,44 +158,8 @@ function PatientPage() {
             data={filteredPatients}
             headerTable={["#", "HC", "Nombre", "Id", "Fallecido", "Acciones"]}
             dataFields={["hc", "nombre", "cid", "es_fallecido"]}
-            // actions={[
-            //   {
-            //     label: "Ver",
-            //     url: (item) => `/patient/view/${item.hc}`,
-            //     icon: <BsEye size={12} />,
-            //   },
-            //   {
-            //     label: "Editar",
-            //     url: (item) => `/patient/${item.hc}`,
-            //     icon: <FaEdit size={12} />,
-            //   },
-            //   {
-            //     label: "Ver",
-            //     url: (item) => `/patient/view/${item.hc}`,
-            //     icon: <BsEye size={12} />,
-            //   },
-            //   {
-            //     label: "Editar",
-            //     url: (item) => `/patient/${item.hc}`,
-            //     icon: <FaEdit size={12} />,
-            //   },
-            //   // Acción condicional para añadir estudio o necropsia
-            //   (item) => {
-            //     if (item.es_fallecido) {
-            //       return {
-            //         label: "Añadir Necropsia",
-            //         url: (item) => `/necropsy/add/${item.hc}`,
-            //         icon: <FaFileMedical size={12} />,
-            //       };
-            //     } else {
-            //       return {
-            //         label: "Añadir Estudio",
-            //         url: (item) => `/study/add/${item.hc}`,
-            //         icon: <FaFileMedical size={12} />,
-            //       };
-            //     }
-            //   },
-            // ].flat()}
+            id={"hc"}
+          
 
             actions={(item) => [
               {
@@ -238,46 +190,15 @@ function PatientPage() {
           />
         </>
       </div>
-      {/* <div className="search-card-container">
-        <div className="section-search">
-          <SearchSection
-            items={[
-              { label: "Fallecido", eventKey: true },
-              {
-                label: "No Feallecido",
-                eventKey: false,
-              },
-            ]}
-            onSelect={handleTypeSelect}
-            options={["hc", "cid", "nombre"]}
-            searchTerm={searchTerm}
-            searchBy={searchBy}
-            setSearchTerm={setSearchTerm}
-            setSearchBy={setSearchBy}
-          />
-        </div>
-
-        <div className={`card-list patient`}>
-          <HeadCard titles={["HC", "Nombre", "Id", "Fallecido"]} />
-          {filteredPatients.map((patients, index) => (
-            <PatientCard
-              key={patients.hc}
-              patient={patients}
-              onPatientDeleted={handleDeletePatient}
-              removeBody={removeBody}
-              onPatientSelected={handlePatientSelected}
-              isSelected={selectedPatients.includes(patients.hc)}
-              index={index}
-            />
-          ))}
-        </div>
-      </div> */}
-
+  
       <AccionButtons
         selectedStudies={selectedPatients}
         handleDelete={handleDeleteClick}
         handleCreate={handleCreatePatient}
       />
+     
+
+      <ModalComponent show={showModal} title={"Eliminar Paciente"} description={`Está seguro que desea eliminar los pacientes seleccionados ?`}   handleConfirm={confirmDelete} handleClose={() => setShowModal(false)}/>
     </div>
   );
 }

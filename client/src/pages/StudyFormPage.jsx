@@ -1,17 +1,17 @@
 import React, { useState } from "react";
-import StudyForm from "../components/StudyForm";
+import StudyForm from "../components/forms/StudyForm";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import DiagnosisForm from "../components/DiagnosisForm";
+import DiagnosisForm from "../components/forms/DiagnosisForm";
 import { useForm } from "react-hook-form";
 import { toastSuccess } from "../util/Notification";
 import { useNavigate } from "react-router-dom";
 import { useService } from "../util/useService";
 import Button from "../components/Button";
 import "../css/form.css";
-import NecroForm from "../components/NecroForm";
+import NecroForm from "../components/forms/NecroForm";
 
-export default function StudyFormPage({ typeStudy = "estudios", user }) {
+export default function StudyFormPage({ typeStudy = "estudios", user=null }) {
   const [study, setStudy] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [process, setProcess] = useState(null);
@@ -26,7 +26,7 @@ export default function StudyFormPage({ typeStudy = "estudios", user }) {
     handleCreate: handleCreateStudy,
     handleUpdate: handleUpdateStudy,
   } = useService(typeStudy);
-  const { fetchItem: fetchProcess, handleUpdate: handleUpdateProcess } =
+  const { fetchItem: fetchProcess, handleUpdate: handleUpdateProcess} =
     useService("procesos");
 
   useEffect(() => {
@@ -65,7 +65,7 @@ export default function StudyFormPage({ typeStudy = "estudios", user }) {
         // code: data.code,
         tipo: data.tipo,
         hc_paciente: data.hc_paciente,
-        medico: data.medico,
+        doctor: data.doctor,
         especialista: data.especialista,
         imp_diag: data.imp_diag,
         pieza: data.pieza,
@@ -86,11 +86,15 @@ export default function StudyFormPage({ typeStudy = "estudios", user }) {
     }
 
     const processData = {
-      descripcion_micro: data.descripcion_micro,
-      descripcion_macro: data.descripcion_macro,
+      // descripcion_micro: data.descripcion_micro,
+      // descripcion_macro: data.descripcion_macro,
+      no_bloques:data.no_bloques,
+      no_laminas:data.no_laminas,
+      no_cr:data.no_cr,
+      no_ce:data.no_ce,
       diagnostico: {
         diagnostico: data.diagnostico,
-        observaciones: data.observaciones,
+        // observaciones: data.observaciones,
       },
     };
 
@@ -102,7 +106,8 @@ export default function StudyFormPage({ typeStudy = "estudios", user }) {
       let new_code;
       data.code ? (new_code = data.code) : (new_code = result.data.code);
       await handleUpdateProcess(new_code, processData);
-      toastSuccess("ok");
+      toastSuccess(`${isEditing? `Se ha editado la información estudio ${new_code}`:`Se ha insertado un nuevo estudio ${new_code}`}`);
+      typeStudy=="estudios"? navigate("/studies/") : navigate("/necropsies")
     }
   };
 
@@ -115,6 +120,7 @@ export default function StudyFormPage({ typeStudy = "estudios", user }) {
             register={register}
             setValue={setValue}
             isViewing={isViewing}
+            isEditing={isEditing}
             className="form"
             user={user}
           />
@@ -123,6 +129,9 @@ export default function StudyFormPage({ typeStudy = "estudios", user }) {
             studyData={study}
             register={register}
             setValue={setValue}
+            isViewing={isViewing}
+            isEditing={isEditing}
+            user={user}
             className="form"
           />
         )}
@@ -131,6 +140,7 @@ export default function StudyFormPage({ typeStudy = "estudios", user }) {
           processData={process}
           register={register}
           setValue={setValue}
+          isViewing={isViewing}
         />
         {/* <button type="submit">Guardar</button> */}
         {!isViewing ? <Button prop={"Enviar"} details={"formButton"} /> : <></>}

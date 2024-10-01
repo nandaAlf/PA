@@ -1,17 +1,17 @@
 import React from 'react'
-import UserForm from '../components/UserForm'
+import UserForm from '../components/forms/UserForm'
 import { refreshAccessToken } from '../services/api'
 
 
 
-const refresh= ()=>{
-     refreshAccessToken()
-}
+// const refresh= ()=>{
+//      refreshAccessToken()
+// }
 
-export default function LoginPage() {
+export default function LoginPage({changeUser}) {
   return (
     <>
-      <UserForm />
+      <UserForm changeUser={changeUser}/>
     </>
   )
 }
