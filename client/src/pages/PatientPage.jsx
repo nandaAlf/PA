@@ -141,7 +141,7 @@ function PatientPage() {
             items={[
               { label: "Fallecido", eventKey: true },
               {
-                label: "No Feallecido",
+                label: "No Fallecido",
                 eventKey: false,
               },
             ]}

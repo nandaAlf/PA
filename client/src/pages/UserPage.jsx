@@ -9,6 +9,9 @@ import InputForForm from "../components/forms/InputForForm";
 import Button from "../components/Button";
 import { toastError, toastSuccess } from "../util/Notification";
 import Loader from "../components/Loader";
+import { FaPencilAlt } from "react-icons/fa";
+
+import { FaEdit } from "react-icons/fa";
 // import "../css/userPage";
 
 function UserPage() {
@@ -26,13 +29,12 @@ function UserPage() {
   }, []);
 
   const fetchUserData = async () => {
-    
     const result = await handleGetUser();
     if (result.success) {
       setUserData(result.data);
       console.log("ud", userData);
-      setLoading(false);
     }
+    setLoading(false);
   };
   const handleFileChange = async (e) => {
     const file = e.target.files[0]; // Obtener el primer archivo seleccionado
@@ -89,16 +91,23 @@ function UserPage() {
                   document.getElementById("profilePictureInput").click()
                 }
               >
-                HH
+                <FaPencilAlt color="#6ab8a7ff"/>
               </button>
             </div>
-            <div className="user-info">
-              <h3>
+            <div className="user-info text-slate-700 flex-col justify-start items-start ml-5  mt-3 ">
+              <p className="items-center">
                 {userData.first_name} {userData.last_name}
-              </h3>
+              </p>
+
+              <p>{userData.email}</p>
+              <p>Usuario: @{userData.username}</p>
+              <p>ID : {userData.cid}</p>
+              {/* <p>
+                Departamento:{userData.dpto} 
+              </p> */}
             </div>
             <div className="user-actions">
-              <Button
+              {/* <Button
                 prop={"Personal Information"}
                 details={`grayButton ${
                   selectedButton ? "selected-button" : ""
@@ -107,53 +116,55 @@ function UserPage() {
                   setShowChangePassword(false);
                   setSelectedButton(true);
                 }}
-              />
-              <Button
+              /> */}
+              {/* <Button
                 prop={"Change Password"}
                 action={() => {
+                  // // setShowChangePassword(true);
+                  // setSelectedButton(false);
                   setShowChangePassword(true);
-                  setSelectedButton(false);
+                  setSelectedButton(true);
                 }}
                 details={`grayButton ${
-                  selectedButton == false ? "selected-button" : ""
+                  selectedButton == false ? "selected-button" : "selected-button"
                 }`}
-              />
+              /> */}
             </div>
           </>
         )}
       </div>
 
-      <div className="form password">
-        {showChangePassword ? (
+      <div className="form password text-slate-700">
+        {/* {showChangePassword ? (
+          <> */}
+        <form onSubmit={handleSubmit(onSubmit)}>
           <>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <>
-                <InputForForm
-                  labelText="Old Password"
-                  id="old_password"
-                  type="password"
-                  register={register}
-                  required={true}
-                />
-                <InputForForm
-                  labelText="New Password"
-                  id="new_password"
-                  type="password"
-                  register={register}
-                  required={true}
-                />
-                <InputForForm
-                  labelText="Confirm Password"
-                  id="confirm_password"
-                  type="password"
-                  register={register}
-                  required={true}
-                />
-              </>
-              <Button prop={"Enviar"} details={"formButton"} />
-              <></>
-            </form>
+            <InputForForm
+              labelText="Old Password"
+              id="old_password"
+              type="password"
+              register={register}
+              required={true}
+            />
+            <InputForForm
+              labelText="New Password"
+              id="new_password"
+              type="password"
+              register={register}
+              required={true}
+            />
+            <InputForForm
+              labelText="Confirm Password"
+              id="confirm_password"
+              type="password"
+              register={register}
+              required={true}
+            />
           </>
+          <Button prop={"Enviar"} details={"formButton"} />
+          <></>
+        </form>
+        {/* </>
         ) : (
           <>
             <label htmlFor="">Email:</label>
@@ -165,7 +176,7 @@ function UserPage() {
             <label htmlFor="">Titulo:</label>
             <input type="text" name="" id="" value={userData.titulo} disabled />
           </>
-        )}
+        )} */}
       </div>
     </div>
   );

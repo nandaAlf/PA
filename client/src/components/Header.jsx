@@ -14,8 +14,8 @@ const Header = ({ isOpen, toggleSidebar ,user,setUser}) => {
 
   if (!user) return ;
   return (
-    <div className="xl:w-5/6 w-full 2xl:max-w-[1640px] bg-gray-50 grid md:grid-cols-2 grid-cols-12 items-center bg-opacity-95 fixed top-0 z-40 xs:px-8 px-2">
-      <div
+    <div  className="md:w-[calc(100%-228px)] w-full md:ml-[228px] bg-gray-50 flex items-center  justify-end bg-opacity-95 fixed top-0 z-40  px-2">
+      {/* <div
         className="md:col-span-1 sm:col-span-11 col-span-10 flex gap-4 items-center md:py-0 py-4 bg-inherit"
         onClick={toggleSidebar}
       >
@@ -32,10 +32,11 @@ const Header = ({ isOpen, toggleSidebar ,user,setUser}) => {
             <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"></path>
           </svg>
         </button>
-      </div>
-      <div className="md:col-span-1 sm:col-span-1 col-span-2 items-center justify-end pr-4 md:pr-0">
+      
+      </div> */}
+      <div className="items-center justify-end pr-4 ">
         <div className="float-right flex gap-4 items-center justify-center">
-          <button
+          {/* <button
             id="menu-button"
             type="button"
             aria-haspopup="menu"
@@ -59,15 +60,15 @@ const Header = ({ isOpen, toggleSidebar ,user,setUser}) => {
                 5
               </span>
             </div>
-          </button>
-          <div className="items-center md:flex hidden">
-            <div className="text-sm w-full relative">
-              <button
+          </button> */}
+          <div className="items-center ">
+            <div className="text-sm ">
+              {/* <button
                 id="user-menu-button"
                 type="button"
                 aria-haspopup="menu"
                 aria-expanded="false"
-              >
+              > */}
                 <div className="flex gap-4 items-center p-4 rounded-lg">
                   <Dropdown onSelect={null}>
                     <Dropdown.Toggle
@@ -94,6 +95,7 @@ const Header = ({ isOpen, toggleSidebar ,user,setUser}) => {
                           borderRadius: "50%",
                           width: "100%",
                           height: "100%",
+                          objectFit: "cover"
                         }}
                       />
                     </Dropdown.Toggle>
@@ -112,7 +114,7 @@ const Header = ({ isOpen, toggleSidebar ,user,setUser}) => {
                     {user.first_name}
                   </p>
                 </div>
-              </button>
+              {/* </button> */}
             </div>
           </div>
         </div>

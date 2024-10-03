@@ -29,14 +29,16 @@
   /* text-align; */
   /* justify-items: center; */
   /* text-align: center; */
-  
- 
+  /* color: rgb(0, 31, 63) */
+/* color: rgb(58, 109, 140); 
+color: rgb(106, 154, 176);
+color:rgb(234, 216, 177) */
   /* z-index: 1; */
-  animation: bounce 1s infinite; /* Aplicar la animación de rebote */
+  animation: bounce 2s infinite; /* Aplicar la animación de rebote */
   transition: transform 0.2s ease-in-out; /* Transición suave */
 }
 .basic-button.circular:hover {
-  animation: bounce 0.2s infinite;
+  animation: bounce 1s infinite;
 }
 
 .grayButton{

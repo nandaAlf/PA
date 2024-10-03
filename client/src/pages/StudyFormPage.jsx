@@ -81,6 +81,7 @@ export default function StudyFormPage({ typeStudy = "estudios", user=null }) {
         habito_externo: data.habito_externo,
         hallazgos: data.hallazgos,
         certif_defuncion: data.certif_defuncion,
+        fecha: data.fecha,
         finalizado: data.finalizado,
       };
     }

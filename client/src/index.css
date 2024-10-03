@@ -14,9 +14,21 @@ thead {
 }
 .bg-selected {
   background-color: #f2f5f7ff; /* Un color de fondo ligero */
-  border-bottom: 0.1px solid rgba(106, 184, 167, 0.188);
+  border-bottom: 0.01px solid rgba(#6ab8a7ff);
 }
-
+input:focus {
+  outline: 0.1px solid rgba(101, 181, 162, 0.596); /* Cambia el borde a un color azul */
+  border-radius: 4px; /* Puedes agregar un borde redondeado si deseas */
+}
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #fff inset; /* Cambia el fondo a blanco */
+  box-shadow: 0 0 0 1000px white inset;
+  -webkit-text-fill-color: rgba(0, 0, 0, 0.697); /* Cambia el color del texto */
+}
+select:focus {
+  outline: 0.1px solid rgba(101, 181, 162, 0.596); /* Cambia el borde a un color azul */
+  border-radius: 4px; /* Puedes agregar un borde redondeado si deseas */
+}
 :root {
   font-family: "Poppins", system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

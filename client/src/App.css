@@ -14,12 +14,6 @@ html {
   
 }
 
-/* .container-sidebar {
-  position: fixed;
-  width: 220px; 
-} */
-
-
 
 .main-content { 
   flex: 1; /* Hace que el contenido principal ocupe el resto del espacio */
@@ -29,19 +23,19 @@ html {
     width: 100%;
     /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
     background-color: var(--ligthGray);
-  
-    margin-top: 60px; /* Deja espacio para la UserBar */
+    margin-left: 230px;
+    margin-top: 60px; 
     transition: margin-left 1s ease; 
 }
 
 
-.user-bar {
-  position: fixed;
-  top: 0;
-  left: 225px; /* Para que aparezca justo al lado del Sidebar */
-  width: calc(100% - 220px);
-  height: 60px;
-  /* background-color: red; */
-  background: var(--ligthGray);
-  z-index: 101;
+@media (max-width: 1280px) {
+  .main-content { 
+  
+    /* background-color: red; */
+    margin-left: 0px;
+
+    transition:none
+}
+
 }

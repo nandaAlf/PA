@@ -57,7 +57,7 @@ export default function DiagnosisForm({
       id: "finalizado",
       type: "checkbox",
       required: false,
-      defaultValue: false,
+      // defaultValue: false,
     },
   ];
   const processField = [

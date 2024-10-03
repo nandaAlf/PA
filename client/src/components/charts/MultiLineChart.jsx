@@ -89,7 +89,7 @@ const MultiLineChart = ({labels,datasets}) => {
         display: true,
         text: "Inventario procesos",
         align: "end", // Alinea el título a la izquierda
-        color: "#333",
+        // color: "#333",
         font: {
           size: 14,
         },
@@ -116,7 +116,7 @@ const MultiLineChart = ({labels,datasets}) => {
 
   return (
     <div className=" w-[95%] h-full ">
-      <div className="relative h-[300px] w-full">
+      <div className="relative h-[250px] w-full text-slate-700 ">
         <Line data={data} options={options} />
     </div>
     </div>

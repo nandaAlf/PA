@@ -13,58 +13,12 @@ from user_app.api.serializer import ChangePasswordSerializer, CustomUserSerializ
 from user_app.models import CustomUser
 from django.contrib.auth.models import Group
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAdminUser
 
 @api_view(['POST'])
 def logout_view(request):
-    # if request.method=='POST':
     request.user.auth_token.delete()
     return Response(status=status.HTTP_200_OK)
-    # pass
-    
-#
-#make a random password and user option changes password
-#
-# @api_view(['POST'])
-# def registration_view(request):
-    # if not request.user.is_superuser:
-    #     return Response({"detail": "No tiene permisos para realizar esta acción."}, status=status.HTTP_403_FORBIDDEN)
-    
-    # if request.method=='POST':
-    #     serializer=RegistrationSerializer(data=request.data) 
-    #     data={}
-        
-    #     if serializer.is_valid():
-    #        account= serializer.save()
-    #        data = {
-    #             'response': 'Registro de usuario exitoso',
-    #             'username': account.username,
-    #             'email': account.email,
-    #             'first_name': account.first_name,
-    #             'last_name': account.last_name,
-    #         }
-    #     #    data['response']='Registro de usuario exitoso'
-    #     #    data['username']=account.username
-    #     #    data['email']=account.email
-    #     #    data['first_name']=account.first_name
-    #     #    data['last_name']=account.last_name
-         
-    #        refresh=RefreshToken.for_user(account)
-    #        data['token'] = {
-    #             'refresh': str(refresh),
-    #             'access': str(refresh.access_token)
-    #         }
-    #     #    data['token']={
-    #     #         'refresh' : str(refresh), #token refresh(5 min) =>access endpoints since backend
-    #     #         'access':str(refresh.access_token) #token access(24h) =>generate new access token 
-    #     #     }
-    #        return Response(data,status=status.HTTP_201_CREATED)
-
-    #     else:
-    #         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-    
-    pass
-
-
 
 @api_view(['POST'])
 def login_view(request):
@@ -122,28 +76,27 @@ def registration_view(request):
 
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+          
+# @api_view(['GET'])
+# def get_doctors_view (request):
+#     try:
+#         # Obtén el grupo 'DoctorGroup'
+#         group = Group.objects.get(name='DoctorsGroup')
         
-        
-@api_view(['GET'])
-def get_doctors_view (request):
-    try:
-        # Obtén el grupo 'DoctorGroup'
-        group = Group.objects.get(name='DoctorsGroup')
-        
-        # Obtén todos los usuarios en ese grupo
-        members = group.user_set.all()
+#         # Obtén todos los usuarios en ese grupo
+#         members = group.user_set.all()
 
-        # Serializa la información de los usuarios
-        users_data = [{
-            'username': user.username,
-            'name':user.full_name(),
-            'email': user.email
-        } for user in members]
+#         # Serializa la información de los usuarios
+#         users_data = [{
+#             'username': user.username,
+#             'name':user.full_name(),
+#             'email': user.email
+#         } for user in members]
 
-        return Response(users_data, status=status.HTTP_200_OK)
+#         return Response(users_data, status=status.HTTP_200_OK)
     
-    except Group.DoesNotExist:
-        return Response({'error': 'El grupo DoctorsGroup no existe.'}, status=status.HTTP_404_NOT_FOUND)
+#     except Group.DoesNotExist:
+#         return Response({'error': 'El grupo DoctorsGroup no existe.'}, status=status.HTTP_404_NOT_FOUND)
     
     
 class UserProfileView(APIView):
@@ -167,6 +120,13 @@ class UserProfileView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     
+class UserListView(APIView):
+    permission_classes = [IsAdminUser]  # Solo administradores pueden acceder a esta vista
+
+    def get(self, request):
+        users = CustomUser.objects.all()
+        serializer = CustomUserSerializer(users, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 class ChangePasswordView(APIView):
     # permission_classes = [IsAuthenticated]
 

@@ -13,11 +13,14 @@ input {
   border-width: 1px;
   --tw-border-opacity: 1;
   border-color: rgb(232 235 238 / var(--tw-border-opacity));
-  background-color: initial;
   padding: 1rem;
   font-size: 0.875rem;
   line-height: 1.25rem;
   font-weight: 300;
+background-color: inherit ;}
+/* */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.5); /* Estiliza el ícono de calendario (solo en algunos navegadores como Chrome) */
 }
 
 .form {
@@ -112,13 +115,4 @@ input {
     gap: 10px;
   }
 }
-/* body::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.885); /* Difuminado oscuro */
-/* z-index: 102; */
-/* } */
+

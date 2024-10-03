@@ -164,7 +164,7 @@ class Paciente(models.Model):
     # sexo = models.CharField(max_length=1, blank=True, null=True)
     sexo = models.CharField(max_length=1, blank=True, null=True, choices=[('M', 'Masculino'), ('F', 'Femenino')])
     # raza = models.CharField(max_length=1, blank=True, null=True)
-    raza = models.CharField(max_length=1, blank=True, null=True, choices=[('B', 'Blanca'), ('N', 'Negra')])
+    raza = models.CharField(max_length=1, blank=True, null=True, choices=[('B', 'Blanca'), ('N', 'Negra'),('M', 'Mulato')])
     es_fallecido = models.BooleanField(blank=True, null=True, default=False)
 
     # class Meta:

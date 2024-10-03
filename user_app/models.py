@@ -71,32 +71,10 @@ class CustomUserManager(BaseUserManager):
         user.is_superadmin = True
         user.save(using=self._db)
         return user
-        # user = self.create(username=username,
-        #                   email=self.normalize_email(email),
-        #                   first_name=first_name,
-        #                   last_name=last_name,
-        #                   cid=cid,
-        #                   password=password,
-        #                   **extra_fields)
-        # user.is_admin=True
-        # user.is_Staff=True
-        # user.is_superadmin=True
-        # user.is_active=True
-        
-        # user.save(using=self._db)
-        # return user
-        # extra_fields.setdefault('is_staff', True)
-        # extra_fields.setdefault('is_superuser', True)
-
-        # if extra_fields.get('is_staff') is not True:
-        #     raise ValueError('Superuser must have is_staff=True.')
-        # if extra_fields.get('is_superuser') is not True:
-        #     raise ValueError('Superuser must have is_superuser=True.')
-
-        # return self.create_user(username, password, **extra_fields)
+       
 class CustomUser(AbstractUser):
     # Campos por defecto
-    username = models.CharField(max_length=150, unique=True, blank=True, null=True)
+    username = models.CharField(max_length=150, unique=True,)
     first_name = models.CharField(max_length=30, blank=True, null=True)
     last_name = models.CharField(max_length=30, blank=True, null=True)
     email = models.EmailField(unique=True, max_length=255)

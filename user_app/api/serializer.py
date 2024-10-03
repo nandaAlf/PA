@@ -133,12 +133,12 @@ class RegistrationSerializer(serializers.ModelSerializer):
             last_name=self.validated_data['last_name'],
             email=self.validated_data['email'],
             username=self.validated_data['username'],
-            password=self.validated_data['password'],
+            # password=self.validated_data['password'],
             cid=self.validated_data['cid'],
            
         )
         # Encriptar la contraseña correctamente
-        account.set_password = self.validated_data['password']
+        account.set_password(self.validated_data['password'])
         
        # Agregar los campos opcionales solo si están presentes en la data
         account.dpto = self.validated_data.get('dpto', '')

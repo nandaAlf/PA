@@ -47,7 +47,8 @@ export default function DoctorFormPage({}) {
       : await handleUpdateDoctor(data.id, data);
 
     if (result.success) {
-      toastSuccess("ok");
+      toastSuccess("Se ha insertado un nuevo doctor");
+      navigate("/doctors")
     }
   };
 

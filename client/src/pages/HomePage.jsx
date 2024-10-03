@@ -69,8 +69,9 @@ export default function HomePage() {
             label: "Bloques",
             data: datasetBloques,
             fill: false,
-            backgroundColor: "rgba(75, 192, 192, 0.2)",
-            borderColor: "rgba(75, 192, 192, 1)",
+            // backgroundColor: "rgba(75, 192, 192, 0.2)",
+           backgroundColor:"rgb(248, 237, 227)",
+            borderColor: "rgba(248, 237, 227,2)",
             tension: 0.4,
             borderWidth: 1,
           },
@@ -78,8 +79,9 @@ export default function HomePage() {
             label: "CR",
             data: datasetCr,
             fill: true,
-            backgroundColor: "rgba(255, 221, 219,0.2)",
-            borderColor: "rgba(255, 159, 64, 1)",
+            backgroundColor:"rgb(223, 211, 195)",
+            // backgroundColor: "rgba(255, 221, 219,0.2)",
+            borderColor: "rgb(223, 211, 195)",
             tension: 0.4,
             borderWidth: 1,
           },
@@ -87,8 +89,9 @@ export default function HomePage() {
             label: "CE",
             data: datasetCe,
             fill: false,
-            backgroundColor: "rgb(247, 249, 250)",
-            borderColor: "rgba(153, 102, 255, 1)",
+            // backgroundColor: "rgb(247, 249, 250)",
+            backgroundColor:"rgb(208, 184, 168)",
+            borderColor: "rgba(208, 184, 168)",
             tension: 0.4,
             borderWidth: 1,
           },
@@ -96,8 +99,9 @@ export default function HomePage() {
             label: "Laminas",
             data: datasetLaminas,
             fill: false,
-            backgroundColor: "rgba(255, 205, 86, 0.2)",
-            borderColor: "rgba(255, 205, 86, 1)",
+            backgroundColor:"rgb(197, 112, 93)",
+            // backgroundColor: "rgba(255, 205, 86, 0.2)",
+            borderColor: "rgb(197, 112, 93)",
             tension: 0.4,
             borderWidth: 1,
           },
@@ -114,16 +118,14 @@ export default function HomePage() {
   while (loading)return <Loader/>
   return (
     <div className=" min-h-screen flex flex-col justify-center items-center p-9 my-2 ">
-      <div className=" flex  md:flex- justify-center items-center space-y-4 md:space-y-0 md:space-x-4 w-full  ">
-        <div className="w-full md:w-1/3  bg-white rounded-xl border-[1px] ">
+      <div className="flex flex-col  md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4 w-full  ">
+        <div className="w-full md:w-1/2  bg-white rounded-xl border-[1px] ">
           <DoughnutChart chartLabels={data1.label} chartData={data1.data} title={"Entidades"}/>
         </div>
-        <div className="w-full  md:w-2/3 bg-white rounded-xl border-[1px] ">
+        <div className="w-full  md:w-1/2 bg-white rounded-xl border-[1px] ">
           <DoughnutChart chartLabels={data2.label} chartData={data2.data} title={"Departamentos"}/>
         </div>
-        {/* <div className="w-full md:w-1/3 bg-white ">
-          <DoughnutChart labels={lineChartData.labels} datasets={lineChartData.datasets} />
-        </div> */}
+      
       </div>
 
       <div className="bg-white w-full m-4 p-4 my-8 rounded-xl border-[1px] ">

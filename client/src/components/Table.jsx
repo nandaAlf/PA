@@ -17,31 +17,8 @@ const Table = ({
   actions,
   selectedRows,
   handleRowSelect,
-  id
+  id,
 }) => {
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
-
-  const handleSortChange = (e) => {
-    setSortOption(e.target.value);
-  };
-  const handleGenderChange = (e) => {
-    setGender(e.target.value);
-  };
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
-  const handleFilter = () => {
-    // Add filtering logic
-    console.log("Filtering with:", {
-      searchQuery,
-      sortOption,
-      gender,
-      selectedDate,
-    });
-  };
-
   return (
     <div>
       <div className="mt-8 w-full overflow-x-auto sm:overflow-x-visible min-h-fit ">
@@ -51,7 +28,7 @@ const Table = ({
               {headerTable.map((header, index) => (
                 <th
                   key={index}
-                  className="text-start text-sm font-medium py-3 px-2  whitespace-nowrap rounded-lg"
+                  className="text-start text-sm font-medium py-3 px-2   whitespace-nowrap "
                 >
                   {header}
                 </th>
@@ -59,7 +36,7 @@ const Table = ({
             </tr>
           </thead>
           <tbody className="">
-            {data.map((item, index) => {
+            {data?.map((item, index) => {
               const identifier = item[id]; // Obtener el primer campo
 
               return (
@@ -71,19 +48,25 @@ const Table = ({
                   }`}
                   onClick={() => handleRowSelect(identifier)}
                 >
-                  <td className="text-start text-xs py-4 px-2 whitespace-nowrap">
+                  <td className="text-start text-xs py-4  whitespace-nowrap">
                     {index}
                   </td>
                   {dataFields.map((field, idx) => (
                     <td
                       key={idx}
-                      className="text-start text-xs py-4 px-2 whitespace-nowrap font-medium"
+                      className="text-start text-xs py-4  whitespace-wrap font-medium"
                     >
                       {field === "es_fallecido" || field === "finalizado" ? (
-                        <input type="checkbox" checked={item[field]} readOnly />
+                        <div className=" absolute w-28">
+                          <input
+                            type="checkbox"
+                            checked={item[field]}
+                            readOnly
+                          />
+                        </div>
                       ) : field === "hc_paciente" ? (
                         <span
-                          class={`py-1 px-4 bg-green-500 text-subMain bg-opacity-10 text-xs rounded-xl `}
+                          class={`py-2 px-4 -ml-4 bg-green-500 text-subMain bg-opacity-10 text-xs rounded-xl `}
                         >
                           <a href={`/patients?hc=${item[field]}`}>
                             {item[field]}
@@ -96,7 +79,7 @@ const Table = ({
                   ))}
 
                   {actions && (
-                    <td className="text-start text-xs py-4 px-2 whitespace-nowrap">
+                    <td className="text-start text-xs py-3  whitespace-nowrap">
                       <DropdownToggle
                         className="dropdown"
                         icon={<BsThreeDots size={20} color="#79889c" />}

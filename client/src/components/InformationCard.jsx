@@ -6,7 +6,7 @@ const InformationCard= ({title,total,description,value}) => {
       <div className="w-3/4">
         <h2 className="text-sm font-medium">{title}</h2>
         <h2 className="text-xl my-2 font-medium">{total}</h2>
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-gray-500 flex gap-[15px]">
           {description} <span className="text-teal-600">{value}</span> 
         </p>
       </div>
