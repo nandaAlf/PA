@@ -125,7 +125,7 @@ function PatientPage() {
         <InformationCard
           title="Pacientes fallecidos"
           total={stats.total_deceased}
-          description="Total Patients 10 today"
+          description={`Total Pacientes fallecidos : ${stats.total_deceased}`}
         />
         <InformationCard
           title="Menores de 16 años"
