@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from datetime import timedelta
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+load_dotenv()  # Cargar las variables del archivo .env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-3_h)^@s3hz%#vmpc1_3#s!80l7_gx-2$l@tf_2nk$vc=v373e('
+# SECRET_KEY = 'django-insecure-3_h)^@s3hz%#vmpc1_3#s!80l7_gx-2$l@tf_2nk$vc=v373e('
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
@@ -90,6 +93,19 @@ WSGI_APPLICATION = 'django_api.wsgi.application'
 # }
 # DEBUG = True
 
+SECRET_KEY = os.getenv('SECRET_KEY')
+DEBUG = os.getenv('DEBUG') == 'True'
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
+    }
+}
+
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
@@ -124,7 +140,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
+# Rutas estáticas si las tienes configuradas
+
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+ALLOWED_HOSTS = ["*"]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -169,11 +190,9 @@ AUTH_USER_MODEL = 'user_app.CustomUser'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Rutas estáticas si las tienes configuradas
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
-try:
-    from .local_settings import DATABASES,DEBUG
-except ImportError as error:
-    print("Error: ",error.msg)
+# try:
+#     from .local_settings import DATABASES,DEBUG
+# except ImportError as error:
+#     print("Error: ",error.msg)
