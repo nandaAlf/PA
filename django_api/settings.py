@@ -31,7 +31,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -47,12 +47,14 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'rest_framework.authtoken',
+    'whitenoise.runserver_nostatic',
     'user_app',
     'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -106,9 +108,20 @@ DEBUG = os.getenv('DEBUG') == 'True'
 #         'PORT': os.getenv('DB_PORT'),
 #     }
 # }
+
 DATABASES = {
     'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'railway',
+#         'USER': 'postgres',
+#         'PASSWORD': 'KfsvcRIfZQYlnKPUdLVbPmzLrOBZEdNx',
+#         'HOST': 'postgres.railway.internal',  # Cambia "postgres.railway.internal" si estás utilizando otro host o base de datos en local
+#         'PORT': '5432'   # Cambia al puerto correcto, normalmente 5432 para PostgreSQL
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -149,7 +162,7 @@ USE_TZ = True
 # STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-ALLOWED_HOSTS = ["*"]
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -188,13 +201,21 @@ SIMPLE_JWT = {
     # 'REFRESH_TOKEN_LIFETIME': timedelta(seconds=30),
 }
 
+STORAGES = {
+    # ...
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
 AUTH_USER_MODEL = 'user_app.CustomUser'
 
 # Ruta donde se guardarán los archivos de medios (imágenes de perfil)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-
+# CSRF_TRUSTED_ORIGINS = ['http://','https://web-production-17d9.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['http://',]
 
 # try:
 #     from .local_settings import DATABASES,DEBUG
