@@ -173,7 +173,20 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
-try:
-    from .local_settings import DATABASES,DEBUG
-except ImportError as error:
-    print("Error: ",error.msg)
+# try:
+#     from .local_settings import DATABASES,DEBUG
+# except ImportError as error:
+#     print("Error: ",error.msg)
+
+from decouple import config
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT'),
+    }
+}
+DEBUG = True
