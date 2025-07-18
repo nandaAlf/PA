@@ -32,8 +32,9 @@ export default function UserForm({ changeUser }) {
       localStorage.setItem("access_token", response.data.token.access);
       localStorage.setItem("refresh_token", response.data.token.refresh);
       localStorage.setItem("username", response.data.username);
-
-      navigate("/home");
+      if (response.data.token.access) {
+        navigate("/home");
+      }
     } catch (error) {
       localStorage.clear();
       console.log("error", error);

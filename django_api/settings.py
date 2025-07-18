@@ -27,8 +27,6 @@ SECRET_KEY = 'django-insecure-3_h)^@s3hz%#vmpc1_3#s!80l7_gx-2$l@tf_2nk$vc=v373e(
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
 
-ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -137,13 +135,13 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:5173",
     # "https://ergosize-frontend-glwwvkvcl-fernandas-projects-f996f896.vercel.app"
-    "https://pathologylab.vercel.app/"
+    "https://pathologylab.vercel.app"
 ]
 CSRF_TRUSTED_ORIGINS = [
     
     "http://localhost:3000",
     "http://localhost:5173",
-    "https://pathologylab.vercel.app/"
+    "https://pathologylab.vercel.app"
     # # # "https://ergosize-frontend-glwwvkvcl-fernandas-projects-f996f896.vercel.app"
     # # "https://ergosize-frontend.vercel.app"
 ]
@@ -206,4 +204,4 @@ DATABASES = {
         'PORT': config('DB_PORT'),
     }
 }
-DEBUG = True
+DEBUG = False
