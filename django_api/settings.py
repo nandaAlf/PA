@@ -132,13 +132,13 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #cors authorization
-CORS_ALLOW_ALL_ORIGINS = True #["http://localhost:5173/"]  #React server
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3000",
-#     "http://localhost:5173",
-#     # "https://ergosize-frontend-glwwvkvcl-fernandas-projects-f996f896.vercel.app"
-#     "https://ergosize-frontend.vercel.app"
-# ]
+# CORS_ALLOW_ALL_ORIGINS = True #["http://localhost:5173/"]  #React server
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+    # "https://ergosize-frontend-glwwvkvcl-fernandas-projects-f996f896.vercel.app"
+    "https://pathologylab.vercel.app/"
+]
 CSRF_TRUSTED_ORIGINS = [
     
     "http://localhost:3000",
