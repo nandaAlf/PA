@@ -133,7 +133,19 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #cors authorization
 CORS_ALLOW_ALL_ORIGINS = True #["http://localhost:5173/"]  #React server
-
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+#     "http://localhost:5173",
+#     # "https://ergosize-frontend-glwwvkvcl-fernandas-projects-f996f896.vercel.app"
+#     "https://ergosize-frontend.vercel.app"
+# ]
+CSRF_TRUSTED_ORIGINS = [
+    
+    "http://localhost:3000",
+    "http://localhost:5173",
+    # # # "https://ergosize-frontend-glwwvkvcl-fernandas-projects-f996f896.vercel.app"
+    # # "https://ergosize-frontend.vercel.app"
+]
 REST_FRAMEWORK={
     # 'DEFAULT_PERMISSION_CLASSES':[# Se requiere estar logeado para acceder a la aplicacion
     #     'rest_framework.permissions.IsAuthenticated',
@@ -178,7 +190,8 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 # except ImportError as error:
 #     print("Error: ",error.msg)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+
 # Asegúrate de que esta línea esté así:
 
 
