@@ -132,7 +132,9 @@ class ApiService {
 }
 
 // local
-const apiService= new ApiService("http://127.0.0.1:8000/pa");
-const accountService= new ApiService("http://127.0.0.1:8000/account");
+// const apiService= new ApiService("http://127.0.0.1:8000/pa");
+// const accountService= new ApiService("http://127.0.0.1:8000/account");
+const apiService= new ApiService("https://pa-7c23.onrender.com/pa");
+const accountService= new ApiService("https://pa-7c23.onrender.com/account");
 
 export { apiService ,accountService};

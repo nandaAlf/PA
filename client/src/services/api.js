@@ -1,14 +1,23 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://127.0.0.1:8000/pa/", // Cambia esta URL por la URL base de tu API
+  baseURL: "https://pa-7c23.onrender.com/pa/", // Cambia esta URL por la URL base de tu API
   headers: {
     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
   },
 });
 const account = axios.create({
-  baseURL: "http://127.0.0.1:8000/account/", // Cambia esta URL por la URL base de tu API
+  baseURL: "https://pa-7c23.onrender.com/account/", // Cambia esta URL por la URL base de tu API
 });
+// const api = axios.create({
+//   baseURL: "http://127.0.0.1:8000/pa/", // Cambia esta URL por la URL base de tu API
+//   headers: {
+//     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+//   },
+// });
+// const account = axios.create({
+//   baseURL: "http://127.0.0.1:8000/account/", // Cambia esta URL por la URL base de tu API
+// });
 
 // export const getItems = () => api.get('/items/');
 // export const getItem = (id) => api.get(`/items/${id}/`);
