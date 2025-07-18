@@ -65,7 +65,7 @@ class PatientViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.OrderingFilter, DjangoFilterBackend]
     filterset_class = PacienteFilter
     
-    permission_classes=[IsAuthenticated]
+    # permission_classes=[IsAuthenticated]
     # pagination_class=PatientPagination
     
     # def get_queryset(self):
@@ -115,7 +115,7 @@ class DefunctViewSet(viewsets.ModelViewSet):
     serializer_class = DefunctSerializer
     
     # permission_classes=[IsAuthenticated,IsStaffGroupPermission]
-    permission_classes=[IsAuthenticated]
+    # permission_classes=[IsAuthenticated]
     
 class StudyViewSet(viewsets.ModelViewSet):
     queryset = Estudio.objects.all()
@@ -139,7 +139,7 @@ class NecropsyViewSet(viewsets.ModelViewSet):
     lookup_field = 'code'
     
     # permission_classes=[IsAuthenticated,IsStaffGroupPermission]
-    permission_classes=[IsAuthenticated]
+    # permission_classes=[IsAuthenticated]
     
     filter_backends = [rest_framework.DjangoFilterBackend,filters.OrderingFilter]
     filterset_class = NecropsyFilter
@@ -148,7 +148,7 @@ class ProcessViewSet(viewsets.ModelViewSet):
     serializer_class = ProcessSerializer
     
     # permission_classes=[IsAuthenticated,IsStaffGroupPermission]
-    permission_classes=[IsAuthenticated]
+    # permission_classes=[IsAuthenticated]
     
     # Sobrecarga el método get_object para determinar el identificador en funcion de si es un estudio o una necropsia
     def get_object(self):
@@ -202,7 +202,7 @@ class DiagnosisViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.OrderingFilter]
     
     # permission_classes = [IsAuthenticated, DiagnosisPermission]
-    permission_classes=[IsAuthenticated]
+    # permission_classes=[IsAuthenticated]
     
     def get_queryset(self):
         user = self.request.user
@@ -220,7 +220,7 @@ class DoctorViewSet(viewsets.ModelViewSet):
     # filter_backends = [filters.OrderingFilter]
     
     # permission_classes = [IsAuthenticated, DiagnosisPermission]
-    permission_classes=[IsAuthenticated]
+    # permission_classes=[IsAuthenticated]
     
   
 
@@ -262,7 +262,7 @@ from django.http import Http404, JsonResponse
     # return JsonResponse(paciente_data)
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def get_patient_statistics(request):
     with connection.cursor() as cursor:
         cursor.execute("SELECT * FROM get_patient_stats()")
@@ -278,7 +278,7 @@ def get_patient_statistics(request):
     return JsonResponse(data)
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def get_study_statistics(request):
     with connection.cursor() as cursor:
         cursor.execute("SELECT * FROM get_studies_stats()")
@@ -294,7 +294,7 @@ def get_study_statistics(request):
     return JsonResponse(data)
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def get_necro_statistics(request):
     with connection.cursor() as cursor:
         cursor.execute("SELECT * FROM get_necro_stats()")
@@ -310,7 +310,7 @@ def get_necro_statistics(request):
     return JsonResponse(data)
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def get_entity_count(request):
     with connection.cursor() as cursor:
         cursor.callproc('public.get_entity_count')  # Llama a la función de SQL
@@ -322,7 +322,7 @@ def get_entity_count(request):
     return JsonResponse(result, safe=False)  # Retorna el JSON
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def get_department_count(request):
     with connection.cursor() as cursor:
         cursor.callproc('public.get_department_study_count')  # Llama a la función de SQL
@@ -335,7 +335,7 @@ def get_department_count(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def get_process_stats_by_month(request):
     with connection.cursor() as cursor:
         cursor.callproc('public.get_process_stats_by_month')

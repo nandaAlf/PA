@@ -92,7 +92,8 @@ function App() {
             className={`main-content ${isSidebarOpen ? "" : "sidebar-closed"}`}
           >
             <Routes>
-              <Route path="/" element={<LoginPage changeUser={changeUser} />} />
+              {/* <Route path="/" element={<LoginPage changeUser={changeUser} />} /> */}
+              <Route path="/"element={<HomePage />} />
               <Route path="/home" element={<HomePage />} />
               <Route
                 path="/login"
