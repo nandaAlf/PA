@@ -25,7 +25,8 @@ class ApiService {
             const refreshToken = localStorage.getItem("refresh_token");
             // console.log("refresh tok", refreshToken);
             const response = await axios.post(
-              "http://127.0.0.1:8000/account/token/refresh/",
+              // "http://127.0.0.1:8000/account/token/refresh/",
+              "https://pathologylab.vercel.app/account/token/refresh/",
               {
                 refresh: refreshToken,
               }

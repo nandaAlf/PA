@@ -106,7 +106,8 @@ export const apiUpdatePatient = (id, data) =>{
   }
 } 
 export const apiGetPatientStudy=(full_url)=>{
-  const relative_url=full_url.replace("http://127.0.0.1:8000/pa","")
+  // const relative_url=full_url.replace("http://127.0.0.1:8000/pa","")
+  const relative_url=full_url.replace("https://pathologylab.vercel.app/pa","")
   const response=api.get(relative_url)
   console.log(response)
 }

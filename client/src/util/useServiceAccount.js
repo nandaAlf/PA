@@ -34,7 +34,8 @@ export const useServiceAccount = () => {
     formData.append('profile_image', file);  // Asegúrate de usar el nombre correcto del campo que espera el backend
   
     try {
-      const response = await axios.put("http://127.0.0.1:8000/account/user-profile/",formData, {
+      const response = await axios.put("https://pathologylab.vercel.app/account/user-profile/",formData, {
+      // const response = await axios.put("http://127.0.0.1:8000/account/user-profile/",formData, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
           "Content-Type": "multipart/form-data",

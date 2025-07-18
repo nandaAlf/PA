@@ -76,7 +76,7 @@ function UserPage() {
           <>
             <div className="profile-picture-container ">
               <img
-                src={`http://127.0.0.1:8000${userData.profile_image}`} // Ruta de la foto o foto por defecto
+                src={`https://pathologylab.vercel.app/${userData.profile_image}`} // Ruta de la foto o foto por defecto
                 alt="Foto de perfil"
                 className="profile-picture"
               />
