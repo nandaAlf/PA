@@ -2,6 +2,7 @@ import React from "react";
 import { FaEdit } from "react-icons/fa";
 import { BsEye } from "react-icons/bs";
 // TuComponente.js
+import { Link } from 'react-router-dom';
 
 // import '../css/dropdown.css';  // Importa tus estilos personalizados
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -28,8 +29,10 @@ const DropdownToggle = ({
       {items?.map((item, index) => (
         <Dropdown.Item
           key={index}
-          href={item.url}
-          onClick={() => onSelect([item.eventKey])}
+           as={Link}
+            to={item.url}
+          // href={item.url}
+          // onClick={() => onSelect([item.eventKey])}
           style={{
             display: "flex",
             alignItems: "center",
