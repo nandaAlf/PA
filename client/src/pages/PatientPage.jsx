@@ -172,7 +172,7 @@ function PatientPage() {
             actions={(item) => [
               {
                 label: "Ver",
-                url: `/patient/view/${item.hc}`,
+                url: `https://pathologylab.vercel.app/patient/view/${item.hc}`,
                 icon: <BsEye size={12} />,
               },
               {
