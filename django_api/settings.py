@@ -178,6 +178,9 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 # except ImportError as error:
 #     print("Error: ",error.msg)
 
+ALLOWED_HOSTS = []
+# Asegúrate de que esta línea esté así:
+
 
 DATABASES = {
     'default': {
