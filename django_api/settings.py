@@ -143,6 +143,7 @@ CSRF_TRUSTED_ORIGINS = [
     
     "http://localhost:3000",
     "http://localhost:5173",
+    "https://pathologylab.vercel.app/"
     # # # "https://ergosize-frontend-glwwvkvcl-fernandas-projects-f996f896.vercel.app"
     # # "https://ergosize-frontend.vercel.app"
 ]
