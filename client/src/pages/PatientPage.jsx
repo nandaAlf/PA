@@ -15,6 +15,7 @@ import SearchSection from "../components/SearchSection";
 import Table from "../components/Table";
 import { toastSuccess } from "../util/Notification";
 import { useService } from "../util/useService";
+import Loader from "../components/Loader";
 function PatientPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [patients, setPatients] = useState([]);
@@ -23,13 +24,18 @@ function PatientPage() {
   const [selectedPatients, setSelectedPatients] = useState([]);
   const [showModal,setShowModal]=useState(false)
   const navigate = useNavigate();
-
+    const [isLoading, setLoading] = useState(true);
   const { fetchItems, handleDelete, fetchStats } = useService("pacientes");
 
   useEffect(() => {
-    fetchPatients("nombre");
-    fetchPatientStats();
-    handleURLParams();
+    const loadData = async () => {
+      // setLoading(true);
+      await fetchPatients("nombre");
+      await fetchPatientStats();
+      handleURLParams();
+      setLoading(false);
+    };
+    loadData();
   }, []);
 
   async function fetchPatients(orderParam = "", filterParm = {}) {
@@ -109,7 +115,9 @@ function PatientPage() {
     // setType(eventKey); // Actualiza el estado del tipo seleccionado
     fetchPatients("nombre", { es_fallecido: eventKey }); // Trae los estudios filtrados por el tipo
   };
-
+   if (isLoading){
+    return <Loader/>
+   }
   return (
     <div className="component patient">
       {/* <div className="container"> */}

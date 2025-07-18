@@ -14,7 +14,7 @@ const Header = ({ isOpen, toggleSidebar ,user,setUser}) => {
 
   if (!user) return ;
   return (
-    <div  className="md:w-[calc(100%-228px)] w-full md:ml-[228px] bg-gray-50 flex items-center  justify-end bg-opacity-95 fixed top-0 z-40  px-2">
+    <div  className="md:w-[calc(100%-228px)] w-full md:ml-[228px] bg-gray-50 flex items-center  justify-end bg-opacity-95 fixed top-0 z-4  px-2">
       {/* <div
         className="md:col-span-1 sm:col-span-11 col-span-10 flex gap-4 items-center md:py-0 py-4 bg-inherit"
         onClick={toggleSidebar}
@@ -87,9 +87,9 @@ const Header = ({ isOpen, toggleSidebar ,user,setUser}) => {
                       id="dropdown-basic"
                     >
                       <img
-                        // src={"../../../../media/profile_image/padmin.png"}
+                        src={"../../../../media/profile_image/padmin.png"}
                         // src={profileImageUrl}
-                        src={`http://127.0.0.1:8000${user.profile_image}`}
+                        // src={`https://pa-7c23.onrender.com/${user.profile_image}`}
                         alt="user-profile"
                         style={{
                           borderRadius: "50%",

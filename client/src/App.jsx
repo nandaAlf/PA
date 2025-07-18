@@ -38,9 +38,9 @@ function App() {
     const fetchUser = async () => {
       try {
         // alert(user)
-        const response = await handleGetUser();
-        console.log("USUARIO", response.data);
-        setUser(response.data);
+        // const response = await handleGetUser();
+        // console.log("USUARIO", response.data);
+        // setUser(response.data);
       } catch (error) {}
     };
     const token = localStorage.getItem("access_token");

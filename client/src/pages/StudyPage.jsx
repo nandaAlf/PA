@@ -67,6 +67,7 @@ function StudyPage({ service }) {
   const params = new URLSearchParams(location.search);
   const [route, setRoute] = useState("");
   const [stats, setStats] = useState(null);
+  
   // const [loading, setLoading] = useState(true); // Estado para manejar el Loader
   // const [loading, setLoading] = useState(false);
   const statsData =
@@ -103,26 +104,30 @@ function StudyPage({ service }) {
         ]
       : [];
   useEffect(() => {
-    handleURLParams();
-    setLoading(true);
-    if (service === "estudios") {
-      setRoute("study");
-      fetchStats().then((fetchedStats) => {
-        setStats(fetchedStats);
-        console.log("Stats fetched:", fetchedStats);
-      });
-      setLoading(false);
-    } else if (service === "necropsias") {
-      setRoute("necro");
-      fetchStats().then((fetchedStats) => {
-        setStats(fetchedStats);
-        console.log("Stats fetched:", fetchedStats);
-      });
-      setLoading(false);
-    } else {
-      setRoute("doctor");
-      setLoading(false);
-    }
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        await handleURLParams();
+        
+        if (service === "estudios") {
+          setRoute("study");
+          const fetchedStats = await fetchStats();
+          setStats(fetchedStats);
+        } else if (service === "necropsias") {
+          setRoute("necro");
+          const fetchedStats = await fetchStats();
+          setStats(fetchedStats);
+        } else {
+          setRoute("doctor");
+        }
+      } catch (error) {
+        console.error("Error loading data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, [service]);
 
   const handleURLParams = () => {
@@ -153,10 +158,10 @@ function StudyPage({ service }) {
   //   return;
   if (loading) {
     return (
-      <>
+    
      <Loader/>
-     {/* {alert(loading)} */}
-      </>
+ 
+    
     );
   } 
   return (

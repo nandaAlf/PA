@@ -10,6 +10,7 @@ import { useService } from "../util/useService";
 import Button from "../components/Button";
 import "../css/form.css";
 import NecroForm from "../components/forms/NecroForm";
+import Loader from "../components/Loader";
 
 export default function StudyFormPage({ typeStudy = "estudios", user=null }) {
   const [study, setStudy] = useState(null);
@@ -17,6 +18,7 @@ export default function StudyFormPage({ typeStudy = "estudios", user=null }) {
   const [process, setProcess] = useState(null);
   const [diagnosis, setDiagnosis] = useState(null);
   const [isViewing, setIsViewing] = useState(false);
+  const [isLoading, setLoading] = useState(true);
   const params = useParams();
   // const {  process, diagnosis, isEditing } = useStudy(params);
   const { handleSubmit, register, setValue } = useForm();
@@ -30,9 +32,14 @@ export default function StudyFormPage({ typeStudy = "estudios", user=null }) {
     useService("procesos");
 
   useEffect(() => {
-    loadStudy();
-    console.log("usuario", user);
+    const loadData = async () => {
+      setLoading(true);
+      await loadStudy(); // Esperar a que termine
+      setLoading(false);
+    };
+    loadData();
   }, [params]);
+
 
   const loadStudy = async () => {
     const { hc, code } = params;
@@ -111,7 +118,9 @@ export default function StudyFormPage({ typeStudy = "estudios", user=null }) {
       typeStudy=="estudios"? navigate("/studies/") : navigate("/necropsies")
     }
   };
-
+  if(isLoading){
+   return <Loader/>; 
+  }
   return (
     <div className="form-container component">
       <form onSubmit={handleSubmit(onSubmit)} className="study form ">

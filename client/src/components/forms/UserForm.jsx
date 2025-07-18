@@ -6,7 +6,7 @@ import { loginUser } from "../../services/api";
 import "../../css/form.css";
 import Button from "../Button";
 import { toastError } from "../../util/Notification";
-import { BsEye , BsEyeSlash} from "react-icons/bs";
+import { BsEye, BsEyeSlash } from "react-icons/bs";
 
 export default function UserForm({ changeUser }) {
   const [username, setUsername] = useState("");
@@ -19,38 +19,46 @@ export default function UserForm({ changeUser }) {
   useEffect(() => {
     if (error) {
       toastError(error);
-      setError(""); // Limpiamos el error para evitar que se repita el `toast`.
+      const timer = setTimeout(() => setError(""), 100);
+      return () => clearTimeout(timer); // Limpia el timeout al desmontar
     }
   }, [error]);
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log("Submit event handled");
-    try {
-      const response = await loginUser({ username, password });
-      console.log("papa", response);
-      changeUser(response.data);
-      localStorage.setItem("access_token", response.data.token.access);
-      localStorage.setItem("refresh_token", response.data.token.refresh);
-      localStorage.setItem("username", response.data.username);
-      if (response.data.token.access) {
-        navigate("/home");
-      }
-    } catch (error) {
-      localStorage.clear();
-      console.log("error", error);
-      if (error.response && error.response.status === 401) {
-        // alert(error.response.data.error);
-        setError(error.response.data.error);
-      } else {
-        alert("Ocurrió un error1. Inténtalo de nuevo más tarde.");
-        // alert(error)
-        setError("Ocurrió un error8. Inténtalo de nuevo más tarde.");
-      }
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  console.log("Submit event handled");
+  
+  try {
+    const response = await loginUser({ username, password });
+    console.log("Response:", response);
 
-      // setError('')
-      return error;
+    // Validación robusta de la respuesta
+    if (!response?.data?.token?.access) {
+      throw new Error("Invalid response structure");
     }
-  };
+
+    // Almacenamiento seguro
+    localStorage.setItem("access_token", response.data.token.access);
+    localStorage.setItem("refresh_token", response.data.token.refresh);
+    localStorage.setItem("username", response.data.username);
+    
+    // Actualización de estado antes de navegar
+    await changeUser(response.data);
+    
+    // Redirección sólo con token válido
+    navigate("/home", { replace: true });
+
+  } catch (error) {
+    console.error("Login error:", error);
+    localStorage.clear();
+    
+    // Manejo unificado de errores
+    const errorMessage = error.response?.data?.error || 
+                        "Ocurrió un error. Inténtalo de nuevo más tarde.";
+    
+    setError(errorMessage);
+    toastError(errorMessage);
+  }
+};
 
   // const showErros = () => {
   //   toastError(error);
@@ -65,8 +73,8 @@ export default function UserForm({ changeUser }) {
         <label htmlFor="">Username</label>
         <input
           type="text"
-          value={username}
-          placeholder="Username"
+          // value={username}
+          placeholder="Username (Jon)"
           onChange={(e) => setUsername(e.target.value)}
           required
         />
@@ -82,6 +90,7 @@ export default function UserForm({ changeUser }) {
           <input
             type={showPassword ? "text" : "password"}
             id="password"
+            placeholder="Password (1234)"
             onChange={(e) => setPassword(e.target.value)}
           />
           <span
@@ -92,12 +101,12 @@ export default function UserForm({ changeUser }) {
               top: "35px",
               transform: "translateY(-50%)",
               cursor: "pointer",
-              color:"#6ab8a7ff",
-              fontSize:"18px"
+              color: "#6ab8a7ff",
+              fontSize: "18px",
               // padding:"5px"
             }}
           >
-            {showPassword ?  <BsEyeSlash />:<BsEye /> }
+            {showPassword ? <BsEyeSlash /> : <BsEye />}
           </span>
         </div>
         <Button prop={"Enviar"} details={"formButton"} type={"submit"} />

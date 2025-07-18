@@ -165,15 +165,22 @@ REST_FRAMEWORK={
     # ),  
 }
 
+# SIMPLE_JWT = {
+#     'ROTATE_REFRESH_TOKENS': True, #new token for each token expired
+#     # #Developer mode
+#     # 'ACCESS_TOKEN_LIFETIME': timedelta(days=365),
+#     # 'REFRESH_TOKEN_LIFETIME': timedelta(hours=1),
+#     # 'ACCESS_TOKEN_LIFETIME': timedelta(seconds=190),
+#     # 'REFRESH_TOKEN_LIFETIME': timedelta(seconds=30),
+# }
 SIMPLE_JWT = {
-    'ROTATE_REFRESH_TOKENS': True, #new token for each token expired
-    # #Developer mode
-    # 'ACCESS_TOKEN_LIFETIME': timedelta(days=365),
-    # 'REFRESH_TOKEN_LIFETIME': timedelta(hours=1),
-    # 'ACCESS_TOKEN_LIFETIME': timedelta(seconds=190),
-    # 'REFRESH_TOKEN_LIFETIME': timedelta(seconds=30),
+    # Tokens que nunca expiran (o casi nunca)
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=36500),  # ~100 años
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=36500),  # ~100 años
+    
+    'ROTATE_REFRESH_TOKENS': False,  # Desactiva la rotación automática
+    'BLACKLIST_AFTER_ROTATION': False,  # Desactiva el blacklisting
 }
-
 AUTH_USER_MODEL = 'user_app.CustomUser'
 
 # Ruta donde se guardarán los archivos de medios (imágenes de perfil)
